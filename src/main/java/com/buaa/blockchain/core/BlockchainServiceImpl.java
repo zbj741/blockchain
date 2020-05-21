@@ -198,7 +198,7 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
                 return false;
             }
             // 检查状态树，仍旧是和mysql数据库中的表项做对比
-            String preStateHash = blockMapper.findPreHashByHeight(height - 1);
+            String preStateHash = blockMapper.findStatRoot(height - 1);
             if(!rawBlock.getPre_state_root().equals(preStateHash)){
                 log.info("verifyBlock(): wrong preStateHash! Block preStateHash="+rawBlock.getPre_state_root()+", database preStateHash="+preStateHash);
                 return false;
@@ -251,14 +251,15 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
         String hash = HashUtil.sha256("0");
         String pre_hash = HashUtil.sha256("-1");
         String merkle_root = "";
-        //TODO 暂时不实现WorldState相关，使用模拟假数据
-        String pre_state_root = "-1";
-        String state_root = "0";
+        // 状态树
+        String pre_state_root = "";
+        String state_root = this.worldState.getRootHash();;
         // 填写区块
         block.setPre_hash(pre_hash);
         block.setHash(hash);
         block.setPre_state_root(pre_state_root);
         block.setState_root(state_root);
+        block.setMerkle_root(merkle_root);
         block.setHeight(0);
         block.setSign(this.nodeSign);
         block.setTimestamp(timestamp);
@@ -492,7 +493,7 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
             index = index ^ (index >>> 16);
         } catch (Exception e) {
             index = 0;
-            // TODO
+            // TODO 处理选举异
             e.printStackTrace();
         }
         index = index % this.clusterSize;

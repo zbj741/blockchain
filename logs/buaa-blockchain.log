@@ -513,3 +513,1072 @@ Caused by: java.sql.SQLException: HikariDataSource HikariDataSource (HikariPool-
 2020-05-21 01:52:30.763  WARN 5248 --- [main] org.jgroups.stack.Configurator           : JGRP000014: TP.loopback has been deprecated: enabled by default
 2020-05-21 01:52:30.768  WARN 5248 --- [main] org.jgroups.stack.Configurator           : JGRP000014: Discovery.timeout has been deprecated: GMS.join_timeout should be used instead
 2020-05-21 01:52:30.768  WARN 5248 --- [main] org.jgroups.stack.Configurator           : JGRP000014: Discovery.num_initial_members has been deprecated: will be ignored
+2020-05-21 11:47:48.365  INFO 14076 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Starting BlockchainApplication on DESKTOP-EMVOVM7 with PID 14076 (D:\Develop\PRJ\buaa-blockchain\target\classes started by 18910 in D:\Develop\PRJ\buaa-blockchain)
+2020-05-21 11:47:48.368 DEBUG 14076 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-05-21 11:47:48.368  INFO 14076 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : No active profile set, falling back to default profiles: default
+2020-05-21 11:47:48.420  INFO 14076 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-05-21 11:47:48.420  INFO 14076 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-05-21 11:47:49.725  INFO 14076 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2020-05-21 11:47:49.728  INFO 14076 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2020-05-21 11:47:49.781  INFO 14076 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 23ms. Found 0 Redis repository interfaces.
+2020-05-21 11:47:50.912  INFO 14076 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'redisConfig' of type [com.buaa.blockchain.redis.RedisConfig$$EnhancerBySpringCGLIB$$807fcde1] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-05-21 11:47:51.510  INFO 14076 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 17800 (http)
+2020-05-21 11:47:51.524  INFO 14076 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-05-21 11:47:51.525  INFO 14076 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.33]
+2020-05-21 11:47:51.529  INFO 14076 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : Loaded APR based Apache Tomcat Native library [1.2.23] using APR version [1.7.0].
+2020-05-21 11:47:51.529  INFO 14076 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true].
+2020-05-21 11:47:51.530  INFO 14076 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+2020-05-21 11:47:51.554  INFO 14076 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : OpenSSL successfully initialized [OpenSSL 1.1.1c  28 May 2019]
+2020-05-21 11:47:51.668  INFO 14076 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-05-21 11:47:51.668  INFO 14076 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 3248 ms
+2020-05-21 11:47:53.095  WARN 14076 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: BasicTCP.use_send_queues has been deprecated: will be removed in 4.0
+2020-05-21 11:47:53.102  WARN 14076 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: TP.loopback has been deprecated: enabled by default
+2020-05-21 11:47:53.108  WARN 14076 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: Discovery.timeout has been deprecated: GMS.join_timeout should be used instead
+2020-05-21 11:47:53.108  WARN 14076 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: Discovery.num_initial_members has been deprecated: will be ignored
+2020-05-21 11:48:01.366  WARN 14076 --- [restartedMain] c.b.b.message.JGroupsMessageImpl         : JGroupsMessageImpl(): init complete via jgroups-tcp.xml, address=192.168.0.104:7800
+2020-05-21 11:48:01.695  INFO 14076 --- [restartedMain] leveldb                                  : New LevelDbDataSource: null
+2020-05-21 11:48:02.090  INFO 14076 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-21 11:48:02.758  INFO 14076 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-05-21 11:48:02.763  INFO 14076 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoint(s) beneath base path '/actuator'
+2020-05-21 11:48:02.878  INFO 14076 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 17800 (http) with context path ''
+2020-05-21 11:48:02.885  INFO 14076 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Started BlockchainApplication in 15.215 seconds (JVM running for 20.004)
+2020-05-21 11:48:09.510  INFO 14076 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : initMessageServiceCallback(): init complete.
+2020-05-21 11:48:09.519  INFO 14076 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : testMessageDigest(): init complete.
+2020-05-21 11:48:09.519  INFO 14076 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : firstTimeSetup(): init complete. buaa-blockchain version:1.0
+2020-05-21 11:48:09.633  INFO 14076 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-05-21 11:48:09.924  INFO 14076 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-05-21 11:48:09.932 DEBUG 14076 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : ==>  Preparing: SELECT count(1) as num from block where hash = ? 
+2020-05-21 11:48:09.952 DEBUG 14076 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : ==> Parameters: 5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9(String)
+2020-05-21 11:48:09.967 DEBUG 14076 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : <==      Total: 1
+2020-05-21 11:48:09.987 DEBUG 14076 --- [restartedMain] c.b.b.mapper.BlockMapper.insertBlock     : ==>  Preparing: INSERT INTO block ( pre_hash, hash, merkle_root, state_root,pre_state_root, height, sign, timestamp,version,extra,tx_length) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?) 
+2020-05-21 11:48:09.989 DEBUG 14076 --- [restartedMain] c.b.b.mapper.BlockMapper.insertBlock     : ==> Parameters: 1BAD6B8CF97131FCEAB8543E81F7757195FBB1D36B376EE994AD1CF17699C464(String), 5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9(String), (String), 0(String), -1(String), 0(Integer), node1_sign(String), 2020-05-21 11:48:09(String), 1.0(String), (String), 0(Integer)
+2020-05-21 11:48:09.990 DEBUG 14076 --- [restartedMain] c.b.b.mapper.BlockMapper.insertBlock     : <==    Updates: 1
+2020-05-21 11:48:09.996  INFO 14076 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : firstTimeSetup(): Generate first block complete.
+2020-05-21 11:48:09.998 DEBUG 14076 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 11:48:09.998 DEBUG 14076 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 11:48:10.002 DEBUG 14076 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 11:48:10.005 DEBUG 14076 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 11:48:10.005 DEBUG 14076 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 11:48:10.006 DEBUG 14076 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 11:52:35.772  WARN 14076 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=4m55s848ms787µs99ns).
+2020-05-21 11:52:35.774  INFO 14076 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=1, round=0 try to build new block...
+2020-05-21 11:52:35.872  INFO 14076 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-21 11:52:35.873  INFO 14076 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2020-05-21 11:52:35.882  INFO 14076 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2020-05-21 11:52:35.947  INFO 14076 --- [restartedMain] io.lettuce.core.EpollProvider            : Starting without optional epoll library
+2020-05-21 11:52:35.948  INFO 14076 --- [restartedMain] io.lettuce.core.KqueueProvider           : Starting without optional kqueue library
+2020-05-21 11:52:37.090 ERROR 14076 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : run(): fatal error!
+2020-05-21 11:52:45.943  INFO 13192 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Starting BlockchainApplication on DESKTOP-EMVOVM7 with PID 13192 (D:\Develop\PRJ\buaa-blockchain\target\classes started by 18910 in D:\Develop\PRJ\buaa-blockchain)
+2020-05-21 11:52:45.946 DEBUG 13192 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-05-21 11:52:45.947  INFO 13192 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : No active profile set, falling back to default profiles: default
+2020-05-21 11:52:45.993  INFO 13192 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-05-21 11:52:45.993  INFO 13192 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-05-21 11:52:47.171  INFO 13192 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2020-05-21 11:52:47.173  INFO 13192 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2020-05-21 11:52:47.211  INFO 13192 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 22ms. Found 0 Redis repository interfaces.
+2020-05-21 11:52:48.158  INFO 13192 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'redisConfig' of type [com.buaa.blockchain.redis.RedisConfig$$EnhancerBySpringCGLIB$$dc7538ec] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-05-21 11:52:48.673  INFO 13192 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 17800 (http)
+2020-05-21 11:52:48.685  INFO 13192 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-05-21 11:52:48.685  INFO 13192 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.33]
+2020-05-21 11:52:48.689  INFO 13192 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : Loaded APR based Apache Tomcat Native library [1.2.23] using APR version [1.7.0].
+2020-05-21 11:52:48.689  INFO 13192 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true].
+2020-05-21 11:52:48.689  INFO 13192 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+2020-05-21 11:52:48.692  INFO 13192 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : OpenSSL successfully initialized [OpenSSL 1.1.1c  28 May 2019]
+2020-05-21 11:52:48.797  INFO 13192 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-05-21 11:52:48.797  INFO 13192 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2804 ms
+2020-05-21 11:52:50.070  WARN 13192 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: BasicTCP.use_send_queues has been deprecated: will be removed in 4.0
+2020-05-21 11:52:50.075  WARN 13192 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: TP.loopback has been deprecated: enabled by default
+2020-05-21 11:52:50.081  WARN 13192 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: Discovery.timeout has been deprecated: GMS.join_timeout should be used instead
+2020-05-21 11:52:50.082  WARN 13192 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: Discovery.num_initial_members has been deprecated: will be ignored
+2020-05-21 11:52:58.132  WARN 13192 --- [restartedMain] c.b.b.message.JGroupsMessageImpl         : JGroupsMessageImpl(): init complete via jgroups-tcp.xml, address=192.168.0.104:7800
+2020-05-21 11:52:58.433  INFO 13192 --- [restartedMain] leveldb                                  : New LevelDbDataSource: null
+2020-05-21 11:52:58.784  INFO 13192 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-21 11:52:59.317  INFO 13192 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-05-21 11:52:59.322  INFO 13192 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoint(s) beneath base path '/actuator'
+2020-05-21 11:52:59.420  INFO 13192 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 17800 (http) with context path ''
+2020-05-21 11:52:59.425  INFO 13192 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Started BlockchainApplication in 13.991 seconds (JVM running for 15.61)
+2020-05-21 11:53:01.377  INFO 13192 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : initMessageServiceCallback(): init complete.
+2020-05-21 11:53:01.383  INFO 13192 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : testMessageDigest(): init complete.
+2020-05-21 11:53:01.383  INFO 13192 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : firstTimeSetup(): init complete. buaa-blockchain version:1.0
+2020-05-21 11:53:01.414  INFO 13192 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-05-21 11:53:01.648  INFO 13192 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-05-21 11:53:01.658 DEBUG 13192 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : ==>  Preparing: SELECT count(1) as num from block where hash = ? 
+2020-05-21 11:53:01.682 DEBUG 13192 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : ==> Parameters: 5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9(String)
+2020-05-21 11:53:01.704 DEBUG 13192 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : <==      Total: 1
+2020-05-21 11:53:01.727 DEBUG 13192 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 11:53:01.727 DEBUG 13192 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 11:53:01.730 DEBUG 13192 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 11:53:01.733 DEBUG 13192 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 11:53:01.733 DEBUG 13192 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 11:53:01.734 DEBUG 13192 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 11:53:24.937  WARN 13192 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=53s286ms218µs500ns).
+2020-05-21 11:53:24.942  INFO 13192 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=1, round=0 try to build new block...
+2020-05-21 11:53:24.989  INFO 13192 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-21 11:53:24.990  INFO 13192 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2020-05-21 11:53:24.997  INFO 13192 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2020-05-21 11:53:25.069  INFO 13192 --- [restartedMain] io.lettuce.core.EpollProvider            : Starting without optional epoll library
+2020-05-21 11:53:25.071  INFO 13192 --- [restartedMain] io.lettuce.core.KqueueProvider           : Starting without optional kqueue library
+2020-05-21 11:53:26.082 ERROR 13192 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : run(): fatal error!
+2020-05-21 11:53:29.235  INFO 748 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Starting BlockchainApplication on DESKTOP-EMVOVM7 with PID 748 (D:\Develop\PRJ\buaa-blockchain\target\classes started by 18910 in D:\Develop\PRJ\buaa-blockchain)
+2020-05-21 11:53:29.238 DEBUG 748 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-05-21 11:53:29.239  INFO 748 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : No active profile set, falling back to default profiles: default
+2020-05-21 11:53:29.289  INFO 748 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-05-21 11:53:29.289  INFO 748 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-05-21 11:53:30.423  INFO 748 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2020-05-21 11:53:30.425  INFO 748 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2020-05-21 11:53:30.457  INFO 748 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 18ms. Found 0 Redis repository interfaces.
+2020-05-21 11:53:31.397  INFO 748 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'redisConfig' of type [com.buaa.blockchain.redis.RedisConfig$$EnhancerBySpringCGLIB$$f1072d1a] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-05-21 11:53:31.858  INFO 748 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 17800 (http)
+2020-05-21 11:53:31.871  INFO 748 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-05-21 11:53:31.871  INFO 748 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.33]
+2020-05-21 11:53:31.875  INFO 748 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : Loaded APR based Apache Tomcat Native library [1.2.23] using APR version [1.7.0].
+2020-05-21 11:53:31.875  INFO 748 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true].
+2020-05-21 11:53:31.875  INFO 748 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+2020-05-21 11:53:31.878  INFO 748 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : OpenSSL successfully initialized [OpenSSL 1.1.1c  28 May 2019]
+2020-05-21 11:53:31.997  INFO 748 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-05-21 11:53:31.998  INFO 748 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2709 ms
+2020-05-21 11:53:33.280  WARN 748 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: BasicTCP.use_send_queues has been deprecated: will be removed in 4.0
+2020-05-21 11:53:33.287  WARN 748 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: TP.loopback has been deprecated: enabled by default
+2020-05-21 11:53:33.294  WARN 748 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: Discovery.timeout has been deprecated: GMS.join_timeout should be used instead
+2020-05-21 11:53:33.294  WARN 748 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: Discovery.num_initial_members has been deprecated: will be ignored
+2020-05-21 11:53:41.247  WARN 748 --- [restartedMain] c.b.b.message.JGroupsMessageImpl         : JGroupsMessageImpl(): init complete via jgroups-tcp.xml, address=192.168.0.104:7800
+2020-05-21 11:53:41.515  INFO 748 --- [restartedMain] leveldb                                  : New LevelDbDataSource: null
+2020-05-21 11:53:41.790  INFO 748 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-21 11:53:42.326  INFO 748 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-05-21 11:53:42.331  INFO 748 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoint(s) beneath base path '/actuator'
+2020-05-21 11:53:42.424  INFO 748 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 17800 (http) with context path ''
+2020-05-21 11:53:42.429  INFO 748 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Started BlockchainApplication in 13.642 seconds (JVM running for 15.258)
+2020-05-21 11:53:46.356  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : initMessageServiceCallback(): init complete.
+2020-05-21 11:53:46.783  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : testMessageDigest(): init complete.
+2020-05-21 11:53:47.143  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : firstTimeSetup(): init complete. buaa-blockchain version:1.0
+2020-05-21 11:53:47.748  INFO 748 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-05-21 11:53:48.140  INFO 748 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-05-21 11:53:48.192 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : ==>  Preparing: SELECT count(1) as num from block where hash = ? 
+2020-05-21 11:53:48.414 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : ==> Parameters: 5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9(String)
+2020-05-21 11:53:48.559 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : <==      Total: 1
+2020-05-21 11:53:50.721 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.insertBlock     : ==>  Preparing: INSERT INTO block ( pre_hash, hash, merkle_root, state_root,pre_state_root, height, sign, timestamp,version,extra,tx_length) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?) 
+2020-05-21 11:53:50.730 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.insertBlock     : ==> Parameters: 1BAD6B8CF97131FCEAB8543E81F7757195FBB1D36B376EE994AD1CF17699C464(String), 5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9(String), (String), 56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421(String), -1(String), 0(Integer), node1_sign(String), 2020-05-21 11:53:49(String), 1.0(String), (String), 0(Integer)
+2020-05-21 11:53:50.732 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.insertBlock     : <==    Updates: 1
+2020-05-21 11:53:51.546  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : firstTimeSetup(): Generate first block complete.
+2020-05-21 11:54:31.684 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 11:54:31.684 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 11:54:31.698 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 11:54:31.700 DEBUG 748 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 11:54:31.702 DEBUG 748 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 11:54:31.704 DEBUG 748 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 11:54:35.382  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=1, round=0 try to build new block...
+2020-05-21 11:54:37.459  INFO 748 --- [restartedMain] io.lettuce.core.EpollProvider            : Starting without optional epoll library
+2020-05-21 11:54:37.463  INFO 748 --- [restartedMain] io.lettuce.core.KqueueProvider           : Starting without optional kqueue library
+2020-05-21 11:54:38.120  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:54:40.122  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:54:42.124  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:54:44.126  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:54:46.128  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:54:48.130  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:54:50.133  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:54:52.137  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:54:54.141  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:54:56.146  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:54:58.151  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:55:00.154  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:55:02.157  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 11:55:14.989 DEBUG 748 --- [restartedMain] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 11:55:14.991 DEBUG 748 --- [restartedMain] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590033303462(String)
+2020-05-21 11:55:14.994 DEBUG 748 --- [restartedMain] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 11:55:18.583  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): Get valid transaction list, size=1
+2020-05-21 11:55:30.686 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 11:55:30.687 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 11:55:30.689 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 11:55:31.134 DEBUG 748 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 11:55:31.136 DEBUG 748 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 11:55:31.138 DEBUG 748 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 11:55:35.347 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 11:55:35.348 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 0(Integer)
+2020-05-21 11:55:35.361 DEBUG 748 --- [restartedMain] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 11:55:42.594  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): new block created, hash=2948F1F8CCC1B905CAA69096A5B2CC568A88CD1185D4A296094B00400335491E, time cost=28072ms.
+2020-05-21 11:56:05.880  INFO 748 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : acpbftDigestBroadcast(): broadcast block, message size=2.693359375KB.
+2020-05-21 11:56:27.731  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : sbftDigestBroadcastReceived(): received message=topic=MESSAGE_TOPIC_DIGEST, nodeName=node1, height=1, round=0, vote=falseblock=Block [hash=2948F1F8CCC1B905CAA69096A5B2CC568A88CD1185D4A296094B00400335491E, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=BD1429E5B0CD4B9F6A380E71142AB135101AC59D5E8AB557ECDCFA18E3C05995, tx_length=1, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 11:55:32]
+2020-05-21 11:56:33.242 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 11:56:33.243 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 11:56:33.245 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 11:56:36.430 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 11:56:36.432 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 11:56:36.442 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 11:56:46.239 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 11:56:46.240 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 11:56:46.242 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 11:57:00.064  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : verifyBlock(): wrong preStateHash! Block preStateHash=56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, database preStateHash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9
+2020-05-21 11:57:00.067  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcast(): node=node1 vote false to Block [hash=2948F1F8CCC1B905CAA69096A5B2CC568A88CD1185D4A296094B00400335491E, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=BD1429E5B0CD4B9F6A380E71142AB135101AC59D5E8AB557ECDCFA18E3C05995, tx_length=1, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 11:55:32]
+2020-05-21 11:57:00.071  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcastReceived(): start next round. Block=2948F1F8CCC1B905CAA69096A5B2CC568A88CD1185D4A296094B00400335491E, height=1, round=0 received vote against 1/1
+2020-05-21 11:57:00.071  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=1, round=1 try to build new block...
+2020-05-21 11:57:00.078 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 11:57:00.078 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590033303462(String)
+2020-05-21 11:57:00.079 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 11:57:00.079  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): Get valid transaction list, size=1
+2020-05-21 11:57:00.080 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 11:57:00.080 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 11:57:00.080 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 11:57:00.082 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 11:57:00.082 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 11:57:00.083 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 11:57:00.085 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 11:57:00.085 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 0(Integer)
+2020-05-21 11:57:00.086 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 11:57:00.087  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): new block created, hash=44D97A8433C5DFA1D3D1E1A8B8348C0797866525DEA1BBC7133690D1FF95755E, time cost=13ms.
+2020-05-21 11:57:00.087  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : acpbftDigestBroadcast(): broadcast block, message size=2.693359375KB.
+2020-05-21 11:57:00.088  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : sbftDigestBroadcastReceived(): received message=topic=MESSAGE_TOPIC_DIGEST, nodeName=node1, height=1, round=1, vote=falseblock=Block [hash=44D97A8433C5DFA1D3D1E1A8B8348C0797866525DEA1BBC7133690D1FF95755E, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=BD1429E5B0CD4B9F6A380E71142AB135101AC59D5E8AB557ECDCFA18E3C05995, tx_length=1, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 11:57:00]
+2020-05-21 11:57:00.088 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 11:57:00.089 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 11:57:00.090 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 11:57:00.093 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 11:57:00.094 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 11:57:00.095  INFO 748 --- [RMI TCP Connection(8)-192.168.0.104] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-05-21 11:57:00.095 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 11:57:00.095  INFO 748 --- [RMI TCP Connection(8)-192.168.0.104] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2020-05-21 11:57:00.097 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 11:57:00.097 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 11:57:00.097 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 11:57:00.098  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : verifyBlock(): wrong preStateHash! Block preStateHash=56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, database preStateHash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9
+2020-05-21 11:57:00.098  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcast(): node=node1 vote false to Block [hash=44D97A8433C5DFA1D3D1E1A8B8348C0797866525DEA1BBC7133690D1FF95755E, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=BD1429E5B0CD4B9F6A380E71142AB135101AC59D5E8AB557ECDCFA18E3C05995, tx_length=1, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 11:57:00]
+2020-05-21 11:57:00.099  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcastReceived(): start next round. Block=44D97A8433C5DFA1D3D1E1A8B8348C0797866525DEA1BBC7133690D1FF95755E, height=1, round=1 received vote against 1/1
+2020-05-21 11:57:00.099  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=1, round=2 try to build new block...
+2020-05-21 11:57:00.102 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 11:57:00.102 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590033303462(String)
+2020-05-21 11:57:00.103 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 11:57:00.103  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): Get valid transaction list, size=1
+2020-05-21 11:57:00.105 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 11:57:00.106 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 11:57:00.105  INFO 748 --- [RMI TCP Connection(8)-192.168.0.104] o.s.web.servlet.DispatcherServlet        : Completed initialization in 10 ms
+2020-05-21 11:57:00.107 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 11:57:00.108 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 11:57:00.108 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 11:57:00.109 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 11:57:00.110 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 11:57:00.110 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 0(Integer)
+2020-05-21 11:57:00.111 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 11:57:00.112  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): new block created, hash=44D97A8433C5DFA1D3D1E1A8B8348C0797866525DEA1BBC7133690D1FF95755E, time cost=12ms.
+2020-05-21 11:57:00.113  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : acpbftDigestBroadcast(): broadcast block, message size=2.693359375KB.
+2020-05-21 11:57:00.113  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : sbftDigestBroadcastReceived(): received message=topic=MESSAGE_TOPIC_DIGEST, nodeName=node1, height=1, round=2, vote=falseblock=Block [hash=44D97A8433C5DFA1D3D1E1A8B8348C0797866525DEA1BBC7133690D1FF95755E, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=BD1429E5B0CD4B9F6A380E71142AB135101AC59D5E8AB557ECDCFA18E3C05995, tx_length=1, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 11:57:00]
+2020-05-21 11:57:00.114 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 11:57:00.115 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 11:57:00.116 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 11:57:00.117 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 11:57:00.117 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 11:57:00.118 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 11:57:00.119 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 11:57:00.119 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 11:57:00.120 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 11:57:00.120  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : verifyBlock(): wrong preStateHash! Block preStateHash=56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, database preStateHash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9
+2020-05-21 11:57:00.121  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcast(): node=node1 vote false to Block [hash=44D97A8433C5DFA1D3D1E1A8B8348C0797866525DEA1BBC7133690D1FF95755E, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=BD1429E5B0CD4B9F6A380E71142AB135101AC59D5E8AB557ECDCFA18E3C05995, tx_length=1, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 11:57:00]
+2020-05-21 11:57:00.121  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcastReceived(): start next round. Block=44D97A8433C5DFA1D3D1E1A8B8348C0797866525DEA1BBC7133690D1FF95755E, height=1, round=2 received vote against 1/1
+2020-05-21 11:57:00.121  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=1, round=3 try to build new block...
+2020-05-21 11:57:00.128 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 11:57:00.128  INFO 748 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-21 11:57:00.128 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590033303462(String)
+2020-05-21 11:57:00.129 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 11:57:00.129  INFO 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): Get valid transaction list, size=1
+2020-05-21 11:57:00.130 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 11:57:00.130 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 11:57:00.130 DEBUG 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 11:57:00.131  INFO 748 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2020-05-21 11:57:00.145  INFO 748 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2020-05-21 11:57:00.146 ERROR 748 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-28264] org.jgroups.JChannel                     : JGRP000019: failed passing message to receiver
+
+org.springframework.transaction.CannotCreateTransactionException: Could not open JDBC Connection for transaction; nested exception is java.sql.SQLException: HikariDataSource HikariDataSource (HikariPool-1) has been closed.
+	at org.springframework.jdbc.datasource.DataSourceTransactionManager.doBegin(DataSourceTransactionManager.java:308) ~[spring-jdbc-5.2.5.RELEASE.jar:5.2.5.RELEASE]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:400) ~[spring-tx-5.2.5.RELEASE.jar:5.2.5.RELEASE]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:373) ~[spring-tx-5.2.5.RELEASE.jar:5.2.5.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:572) ~[spring-tx-5.2.5.RELEASE.jar:5.2.5.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:360) ~[spring-tx-5.2.5.RELEASE.jar:5.2.5.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:118) ~[spring-tx-5.2.5.RELEASE.jar:5.2.5.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.2.5.RELEASE.jar:5.2.5.RELEASE]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:212) ~[spring-aop-5.2.5.RELEASE.jar:5.2.5.RELEASE]
+	at com.sun.proxy.$Proxy102.findPreHashByHeight(Unknown Source) ~[na:na]
+	at com.buaa.blockchain.core.BlockchainServiceImpl.createNewBlock(BlockchainServiceImpl.java:553) ~[classes/:na]
+	at com.buaa.blockchain.core.BlockchainServiceImpl.startNewRound(BlockchainServiceImpl.java:143) ~[classes/:na]
+	at com.buaa.blockchain.core.BlockchainServiceImpl.sbftExecute(BlockchainServiceImpl.java:389) ~[classes/:na]
+	at com.buaa.blockchain.core.BlockchainServiceImpl.sbftVoteBroadcastReceived(BlockchainServiceImpl.java:375) ~[classes/:na]
+	at com.buaa.blockchain.core.BlockchainServiceImpl$1.OnMessageReceived(BlockchainServiceImpl.java:422) ~[classes/:na]
+	at com.buaa.blockchain.message.JGroupsMessageImpl.receive(JGroupsMessageImpl.java:104) ~[classes/:na]
+	at org.jgroups.JChannel.up(JChannel.java:768) ~[jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.stack.ProtocolStack.up(ProtocolStack.java:1034) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.stack.Protocol.up(Protocol.java:426) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.FRAG2.up(FRAG2.java:182) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.FlowControl.up(FlowControl.java:438) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.stack.Protocol.up(Protocol.java:426) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.pbcast.STABLE.up(STABLE.java:294) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.UNICAST3.up(UNICAST3.java:480) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.pbcast.NAKACK2.deliverBatch(NAKACK2.java:987) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.pbcast.NAKACK2.removeAndPassUp(NAKACK2.java:917) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.pbcast.NAKACK2.handleMessage(NAKACK2.java:851) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.pbcast.NAKACK2.up(NAKACK2.java:611) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.BARRIER.up(BARRIER.java:152) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.VERIFY_SUSPECT.up(VERIFY_SUSPECT.java:155) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.FD.up(FD.java:260) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.FD_SOCK.up(FD_SOCK.java:310) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.MERGE2.up(MERGE2.java:237) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.Discovery.up(Discovery.java:296) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.TP.passMessageUp(TP.java:1601) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at org.jgroups.protocols.TP$3.run(TP.java:1535) [jgroups-3.6.10.Final.jar:3.6.10.Final]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149) [na:1.8.0_191]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) [na:1.8.0_191]
+	at java.lang.Thread.run(Thread.java:748) [na:1.8.0_191]
+Caused by: java.sql.SQLException: HikariDataSource HikariDataSource (HikariPool-1) has been closed.
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:96) ~[HikariCP-3.4.2.jar:na]
+	at org.springframework.jdbc.datasource.DataSourceTransactionManager.doBegin(DataSourceTransactionManager.java:264) ~[spring-jdbc-5.2.5.RELEASE.jar:5.2.5.RELEASE]
+	... 37 common frames omitted
+
+2020-05-21 11:59:24.000  INFO 4428 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Starting BlockchainApplication on DESKTOP-EMVOVM7 with PID 4428 (D:\Develop\PRJ\buaa-blockchain\target\classes started by 18910 in D:\Develop\PRJ\buaa-blockchain)
+2020-05-21 11:59:24.003 DEBUG 4428 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-05-21 11:59:24.004  INFO 4428 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : No active profile set, falling back to default profiles: default
+2020-05-21 11:59:24.061  INFO 4428 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-05-21 11:59:24.061  INFO 4428 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-05-21 11:59:25.171  INFO 4428 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2020-05-21 11:59:25.174  INFO 4428 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2020-05-21 11:59:25.207  INFO 4428 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 18ms. Found 0 Redis repository interfaces.
+2020-05-21 11:59:26.110  INFO 4428 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'redisConfig' of type [com.buaa.blockchain.redis.RedisConfig$$EnhancerBySpringCGLIB$$e12910a6] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-05-21 11:59:26.825  INFO 4428 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 17800 (http)
+2020-05-21 11:59:26.841  INFO 4428 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-05-21 11:59:26.842  INFO 4428 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.33]
+2020-05-21 11:59:26.846  INFO 4428 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : Loaded APR based Apache Tomcat Native library [1.2.23] using APR version [1.7.0].
+2020-05-21 11:59:26.846  INFO 4428 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true].
+2020-05-21 11:59:26.847  INFO 4428 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+2020-05-21 11:59:26.850  INFO 4428 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : OpenSSL successfully initialized [OpenSSL 1.1.1c  28 May 2019]
+2020-05-21 11:59:26.973  INFO 4428 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-05-21 11:59:26.974  INFO 4428 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2912 ms
+2020-05-21 11:59:28.249  WARN 4428 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: BasicTCP.use_send_queues has been deprecated: will be removed in 4.0
+2020-05-21 11:59:28.256  WARN 4428 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: TP.loopback has been deprecated: enabled by default
+2020-05-21 11:59:28.262  WARN 4428 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: Discovery.timeout has been deprecated: GMS.join_timeout should be used instead
+2020-05-21 11:59:28.263  WARN 4428 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: Discovery.num_initial_members has been deprecated: will be ignored
+2020-05-21 12:01:55.394  INFO 9848 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Starting BlockchainApplication on DESKTOP-EMVOVM7 with PID 9848 (D:\Develop\PRJ\buaa-blockchain\target\classes started by 18910 in D:\Develop\PRJ\buaa-blockchain)
+2020-05-21 12:01:55.397 DEBUG 9848 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-05-21 12:01:55.397  INFO 9848 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : No active profile set, falling back to default profiles: default
+2020-05-21 12:01:55.445  INFO 9848 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-05-21 12:01:55.445  INFO 9848 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-05-21 12:01:56.558  INFO 9848 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2020-05-21 12:01:56.561  INFO 9848 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2020-05-21 12:01:56.594  INFO 9848 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 19ms. Found 0 Redis repository interfaces.
+2020-05-21 12:01:57.504  INFO 9848 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'redisConfig' of type [com.buaa.blockchain.redis.RedisConfig$$EnhancerBySpringCGLIB$$4a203110] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-05-21 12:01:57.974  INFO 9848 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 17800 (http)
+2020-05-21 12:01:57.986  INFO 9848 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-05-21 12:01:57.986  INFO 9848 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.33]
+2020-05-21 12:01:57.990  INFO 9848 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : Loaded APR based Apache Tomcat Native library [1.2.23] using APR version [1.7.0].
+2020-05-21 12:01:57.990  INFO 9848 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true].
+2020-05-21 12:01:57.990  INFO 9848 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+2020-05-21 12:01:57.993  INFO 9848 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : OpenSSL successfully initialized [OpenSSL 1.1.1c  28 May 2019]
+2020-05-21 12:01:58.092  INFO 9848 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-05-21 12:01:58.092  INFO 9848 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2647 ms
+2020-05-21 12:01:59.331  WARN 9848 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: BasicTCP.use_send_queues has been deprecated: will be removed in 4.0
+2020-05-21 12:01:59.336  WARN 9848 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: TP.loopback has been deprecated: enabled by default
+2020-05-21 12:01:59.343  WARN 9848 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: Discovery.timeout has been deprecated: GMS.join_timeout should be used instead
+2020-05-21 12:01:59.343  WARN 9848 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: Discovery.num_initial_members has been deprecated: will be ignored
+2020-05-21 12:02:07.328  WARN 9848 --- [restartedMain] c.b.b.message.JGroupsMessageImpl         : JGroupsMessageImpl(): init complete via jgroups-tcp.xml, address=192.168.0.104:7800
+2020-05-21 12:02:07.722  INFO 9848 --- [restartedMain] leveldb                                  : New LevelDbDataSource: null
+2020-05-21 12:02:08.059  INFO 9848 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-21 12:02:08.577  INFO 9848 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-05-21 12:02:08.582  INFO 9848 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoint(s) beneath base path '/actuator'
+2020-05-21 12:02:08.673  INFO 9848 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 17800 (http) with context path ''
+2020-05-21 12:02:08.678  INFO 9848 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Started BlockchainApplication in 14.029 seconds (JVM running for 15.825)
+2020-05-21 12:02:10.886  INFO 9848 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : initMessageServiceCallback(): init complete.
+2020-05-21 12:02:10.890  INFO 9848 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : testMessageDigest(): init complete.
+2020-05-21 12:02:10.890  INFO 9848 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : firstTimeSetup(): init complete. buaa-blockchain version:1.0
+2020-05-21 12:02:10.929  INFO 9848 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-05-21 12:02:11.151  INFO 9848 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-05-21 12:02:11.158 DEBUG 9848 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : ==>  Preparing: SELECT count(1) as num from block where hash = ? 
+2020-05-21 12:02:11.178 DEBUG 9848 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : ==> Parameters: 5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9(String)
+2020-05-21 12:02:11.192 DEBUG 9848 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : <==      Total: 1
+2020-05-21 12:02:11.208 DEBUG 9848 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:02:11.208 DEBUG 9848 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:02:11.210 DEBUG 9848 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:02:11.212 DEBUG 9848 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:02:11.212 DEBUG 9848 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 12:02:11.213 DEBUG 9848 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:02:12.582  INFO 9848 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=1, round=0 try to build new block...
+2020-05-21 12:02:12.737  INFO 9848 --- [restartedMain] io.lettuce.core.EpollProvider            : Starting without optional epoll library
+2020-05-21 12:02:12.739  INFO 9848 --- [restartedMain] io.lettuce.core.KqueueProvider           : Starting without optional kqueue library
+2020-05-21 12:02:23.772 DEBUG 9848 --- [restartedMain] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:02:23.773 DEBUG 9848 --- [restartedMain] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590033303462(String)
+2020-05-21 12:02:23.777 DEBUG 9848 --- [restartedMain] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:02:27.187  INFO 9848 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): Get valid transaction list, size=1
+2020-05-21 12:02:44.757 DEBUG 9848 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:02:44.757 DEBUG 9848 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:02:44.758 DEBUG 9848 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:02:44.759 DEBUG 9848 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:02:44.760 DEBUG 9848 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 12:02:44.760 DEBUG 9848 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:02:44.762 DEBUG 9848 --- [restartedMain] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 12:02:44.763 DEBUG 9848 --- [restartedMain] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 0(Integer)
+2020-05-21 12:02:44.768 DEBUG 9848 --- [restartedMain] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 12:02:44.769  INFO 9848 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): new block created, hash=5860A44CDDD63AE4EF3A68AB99D1593616F901D264DA5533DC433801AE8D8E77, time cost=23605ms.
+2020-05-21 12:02:44.808  INFO 9848 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : acpbftDigestBroadcast(): broadcast block, message size=2.693359375KB.
+2020-05-21 12:02:54.220  INFO 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.core.BlockchainServiceImpl         : sbftDigestBroadcastReceived(): received message=topic=MESSAGE_TOPIC_DIGEST, nodeName=node1, height=1, round=0, vote=falseblock=Block [hash=5860A44CDDD63AE4EF3A68AB99D1593616F901D264DA5533DC433801AE8D8E77, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=BD1429E5B0CD4B9F6A380E71142AB135101AC59D5E8AB557ECDCFA18E3C05995, tx_length=1, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 12:02:44]
+2020-05-21 12:02:54.226 DEBUG 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:02:54.228 DEBUG 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:02:54.230 DEBUG 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:02:54.234 DEBUG 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:02:54.236 DEBUG 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 12:02:54.241 DEBUG 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:02:54.243 DEBUG 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 12:02:54.245 DEBUG 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 0(Integer)
+2020-05-21 12:02:54.247 DEBUG 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 12:02:54.265  INFO 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.core.BlockchainServiceImpl         : verifyBlock(): Block [hash=5860A44CDDD63AE4EF3A68AB99D1593616F901D264DA5533DC433801AE8D8E77, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=BD1429E5B0CD4B9F6A380E71142AB135101AC59D5E8AB557ECDCFA18E3C05995, tx_length=1, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 12:02:44] has been confirmed.
+2020-05-21 12:02:54.269  INFO 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcast(): node=node1 vote true to Block [hash=5860A44CDDD63AE4EF3A68AB99D1593616F901D264DA5533DC433801AE8D8E77, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=BD1429E5B0CD4B9F6A380E71142AB135101AC59D5E8AB557ECDCFA18E3C05995, tx_length=1, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 12:02:44]
+2020-05-21 12:03:42.926  INFO 9848 --- [RMI TCP Connection(13)-192.168.0.104] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-05-21 12:03:42.930  INFO 9848 --- [RMI TCP Connection(13)-192.168.0.104] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2020-05-21 12:03:49.803  INFO 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcastReceived(): execute, block=5860A44CDDD63AE4EF3A68AB99D1593616F901D264DA5533DC433801AE8D8E77, height=1, round=0 received vote 1/1
+2020-05-21 12:04:21.539  INFO 9848 --- [RMI TCP Connection(13)-192.168.0.104] o.s.web.servlet.DispatcherServlet        : Completed initialization in 38609 ms
+2020-05-21 12:05:31.349 DEBUG 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.mapper.BlockMapper.insertBlock     : ==>  Preparing: INSERT INTO block ( pre_hash, hash, merkle_root, state_root,pre_state_root, height, sign, timestamp,version,extra,tx_length) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?) 
+2020-05-21 12:05:31.359 DEBUG 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.mapper.BlockMapper.insertBlock     : ==> Parameters: 5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9(String), 5860A44CDDD63AE4EF3A68AB99D1593616F901D264DA5533DC433801AE8D8E77(String), BD1429E5B0CD4B9F6A380E71142AB135101AC59D5E8AB557ECDCFA18E3C05995(String), 9e7a034edb0ef39061d0eefbd066a8386e32a2f6a94c08ee8d9f44b4e8ee362b(String), 56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421(String), 1(Integer), node1_sign(String), 2020-05-21 12:02:44(String), 1.0(String), 1590033741164(String), 1(Integer)
+2020-05-21 12:05:31.361 DEBUG 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.mapper.BlockMapper.insertBlock     : <==    Updates: 1
+2020-05-21 12:05:38.087  INFO 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.core.BlockchainServiceImpl         : storeBlock(): Done! block=Block [hash=5860A44CDDD63AE4EF3A68AB99D1593616F901D264DA5533DC433801AE8D8E77, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=BD1429E5B0CD4B9F6A380E71142AB135101AC59D5E8AB557ECDCFA18E3C05995, tx_length=1, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 12:02:44]
+2020-05-21 12:06:31.230  WARN 9848 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m20s625ms603µs199ns).
+2020-05-21 12:06:42.465  INFO 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=2, round=0 try to build new block...
+2020-05-21 12:06:42.468  INFO 9848 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-41270] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:06:42.498  INFO 9848 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-21 12:06:42.501  INFO 9848 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2020-05-21 12:06:42.509  INFO 9848 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2020-05-21 12:07:02.925  INFO 18936 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Starting BlockchainApplication on DESKTOP-EMVOVM7 with PID 18936 (D:\Develop\PRJ\buaa-blockchain\target\classes started by 18910 in D:\Develop\PRJ\buaa-blockchain)
+2020-05-21 12:07:02.930 DEBUG 18936 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-05-21 12:07:02.931  INFO 18936 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : No active profile set, falling back to default profiles: default
+2020-05-21 12:07:03.012  INFO 18936 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-05-21 12:07:03.012  INFO 18936 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-05-21 12:07:03.980  INFO 18936 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2020-05-21 12:07:03.982  INFO 18936 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2020-05-21 12:07:04.009  INFO 18936 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 16ms. Found 0 Redis repository interfaces.
+2020-05-21 12:07:04.312  INFO 18936 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'redisConfig' of type [com.buaa.blockchain.redis.RedisConfig$$EnhancerBySpringCGLIB$$fc77ba2c] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-05-21 12:07:04.594  INFO 18936 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 17800 (http)
+2020-05-21 12:07:04.603  INFO 18936 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-05-21 12:07:04.603  INFO 18936 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.33]
+2020-05-21 12:07:04.605  INFO 18936 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : Loaded APR based Apache Tomcat Native library [1.2.23] using APR version [1.7.0].
+2020-05-21 12:07:04.605  INFO 18936 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true].
+2020-05-21 12:07:04.605  INFO 18936 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+2020-05-21 12:07:04.608  INFO 18936 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : OpenSSL successfully initialized [OpenSSL 1.1.1c  28 May 2019]
+2020-05-21 12:07:04.687  INFO 18936 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-05-21 12:07:04.687  INFO 18936 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1675 ms
+2020-05-21 12:07:05.592  WARN 18936 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: BasicTCP.use_send_queues has been deprecated: will be removed in 4.0
+2020-05-21 12:07:05.595  WARN 18936 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: TP.loopback has been deprecated: enabled by default
+2020-05-21 12:07:05.601  WARN 18936 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: Discovery.timeout has been deprecated: GMS.join_timeout should be used instead
+2020-05-21 12:07:05.602  WARN 18936 --- [restartedMain] org.jgroups.stack.Configurator           : JGRP000014: Discovery.num_initial_members has been deprecated: will be ignored
+2020-05-21 12:07:13.650  WARN 18936 --- [restartedMain] c.b.b.message.JGroupsMessageImpl         : JGroupsMessageImpl(): init complete via jgroups-tcp.xml, address=192.168.0.104:7800
+2020-05-21 12:07:13.829  INFO 18936 --- [restartedMain] leveldb                                  : New LevelDbDataSource: null
+2020-05-21 12:07:14.015  INFO 18936 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-21 12:07:14.340  INFO 18936 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-05-21 12:07:14.344  INFO 18936 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoint(s) beneath base path '/actuator'
+2020-05-21 12:07:14.399  INFO 18936 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 17800 (http) with context path ''
+2020-05-21 12:07:14.401  INFO 18936 --- [restartedMain] c.buaa.blockchain.BlockchainApplication  : Started BlockchainApplication in 11.827 seconds (JVM running for 13.13)
+2020-05-21 12:07:14.404  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : initMessageServiceCallback(): init complete.
+2020-05-21 12:07:14.405  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : testMessageDigest(): init complete.
+2020-05-21 12:07:14.405  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : firstTimeSetup(): init complete. buaa-blockchain version:1.0
+2020-05-21 12:07:14.420  INFO 18936 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-05-21 12:07:14.556  INFO 18936 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-05-21 12:07:14.560 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : ==>  Preparing: SELECT count(1) as num from block where hash = ? 
+2020-05-21 12:07:14.574 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : ==> Parameters: 5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9(String)
+2020-05-21 12:07:14.586 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.findBlockNum    : <==      Total: 1
+2020-05-21 12:07:14.596 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.insertBlock     : ==>  Preparing: INSERT INTO block ( pre_hash, hash, merkle_root, state_root,pre_state_root, height, sign, timestamp,version,extra,tx_length) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?) 
+2020-05-21 12:07:14.598 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.insertBlock     : ==> Parameters: 1BAD6B8CF97131FCEAB8543E81F7757195FBB1D36B376EE994AD1CF17699C464(String), 5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9(String), (String), 56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421(String), -1(String), 0(Integer), node1_sign(String), 2020-05-21 12:07:14(String), 1.0(String), (String), 0(Integer)
+2020-05-21 12:07:14.599 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.insertBlock     : <==    Updates: 1
+2020-05-21 12:07:14.608  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : firstTimeSetup(): Generate first block complete.
+2020-05-21 12:07:14.609 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:07:14.609 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:07:14.611 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:07:14.613 DEBUG 18936 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:07:14.613 DEBUG 18936 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 12:07:14.614 DEBUG 18936 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:07:14.615  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=1, round=0 try to build new block...
+2020-05-21 12:07:14.699  INFO 18936 --- [restartedMain] io.lettuce.core.EpollProvider            : Starting without optional epoll library
+2020-05-21 12:07:14.700  INFO 18936 --- [restartedMain] io.lettuce.core.KqueueProvider           : Starting without optional kqueue library
+2020-05-21 12:07:15.087  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:17.089  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:19.092  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:21.095  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:23.096  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:25.099  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:27.101  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:29.104  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:31.107  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:33.111  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:35.113  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:37.117  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:39.120  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:41.124  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:43.128  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:45.129  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:47.131  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:49.133  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:51.136  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:53.139  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:55.144  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:57.145  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:07:59.148  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:01.152  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:03.153  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:05.156  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:07.160  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:09.162  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:11.165  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:13.168  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:15.169  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:17.172  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:19.176  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:21.177  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:23.180  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:25.184  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:27.186  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:29.190  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:31.192  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:33.194  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:35.197  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:37.198  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:39.201  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:41.204  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:43.205  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:45.207  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:47.208  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:49.209  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:51.213  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:53.216  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:55.219  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:57.222  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:08:59.224  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:01.229  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:03.232  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:05.234  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:07.237  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:09.240  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:11.243  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:13.245  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:15.248  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:17.250  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:19.254  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:21.258  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:23.259  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:25.262  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:27.265  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:29.267  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:31.276  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:33.278  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:35.281  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:37.284  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:39.286  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:41.288  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:43.290  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:45.292  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:47.297  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:49.299  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:51.301  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:53.302  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:55.304  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:57.308  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:09:59.310  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:01.312  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:03.315  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:05.316  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:07.318  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:09.320  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:11.320  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:13.321  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:15.324  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:17.324  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:19.326  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:21.328  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:23.330  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:25.333  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:27.335  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:29.336  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:31.338  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:33.341  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:35.343  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:37.346  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:39.348  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:41.350  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:43.351  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:45.354  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:47.357  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:49.359  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:51.362  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:53.364  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:55.364  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:57.367  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:10:59.370  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:01.373  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:03.376  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:05.378  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:07.380  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:09.382  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:11.382  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:13.384  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:15.386  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:17.388  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:19.390  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:21.391  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:23.396  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:25.399  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:27.400  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:29.405  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:31.407  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:33.411  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:35.412  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:37.412  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:39.414  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:41.417  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:43.420  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:45.422  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:47.424  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:49.426  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:51.428  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:53.431  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:55.434  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:57.435  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:11:59.436  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:01.436  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:03.439  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:05.441  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:07.449  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:09.451  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:11.452  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:13.454  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:15.456  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:17.457  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:19.460  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:21.462  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:23.464  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:25.466  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:27.469  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:29.471  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:31.473  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:33.476  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:35.479  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:37.480  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:39.483  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:41.486  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:43.498  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:45.501  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:47.503  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:49.505  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:51.508  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:53.512  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:55.516  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:57.519  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:12:59.519  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:01.520  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:03.522  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:05.523  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:07.525  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:09.525  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:11.526  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:13.528  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:15.547  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:17.551  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:19.552  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:21.554  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:23.557  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:25.559  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:27.562  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:29.564  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:31.566  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:33.569  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:35.572  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:37.572  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:39.575  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:41.577  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:43.580  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:45.621  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:47.627  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:49.628  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:51.630  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:53.631  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:55.634  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:57.637  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:13:59.638  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:01.641  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:03.642  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:05.643  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:07.645  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:09.647  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:11.649  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:13.651  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:15.652  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:17.655  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:19.657  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:21.660  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:23.666  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:25.678  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:27.684  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:29.686  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:31.687  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:33.690  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:35.691  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:37.694  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:39.699  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:41.702  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:43.729  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:45.732  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:47.735  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:49.736  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:51.738  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:53.741  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:55.744  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:57.745  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:14:59.746  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:01.748  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:03.752  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:05.753  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:07.754  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:09.756  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:11.757  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:13.760  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:15.763  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:17.763  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:19.766  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:21.768  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:23.770  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:25.772  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:27.777  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:29.779  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:31.780  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:33.781  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:35.785  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:37.787  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:39.789  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:41.793  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:43.794  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:45.799  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:47.802  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:49.803  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:51.806  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:53.809  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:55.812  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:57.814  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:15:59.817  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:01.818  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:03.820  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:05.823  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:07.826  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:09.827  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:11.828  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:13.830  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:15.833  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:17.837  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:19.838  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:21.841  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:23.844  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:25.847  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:27.850  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:29.851  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:31.853  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:33.856  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:35.863  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:37.864  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:39.865  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:41.868  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:43.870  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:45.871  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:47.873  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:49.983 DEBUG 18936 --- [restartedMain] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:16:49.983 DEBUG 18936 --- [restartedMain] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034608538(String)
+2020-05-21 12:16:49.986 DEBUG 18936 --- [restartedMain] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:16:49.987 DEBUG 18936 --- [restartedMain] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:16:49.987 DEBUG 18936 --- [restartedMain] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034608537(String)
+2020-05-21 12:16:49.988 DEBUG 18936 --- [restartedMain] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:16:49.989 DEBUG 18936 --- [restartedMain] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:16:49.989 DEBUG 18936 --- [restartedMain] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034608468(String)
+2020-05-21 12:16:49.990 DEBUG 18936 --- [restartedMain] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:16:49.990  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): Get valid transaction list, size=3
+2020-05-21 12:16:49.991 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:16:49.992 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:16:49.992 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:16:49.994 DEBUG 18936 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:16:49.994 DEBUG 18936 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 12:16:49.995 DEBUG 18936 --- [restartedMain] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:16:50.000 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 12:16:50.000 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 0(Integer)
+2020-05-21 12:16:50.003 DEBUG 18936 --- [restartedMain] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 12:16:50.004  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): new block created, hash=6B41C9A2F3E3904D719C26DEF4DC0C748FEDA89D8F1FC0E7B58E2F6CCF71CED2, time cost=130ms.
+2020-05-21 12:16:50.023  INFO 18936 --- [restartedMain] c.b.b.core.BlockchainServiceImpl         : acpbftDigestBroadcast(): broadcast block, message size=3.78125KB.
+2020-05-21 12:16:50.040  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftDigestBroadcastReceived(): received message=topic=MESSAGE_TOPIC_DIGEST, nodeName=node1, height=1, round=0, vote=falseblock=Block [hash=6B41C9A2F3E3904D719C26DEF4DC0C748FEDA89D8F1FC0E7B58E2F6CCF71CED2, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=1F541AA7BF94478C296FD2E6FDB52300E46E204980E5FEE36F66315CA209CEDE, tx_length=3, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 12:16:49]
+2020-05-21 12:16:50.042 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:16:50.042 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:16:50.042 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:16:50.043 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:16:50.043 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 0(Integer)
+2020-05-21 12:16:50.044 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:16:50.044 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 12:16:50.044 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 0(Integer)
+2020-05-21 12:16:50.045 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 12:16:50.046  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : verifyBlock(): Block [hash=6B41C9A2F3E3904D719C26DEF4DC0C748FEDA89D8F1FC0E7B58E2F6CCF71CED2, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=1F541AA7BF94478C296FD2E6FDB52300E46E204980E5FEE36F66315CA209CEDE, tx_length=3, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 12:16:49] has been confirmed.
+2020-05-21 12:16:50.047  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcast(): node=node1 vote true to Block [hash=6B41C9A2F3E3904D719C26DEF4DC0C748FEDA89D8F1FC0E7B58E2F6CCF71CED2, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=1F541AA7BF94478C296FD2E6FDB52300E46E204980E5FEE36F66315CA209CEDE, tx_length=3, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 12:16:49]
+2020-05-21 12:16:50.048  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcastReceived(): execute, block=6B41C9A2F3E3904D719C26DEF4DC0C748FEDA89D8F1FC0E7B58E2F6CCF71CED2, height=1, round=0 received vote 1/1
+2020-05-21 12:16:50.059  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] general                                  : Flush 'triedb' in: 3.99 ms, 5 nodes, 0.00MB
+2020-05-21 12:16:50.064 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : ==>  Preparing: INSERT INTO block ( pre_hash, hash, merkle_root, state_root,pre_state_root, height, sign, timestamp,version,extra,tx_length) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?) 
+2020-05-21 12:16:50.065 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : ==> Parameters: 5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9(String), 6B41C9A2F3E3904D719C26DEF4DC0C748FEDA89D8F1FC0E7B58E2F6CCF71CED2(String), 1F541AA7BF94478C296FD2E6FDB52300E46E204980E5FEE36F66315CA209CEDE(String), 0a35789992e17784e4642dee090ec32f3434793eb423bce8c21290ff2a2f2941(String), 56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421(String), 1(Integer), node1_sign(String), 2020-05-21 12:16:49(String), 1.0(String), 1590034609874(String), 3(Integer)
+2020-05-21 12:16:50.066 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : <==    Updates: 1
+2020-05-21 12:16:50.070  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : storeBlock(): Done! block=Block [hash=6B41C9A2F3E3904D719C26DEF4DC0C748FEDA89D8F1FC0E7B58E2F6CCF71CED2, pre_hash=5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9, merkle_root=1F541AA7BF94478C296FD2E6FDB52300E46E204980E5FEE36F66315CA209CEDE, tx_length=3, height=1, pre_state_root56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421, timestamp=2020-05-21 12:16:49]
+2020-05-21 12:16:50.070  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=2, round=0 try to build new block...
+2020-05-21 12:16:50.071  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:52.073  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:54.074  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:56.078  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:16:58.078  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:00.092 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:00.092 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034618540(String)
+2020-05-21 12:17:00.095 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:00.097 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:00.099 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034618541(String)
+2020-05-21 12:17:00.100 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:00.104 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:00.104 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034618542(String)
+2020-05-21 12:17:00.105 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:00.107 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:00.107 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034618543(String)
+2020-05-21 12:17:00.109 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:00.111 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:00.111 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034618544(String)
+2020-05-21 12:17:00.112 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:00.114 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:00.114 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034618539(String)
+2020-05-21 12:17:00.115 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:00.116 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:00.116 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034618545(String)
+2020-05-21 12:17:00.117 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:00.117  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): Get valid transaction list, size=7
+2020-05-21 12:17:00.118 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:17:00.119 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:17:00.119 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:17:00.121 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:17:00.121 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 1(Integer)
+2020-05-21 12:17:00.122 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:17:00.127 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 12:17:00.127 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 1(Integer)
+2020-05-21 12:17:00.128 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 12:17:00.128  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): new block created, hash=F4C25A36B7B9C7E1EF14DF0B53495942F9AB692EB11E34641BD4A7D7E2932A0A, time cost=47ms.
+2020-05-21 12:17:00.129  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : acpbftDigestBroadcast(): broadcast block, message size=5.9921875KB.
+2020-05-21 12:17:00.131  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftDigestBroadcastReceived(): received message=topic=MESSAGE_TOPIC_DIGEST, nodeName=node1, height=2, round=0, vote=falseblock=Block [hash=F4C25A36B7B9C7E1EF14DF0B53495942F9AB692EB11E34641BD4A7D7E2932A0A, pre_hash=6B41C9A2F3E3904D719C26DEF4DC0C748FEDA89D8F1FC0E7B58E2F6CCF71CED2, merkle_root=C08B7327BC1892F21AAE336A5082BD02CCAADC9E33D00B2578007C6789851797, tx_length=7, height=2, pre_state_root0a35789992e17784e4642dee090ec32f3434793eb423bce8c21290ff2a2f2941, timestamp=2020-05-21 12:17:00]
+2020-05-21 12:17:00.132 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:17:00.132 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:17:00.133 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:17:00.135 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:17:00.135 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 1(Integer)
+2020-05-21 12:17:00.135 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:17:00.136 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 12:17:00.136 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 1(Integer)
+2020-05-21 12:17:00.137 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 12:17:00.138  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : verifyBlock(): Block [hash=F4C25A36B7B9C7E1EF14DF0B53495942F9AB692EB11E34641BD4A7D7E2932A0A, pre_hash=6B41C9A2F3E3904D719C26DEF4DC0C748FEDA89D8F1FC0E7B58E2F6CCF71CED2, merkle_root=C08B7327BC1892F21AAE336A5082BD02CCAADC9E33D00B2578007C6789851797, tx_length=7, height=2, pre_state_root0a35789992e17784e4642dee090ec32f3434793eb423bce8c21290ff2a2f2941, timestamp=2020-05-21 12:17:00] has been confirmed.
+2020-05-21 12:17:00.140  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcast(): node=node1 vote true to Block [hash=F4C25A36B7B9C7E1EF14DF0B53495942F9AB692EB11E34641BD4A7D7E2932A0A, pre_hash=6B41C9A2F3E3904D719C26DEF4DC0C748FEDA89D8F1FC0E7B58E2F6CCF71CED2, merkle_root=C08B7327BC1892F21AAE336A5082BD02CCAADC9E33D00B2578007C6789851797, tx_length=7, height=2, pre_state_root0a35789992e17784e4642dee090ec32f3434793eb423bce8c21290ff2a2f2941, timestamp=2020-05-21 12:17:00]
+2020-05-21 12:17:00.141  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcastReceived(): execute, block=F4C25A36B7B9C7E1EF14DF0B53495942F9AB692EB11E34641BD4A7D7E2932A0A, height=2, round=0 received vote 1/1
+2020-05-21 12:17:00.146  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] general                                  : Flush 'triedb' in: 0.17 ms, 30 nodes, 0.00MB
+2020-05-21 12:17:00.153 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : ==>  Preparing: INSERT INTO block ( pre_hash, hash, merkle_root, state_root,pre_state_root, height, sign, timestamp,version,extra,tx_length) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?) 
+2020-05-21 12:17:00.154 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : ==> Parameters: 6B41C9A2F3E3904D719C26DEF4DC0C748FEDA89D8F1FC0E7B58E2F6CCF71CED2(String), F4C25A36B7B9C7E1EF14DF0B53495942F9AB692EB11E34641BD4A7D7E2932A0A(String), C08B7327BC1892F21AAE336A5082BD02CCAADC9E33D00B2578007C6789851797(String), 66ab289fd61f78cd0395a870dead4be173f8d73602fd41e09eabf3ea6449ab61(String), 0a35789992e17784e4642dee090ec32f3434793eb423bce8c21290ff2a2f2941(String), 2(Integer), node1_sign(String), 2020-05-21 12:17:00(String), 1.0(String), 1590034620081(String), 7(Integer)
+2020-05-21 12:17:00.155 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : <==    Updates: 1
+2020-05-21 12:17:00.159  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : storeBlock(): Done! block=Block [hash=F4C25A36B7B9C7E1EF14DF0B53495942F9AB692EB11E34641BD4A7D7E2932A0A, pre_hash=6B41C9A2F3E3904D719C26DEF4DC0C748FEDA89D8F1FC0E7B58E2F6CCF71CED2, merkle_root=C08B7327BC1892F21AAE336A5082BD02CCAADC9E33D00B2578007C6789851797, tx_length=7, height=2, pre_state_root0a35789992e17784e4642dee090ec32f3434793eb423bce8c21290ff2a2f2941, timestamp=2020-05-21 12:17:00]
+2020-05-21 12:17:00.159  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=3, round=0 try to build new block...
+2020-05-21 12:17:00.160  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:02.161  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:04.163  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:06.164  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:08.166  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:10.172 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:10.173 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034628549(String)
+2020-05-21 12:17:10.174 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:10.177 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:10.177 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034628545(String)
+2020-05-21 12:17:10.179 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:10.181 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:10.181 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034628548(String)
+2020-05-21 12:17:10.183 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:10.183  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): Get valid transaction list, size=3
+2020-05-21 12:17:10.186 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:17:10.186 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:17:10.188 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:17:10.193 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:17:10.194 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 2(Integer)
+2020-05-21 12:17:10.196 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:17:10.200 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 12:17:10.201 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 2(Integer)
+2020-05-21 12:17:10.202 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 12:17:10.203  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): new block created, hash=D42B4313C247F7124F52A5DA441A44F2197BE2237C93A3FE49A166A3313A6829, time cost=36ms.
+2020-05-21 12:17:10.204  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : acpbftDigestBroadcast(): broadcast block, message size=3.78125KB.
+2020-05-21 12:17:10.206  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftDigestBroadcastReceived(): received message=topic=MESSAGE_TOPIC_DIGEST, nodeName=node1, height=3, round=0, vote=falseblock=Block [hash=D42B4313C247F7124F52A5DA441A44F2197BE2237C93A3FE49A166A3313A6829, pre_hash=F4C25A36B7B9C7E1EF14DF0B53495942F9AB692EB11E34641BD4A7D7E2932A0A, merkle_root=35C68607853FB73773D668F60B618470B0FE77F0CB5BB292777A0AEDD653679A, tx_length=3, height=3, pre_state_root66ab289fd61f78cd0395a870dead4be173f8d73602fd41e09eabf3ea6449ab61, timestamp=2020-05-21 12:17:10]
+2020-05-21 12:17:10.208 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:17:10.209 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:17:10.210 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:17:10.214 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:17:10.214 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 2(Integer)
+2020-05-21 12:17:10.215 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:17:10.216 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 12:17:10.217 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 2(Integer)
+2020-05-21 12:17:10.217 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 12:17:10.219  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : verifyBlock(): Block [hash=D42B4313C247F7124F52A5DA441A44F2197BE2237C93A3FE49A166A3313A6829, pre_hash=F4C25A36B7B9C7E1EF14DF0B53495942F9AB692EB11E34641BD4A7D7E2932A0A, merkle_root=35C68607853FB73773D668F60B618470B0FE77F0CB5BB292777A0AEDD653679A, tx_length=3, height=3, pre_state_root66ab289fd61f78cd0395a870dead4be173f8d73602fd41e09eabf3ea6449ab61, timestamp=2020-05-21 12:17:10] has been confirmed.
+2020-05-21 12:17:10.219  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcast(): node=node1 vote true to Block [hash=D42B4313C247F7124F52A5DA441A44F2197BE2237C93A3FE49A166A3313A6829, pre_hash=F4C25A36B7B9C7E1EF14DF0B53495942F9AB692EB11E34641BD4A7D7E2932A0A, merkle_root=35C68607853FB73773D668F60B618470B0FE77F0CB5BB292777A0AEDD653679A, tx_length=3, height=3, pre_state_root66ab289fd61f78cd0395a870dead4be173f8d73602fd41e09eabf3ea6449ab61, timestamp=2020-05-21 12:17:10]
+2020-05-21 12:17:10.220  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcastReceived(): execute, block=D42B4313C247F7124F52A5DA441A44F2197BE2237C93A3FE49A166A3313A6829, height=3, round=0 received vote 1/1
+2020-05-21 12:17:10.223  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] general                                  : Flush 'triedb' in: 0.17 ms, 10 nodes, 0.00MB
+2020-05-21 12:17:10.229 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : ==>  Preparing: INSERT INTO block ( pre_hash, hash, merkle_root, state_root,pre_state_root, height, sign, timestamp,version,extra,tx_length) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?) 
+2020-05-21 12:17:10.229 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : ==> Parameters: F4C25A36B7B9C7E1EF14DF0B53495942F9AB692EB11E34641BD4A7D7E2932A0A(String), D42B4313C247F7124F52A5DA441A44F2197BE2237C93A3FE49A166A3313A6829(String), 35C68607853FB73773D668F60B618470B0FE77F0CB5BB292777A0AEDD653679A(String), 3d23eb73224974d856382afc6a88d50ff25ceec4b1ceab13a029f4f4386c30f6(String), 66ab289fd61f78cd0395a870dead4be173f8d73602fd41e09eabf3ea6449ab61(String), 3(Integer), node1_sign(String), 2020-05-21 12:17:10(String), 1.0(String), 1590034630167(String), 3(Integer)
+2020-05-21 12:17:10.231 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : <==    Updates: 1
+2020-05-21 12:17:10.236  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : storeBlock(): Done! block=Block [hash=D42B4313C247F7124F52A5DA441A44F2197BE2237C93A3FE49A166A3313A6829, pre_hash=F4C25A36B7B9C7E1EF14DF0B53495942F9AB692EB11E34641BD4A7D7E2932A0A, merkle_root=35C68607853FB73773D668F60B618470B0FE77F0CB5BB292777A0AEDD653679A, tx_length=3, height=3, pre_state_root66ab289fd61f78cd0395a870dead4be173f8d73602fd41e09eabf3ea6449ab61, timestamp=2020-05-21 12:17:10]
+2020-05-21 12:17:10.236  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=4, round=0 try to build new block...
+2020-05-21 12:17:10.237  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:12.239  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:14.240  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:16.241  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:18.242  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:20.250 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:20.251 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034638556(String)
+2020-05-21 12:17:20.252 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:20.255 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:20.255 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034638555(String)
+2020-05-21 12:17:20.257 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:20.259 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:20.259 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034638554(String)
+2020-05-21 12:17:20.261 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:20.263 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:20.263 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034638553(String)
+2020-05-21 12:17:20.265 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:20.266 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:20.267 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034638552(String)
+2020-05-21 12:17:20.267 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:20.269 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:20.269 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034638551(String)
+2020-05-21 12:17:20.270 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:20.271 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:20.272 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034638549(String)
+2020-05-21 12:17:20.273 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:20.274 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:20.274 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034638550(String)
+2020-05-21 12:17:20.275 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:20.276 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:20.277 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034638558(String)
+2020-05-21 12:17:20.278 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:20.279 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:20.280 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034638559(String)
+2020-05-21 12:17:20.281 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:20.282 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:20.283 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034638557(String)
+2020-05-21 12:17:20.283 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:20.284  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): Get valid transaction list, size=11
+2020-05-21 12:17:20.285 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:17:20.286 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:17:20.286 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:17:20.289 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:17:20.289 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 3(Integer)
+2020-05-21 12:17:20.290 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:17:20.295 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 12:17:20.296 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 3(Integer)
+2020-05-21 12:17:20.296 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 12:17:20.297  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): new block created, hash=50A0861557189EEA0C6F6BA72B08BA36A2520B7B6B731CAE9C1964B4FA8BC107, time cost=54ms.
+2020-05-21 12:17:20.297  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : acpbftDigestBroadcast(): broadcast block, message size=8.208984375KB.
+2020-05-21 12:17:20.298  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftDigestBroadcastReceived(): received message=topic=MESSAGE_TOPIC_DIGEST, nodeName=node1, height=4, round=0, vote=falseblock=Block [hash=50A0861557189EEA0C6F6BA72B08BA36A2520B7B6B731CAE9C1964B4FA8BC107, pre_hash=D42B4313C247F7124F52A5DA441A44F2197BE2237C93A3FE49A166A3313A6829, merkle_root=555769B324D5EE5E984BBD0846DE2CA290309F0A63BD80A0C2E1331B31750574, tx_length=11, height=4, pre_state_root3d23eb73224974d856382afc6a88d50ff25ceec4b1ceab13a029f4f4386c30f6, timestamp=2020-05-21 12:17:20]
+2020-05-21 12:17:20.299 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:17:20.300 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:17:20.300 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:17:20.302 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:17:20.302 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 3(Integer)
+2020-05-21 12:17:20.302 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:17:20.303 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 12:17:20.303 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 3(Integer)
+2020-05-21 12:17:20.304 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 12:17:20.306  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : verifyBlock(): Block [hash=50A0861557189EEA0C6F6BA72B08BA36A2520B7B6B731CAE9C1964B4FA8BC107, pre_hash=D42B4313C247F7124F52A5DA441A44F2197BE2237C93A3FE49A166A3313A6829, merkle_root=555769B324D5EE5E984BBD0846DE2CA290309F0A63BD80A0C2E1331B31750574, tx_length=11, height=4, pre_state_root3d23eb73224974d856382afc6a88d50ff25ceec4b1ceab13a029f4f4386c30f6, timestamp=2020-05-21 12:17:20] has been confirmed.
+2020-05-21 12:17:20.307  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcast(): node=node1 vote true to Block [hash=50A0861557189EEA0C6F6BA72B08BA36A2520B7B6B731CAE9C1964B4FA8BC107, pre_hash=D42B4313C247F7124F52A5DA441A44F2197BE2237C93A3FE49A166A3313A6829, merkle_root=555769B324D5EE5E984BBD0846DE2CA290309F0A63BD80A0C2E1331B31750574, tx_length=11, height=4, pre_state_root3d23eb73224974d856382afc6a88d50ff25ceec4b1ceab13a029f4f4386c30f6, timestamp=2020-05-21 12:17:20]
+2020-05-21 12:17:20.307  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcastReceived(): execute, block=50A0861557189EEA0C6F6BA72B08BA36A2520B7B6B731CAE9C1964B4FA8BC107, height=4, round=0 received vote 1/1
+2020-05-21 12:17:20.315  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] general                                  : Flush 'triedb' in: 0.36 ms, 51 nodes, 0.01MB
+2020-05-21 12:17:20.323 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : ==>  Preparing: INSERT INTO block ( pre_hash, hash, merkle_root, state_root,pre_state_root, height, sign, timestamp,version,extra,tx_length) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?) 
+2020-05-21 12:17:20.323 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : ==> Parameters: D42B4313C247F7124F52A5DA441A44F2197BE2237C93A3FE49A166A3313A6829(String), 50A0861557189EEA0C6F6BA72B08BA36A2520B7B6B731CAE9C1964B4FA8BC107(String), 555769B324D5EE5E984BBD0846DE2CA290309F0A63BD80A0C2E1331B31750574(String), feac0c0c3f29acd76bbc2020a7fe031a7a5492b0456c2377ced6cc46650dcb10(String), 3d23eb73224974d856382afc6a88d50ff25ceec4b1ceab13a029f4f4386c30f6(String), 4(Integer), node1_sign(String), 2020-05-21 12:17:20(String), 1.0(String), 1590034640243(String), 11(Integer)
+2020-05-21 12:17:20.325 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : <==    Updates: 1
+2020-05-21 12:17:20.330  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : storeBlock(): Done! block=Block [hash=50A0861557189EEA0C6F6BA72B08BA36A2520B7B6B731CAE9C1964B4FA8BC107, pre_hash=D42B4313C247F7124F52A5DA441A44F2197BE2237C93A3FE49A166A3313A6829, merkle_root=555769B324D5EE5E984BBD0846DE2CA290309F0A63BD80A0C2E1331B31750574, tx_length=11, height=4, pre_state_root3d23eb73224974d856382afc6a88d50ff25ceec4b1ceab13a029f4f4386c30f6, timestamp=2020-05-21 12:17:20]
+2020-05-21 12:17:20.330  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=5, round=0 try to build new block...
+2020-05-21 12:17:20.330  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:22.332  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:24.334  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:26.335  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:28.337  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:30.344 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:30.345 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034648562(String)
+2020-05-21 12:17:30.346 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:30.347 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:30.347 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034648563(String)
+2020-05-21 12:17:30.348 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:30.349 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:30.350 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034648566(String)
+2020-05-21 12:17:30.351 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:30.352 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:30.352 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034648565(String)
+2020-05-21 12:17:30.353 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:30.354 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:30.354 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034648561(String)
+2020-05-21 12:17:30.355 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:30.356 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:30.357 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034648564(String)
+2020-05-21 12:17:30.357 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:30.359 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==>  Preparing: select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = ? 
+2020-05-21 12:17:30.359 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : ==> Parameters: 1590034648560(String)
+2020-05-21 12:17:30.360 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.T.findTransByHash                : <==      Total: 0
+2020-05-21 12:17:30.360  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): Get valid transaction list, size=7
+2020-05-21 12:17:30.362 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:17:30.362 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:17:30.363 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:17:30.365 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:17:30.366 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 4(Integer)
+2020-05-21 12:17:30.366 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:17:30.371 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 12:17:30.371 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 4(Integer)
+2020-05-21 12:17:30.372 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 12:17:30.372  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : createNewBlock(): new block created, hash=80E9AE7EA96094D107C79BBE2764029D6045B312FE146E18660AEF27CB9D62F2, time cost=33ms.
+2020-05-21 12:17:30.373  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : acpbftDigestBroadcast(): broadcast block, message size=5.9921875KB.
+2020-05-21 12:17:30.374  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftDigestBroadcastReceived(): received message=topic=MESSAGE_TOPIC_DIGEST, nodeName=node1, height=5, round=0, vote=falseblock=Block [hash=80E9AE7EA96094D107C79BBE2764029D6045B312FE146E18660AEF27CB9D62F2, pre_hash=50A0861557189EEA0C6F6BA72B08BA36A2520B7B6B731CAE9C1964B4FA8BC107, merkle_root=4604C3417DF62BF8E6D5B2034AD04064341891A8044EE83C54038FB83168B199, tx_length=7, height=5, pre_state_rootfeac0c0c3f29acd76bbc2020a7fe031a7a5492b0456c2377ced6cc46650dcb10, timestamp=2020-05-21 12:17:30]
+2020-05-21 12:17:30.376 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==>  Preparing: select max(height) from block 
+2020-05-21 12:17:30.376 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : ==> Parameters: 
+2020-05-21 12:17:30.376 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findMaxHeight   : <==      Total: 1
+2020-05-21 12:17:30.377 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==>  Preparing: select hash from block where height = ? 
+2020-05-21 12:17:30.378 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : ==> Parameters: 4(Integer)
+2020-05-21 12:17:30.378 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.m.BlockMapper.findPreHashByHeight  : <==      Total: 1
+2020-05-21 12:17:30.379 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==>  Preparing: select state_root from block where height = ? 
+2020-05-21 12:17:30.379 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : ==> Parameters: 4(Integer)
+2020-05-21 12:17:30.380 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.findStatRoot    : <==      Total: 1
+2020-05-21 12:17:30.381  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : verifyBlock(): Block [hash=80E9AE7EA96094D107C79BBE2764029D6045B312FE146E18660AEF27CB9D62F2, pre_hash=50A0861557189EEA0C6F6BA72B08BA36A2520B7B6B731CAE9C1964B4FA8BC107, merkle_root=4604C3417DF62BF8E6D5B2034AD04064341891A8044EE83C54038FB83168B199, tx_length=7, height=5, pre_state_rootfeac0c0c3f29acd76bbc2020a7fe031a7a5492b0456c2377ced6cc46650dcb10, timestamp=2020-05-21 12:17:30] has been confirmed.
+2020-05-21 12:17:30.381  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcast(): node=node1 vote true to Block [hash=80E9AE7EA96094D107C79BBE2764029D6045B312FE146E18660AEF27CB9D62F2, pre_hash=50A0861557189EEA0C6F6BA72B08BA36A2520B7B6B731CAE9C1964B4FA8BC107, merkle_root=4604C3417DF62BF8E6D5B2034AD04064341891A8044EE83C54038FB83168B199, tx_length=7, height=5, pre_state_rootfeac0c0c3f29acd76bbc2020a7fe031a7a5492b0456c2377ced6cc46650dcb10, timestamp=2020-05-21 12:17:30]
+2020-05-21 12:17:30.382  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : sbftVoteBroadcastReceived(): execute, block=80E9AE7EA96094D107C79BBE2764029D6045B312FE146E18660AEF27CB9D62F2, height=5, round=0 received vote 1/1
+2020-05-21 12:17:30.382  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] general                                  : Flush 'triedb' in: 0.18 ms, 26 nodes, 0.00MB
+2020-05-21 12:17:30.388 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : ==>  Preparing: INSERT INTO block ( pre_hash, hash, merkle_root, state_root,pre_state_root, height, sign, timestamp,version,extra,tx_length) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?) 
+2020-05-21 12:17:30.389 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : ==> Parameters: 50A0861557189EEA0C6F6BA72B08BA36A2520B7B6B731CAE9C1964B4FA8BC107(String), 80E9AE7EA96094D107C79BBE2764029D6045B312FE146E18660AEF27CB9D62F2(String), 4604C3417DF62BF8E6D5B2034AD04064341891A8044EE83C54038FB83168B199(String), 9c596e680bbc49a094af8586ba2c5306025f3f63f4314f37695d26697b6a1e96(String), feac0c0c3f29acd76bbc2020a7fe031a7a5492b0456c2377ced6cc46650dcb10(String), 5(Integer), node1_sign(String), 2020-05-21 12:17:30(String), 1.0(String), 1590034650339(String), 7(Integer)
+2020-05-21 12:17:30.391 DEBUG 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.mapper.BlockMapper.insertBlock     : <==    Updates: 1
+2020-05-21 12:17:30.395  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : storeBlock(): Done! block=Block [hash=80E9AE7EA96094D107C79BBE2764029D6045B312FE146E18660AEF27CB9D62F2, pre_hash=50A0861557189EEA0C6F6BA72B08BA36A2520B7B6B731CAE9C1964B4FA8BC107, merkle_root=4604C3417DF62BF8E6D5B2034AD04064341891A8044EE83C54038FB83168B199, tx_length=7, height=5, pre_state_rootfeac0c0c3f29acd76bbc2020a7fe031a7a5492b0456c2377ced6cc46650dcb10, timestamp=2020-05-21 12:17:30]
+2020-05-21 12:17:30.395  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): leaderNode=node1, height=6, round=0 try to build new block...
+2020-05-21 12:17:30.396  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:32.397  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:34.399  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:36.403  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:38.403  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:40.405  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:42.406  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:44.407  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:46.408  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:48.410  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:50.411  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:52.412  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:54.413  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:56.416  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:17:58.418  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:00.420  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:02.421  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:04.421  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:06.422  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:08.424  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:10.425  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:12.427  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:14.428  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:16.429  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:18.431  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:20.432  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:22.433  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:24.435  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:26.436  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:28.436  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:30.438  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:32.439  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:34.441  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:36.441  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:38.442  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:40.443  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:42.445  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:44.446  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:46.447  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
+2020-05-21 12:18:48.447  INFO 18936 --- [Incoming-1,BlockCluster,DESKTOP-EMVOVM7-30613] c.b.b.core.BlockchainServiceImpl         : startNewRound(): no transaction found in txpool, wait for 2000ms.
