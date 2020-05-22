@@ -400,7 +400,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         }
         if(null == this.consensus){
             log.error("initConsensus(): Null consensus. Shut down!");
-            // TODO 停止运行
+            shutDownManager.shutDown();
             return;
         }
         log.info("initConsensus(): "+consensusType+" init complete.");

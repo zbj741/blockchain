@@ -61,3 +61,42 @@ com.buaa.blockchain
              num_initial_members="10"/>
 ```
 源代码推荐使用IDEA作为ide来调试运行。当前实现需要同时开启Redis和MYSQL。
+
+## 3.共识模块与区块链模块
+共识模块功能和区块链基础功能的分离，是设计的出发点之一。本项目通过将区块链模块和共识模块以接口的形式定义，并各自完成其实现类，从而解耦。
+区块链服务接口如下：
+```
+// com.buaa.blockchain.core.BlockchainService
+public interface BlockchainService {
+    void startNewRound(int height,int round);
+    void firstTimeSetup();
+    void storeBlock(Block block);
+    boolean verifyBlock(Block block, int height, int round);
+    Block generateFirstBlock();
+    ......
+}
+```
+区块链服务BlockchainService的实现类需要完成这些接口的实现，但是这些接口和共识模块无关。
+共识模块的接口（以SBFT为例）：
+```
+// com.buaa.blockchain.consensus.SBFTConsensus
+public interface SBFTConsensus<T> extends BaseConsensus<T>{
+    void sbftDigestBroadcast(T stage1_send);
+    void sbftDigestBroadcastReceived(T stage1_received);
+    void sbftVoteBroadcast(T stage2_send);
+    void sbftVoteBroadcastReceived(T stage2_received);
+    void sbftExecute(T exec);
+}
+```
+使用接口的形式，将每一个共识环节标注清楚。
+在需要增添新的共识协议时，不需要更改已有的区块链服务实现类，而且需要完成新的共识协议接口和其实现类。
+如com.buaa.blockchain.consensus.SBFTConsensusImpl.java为SBFT协议的实现类，实现了SBFTConsensus接口。
+在SBFTConsensusImpl的开发中，通过持有BlockchainService的引用，使得其拥有区块链的功能，如消息的发送和接收等。
+BlockchainService向共识模块暴露自己的引用，共识模块可以重写BlockchainService中的消息收发，从而决定何时验证区块、何时存储区块。
+总之，当需要新增共识协议时，完成如下的步骤：
+
+0. 归纳共识协议的步骤，完成接口
+
+1. 按照接口完成实现类
+
+2. 在配置文件中注明共识模块使用的协议
