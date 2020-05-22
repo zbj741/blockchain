@@ -39,6 +39,15 @@ public class Message implements Serializable {
         this.block = new Block();
     }
 
+    public Message(String nodeName,int height,int round,Block block){
+        this.topic = "";
+        this.nodeName = nodeName;
+        this.height = height;
+        this.round = round;
+        this.vote = false;
+        this.block = block;
+    }
+
     public Message(String topic,String nodeName,int height,int round,Block block){
         this.topic = topic;
         this.nodeName = nodeName;

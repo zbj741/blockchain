@@ -1,20 +1,20 @@
 package com.buaa.blockchain.core;
 
 
-import com.buaa.blockchain.consensus.SBFTConsensus;
+import com.buaa.blockchain.consensus.BaseConsensus;
+import com.buaa.blockchain.consensus.SBFTConsensusImpl;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.entity.Message;
 import com.buaa.blockchain.entity.Times;
 import com.buaa.blockchain.entity.Transaction;
+import com.buaa.blockchain.exception.ShutDownManager;
 import com.buaa.blockchain.mapper.BlockMapper;
 import com.buaa.blockchain.mapper.TransactionMapper;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.buaa.blockchain.message.MessageService;
 import com.buaa.blockchain.txpool.RedisTxPool;
 import com.buaa.blockchain.txpool.TxPool;
-import com.buaa.blockchain.utils.JsonUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
 /**
  * 区块链的核心流程，用于接收peer的消息，并且进行状态转换
  * 状态转移图如下：
@@ -41,7 +40,7 @@ import java.util.*;
 @Component
 @MapperScan(basePackages ="com.buaa.blockchain.mapper")
 @ComponentScan(basePackages = "com.buaa.blockchain.*")
-public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<Message> {
+public class BlockchainServiceImpl implements BlockchainService {
 
     /* 消息服务 */
     final MessageService messageService;
@@ -55,6 +54,10 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
     final VoteHandler voteHandler;
     /* 状态树 */
     final WorldState worldState;
+    /* 关闭管理 */
+    final ShutDownManager shutDownManager;
+    /*********************** 属性字段 ***********************/
+
     /* 节点名 */
     @Value("${buaa.blockchain.nodename}")
     public String nodeName;
@@ -70,6 +73,12 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
     /* 区块链版本 */
     @Value("${buaa.blockchain.version}")
     private String version;
+    /* 共识协议名称 */
+    @Value("${buaa.blockchain.consensus}")
+    private String consensusType;
+    /* 共识协议 */
+    private BaseConsensus consensus = null;
+
 
     // 运行时
     public int clusterSize = 1;
@@ -79,13 +88,14 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
 
     @Autowired
     public BlockchainServiceImpl(MessageService messageService, RedisTxPool redisTxpool, BlockMapper blockMapper,
-                                 TransactionMapper transactionMapper,VoteHandler voteHandler,WorldState worldState) {
+                                 TransactionMapper transactionMapper, VoteHandler voteHandler, WorldState worldState,ShutDownManager shutDownManager) {
         this.messageService = messageService;
         this.redisTxpool = redisTxpool;
         this.blockMapper = blockMapper;
         this.transactionMapper = transactionMapper;
         this.voteHandler = voteHandler;
         this.worldState = worldState;
+        this.shutDownManager = shutDownManager;
     }
 
 
@@ -96,17 +106,26 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
      * */
     @Override
     public void firstTimeSetup(){
-        // 初始化消息服务的业务逻辑
-        initMessageServiceCallback();
+        // 初始化共识
+        initConsensus();
         // 初始化数据摘要工具
-        testMessageDigest();
+        testMessageDigest(this.hashAlgorithm);
         log.info("firstTimeSetup(): init complete. buaa-blockchain version:"+this.version);
         // 判断是否为第一次启动
         if(blockMapper.findBlockNum(HashUtil.sha256("0")) == 0){
             Block block = generateFirstBlock();
             blockMapper.insertBlock(block);
             log.info("firstTimeSetup(): Generate first block complete.");
+        }else{
+            // 不是第一次启动
+            int maxHeight = blockMapper.findMaxHeight();
+            String maxHeightStateRoot =  blockMapper.findStatRoot(maxHeight);
+            if(!worldState.switchRoot(maxHeightStateRoot)){
+                log.error("firstTimeSetup(): cannot sync data between block and state! Shut down!");
+                shutDownManager.shutDown();
+            }
         }
+
         // 同步当前的height和pre_hash
         this.height = blockMapper.findMaxHeight() + 1;
         this.round = 0;
@@ -132,6 +151,7 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
                         Thread.sleep(this.sleepTime);
                         continue;
                     }catch (Exception e){
+                        shutDownManager.shutDown();
                         // TODO 处理异常
                     }
                 }else{
@@ -147,7 +167,7 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
     }
 
     @Override
-    public void storeBlock(Block block) {
+    public synchronized void storeBlock(Block block) {
         // 检查交易数量
         if(block.getTx_length() < 1){
             log.info("storeBlock(): get Block blockhash="+block.getHash()+" with no transation, storeBlock stop.");
@@ -170,6 +190,7 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
             ts.setBlock_hash(block.getHash());
         }
         // 持久化交易和区块
+        worldState.sync();
         blockMapper.insertBlock(block);
         log.info("storeBlock(): Done! block="+block.toString());
         // 同步
@@ -233,6 +254,7 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
             return true;
 
         }catch (Exception e){
+            log.error("verifyBlock(): exception in verify");
             // TODO 验证出现错误
             e.printStackTrace();
             return false;
@@ -296,104 +318,67 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
         return "";
     }
 
-    /************** 共识协议接口 **************/
-
     /**
-     * 主节点发出第一阶段的广播
+     * 投票相关
      * */
     @Override
-    public void sbftDigestBroadcast(Message stage1_send) {
-        String jsonStr = message2JsonString(stage1_send);
-        log.info("acpbftDigestBroadcast(): broadcast block, message size=" + jsonStr.length() * 2 / 1024.0 + "KB.");
-        this.messageService.broadcasting(jsonStr);
+    public void voteForBlock(int height, int round, String blockHash, String nodeName, Boolean voteValue) {
+        this.voteHandler.vote(height,round,blockHash,nodeName,voteValue);
+    }
+
+    @Override
+    public int getAgreeVoteCount(int height, int round, String blockHash) {
+        return this.voteHandler.getVoteRecordAgree(height,round,blockHash);
+    }
+
+    @Override
+    public int getAgainstVoteCount(int height, int round, String blockHash) {
+        return this.voteHandler.getVoteRecordAgainst(height,round,blockHash);
+    }
+
+    @Override
+    public void removeVote(int height, int round, String blockHash) {
+        this.voteHandler.remove(height,round,blockHash);
+    }
+    /**
+     * 节点通信相关
+     * */
+    @Override
+    public void broadcasting(Object message) {
+        this.messageService.broadcasting(message);
+    }
+
+    @Override
+    public int getClusterNodeSize() {
+        return this.clusterSize;
+    }
+
+    @Override
+    public void setClusterNodeSize(int size) {
+        this.clusterSize = size;
+    }
+
+    @Override
+    public void setMessageCallBack(MessageCallBack messageCallBack) {
+        this.messageService.setMessageCallBack(messageCallBack);
     }
 
     /**
-     * 收到第一阶段的主节点做块进行检验，并且投票
+     * 自身属性相关
      * */
     @Override
-    public void sbftDigestBroadcastReceived(Message stage1_received) {
-        log.info("sbftDigestBroadcastReceived(): received message="+stage1_received.toString());
-        boolean vote = verifyBlock(stage1_received.getBlock(),stage1_received.getHeight(),stage1_received.getRound());
-        // TODO 计时
-        // 生成投票消息
-        Message message = new Message(Message.MESSAGE_TOPIC_VOTE,this.nodeName,
-                stage1_received.getHeight(),stage1_received.getRound(),vote,stage1_received.getBlock());
-        sbftVoteBroadcast(message);
+    public String getName() {
+        return this.nodeName;
     }
 
-    /**
-     * 发出第二阶段的投票广播信息
-     * */
     @Override
-    public void sbftVoteBroadcast(Message stage2_send) {
-        // 将消息打包成Json字符串
-        String jsonStr = message2JsonString(stage2_send);
-        log.info("sbftVoteBroadcast(): node="+this.nodeName+" vote "+stage2_send.getVote()+" to "+stage2_send.getBlock().toString());
-        this.messageService.broadcasting(jsonStr);
-        return ;
+    public String getVersion() {
+        return this.version;
     }
 
-    /**
-     * 收到第二阶段的投票广播消息
-     * 当赞成票超过阈值时，执行sbftExcute阶段
-     * 当反对票超过阈值时，开始新的一轮
-     *
-     * */
     @Override
-    public void sbftVoteBroadcastReceived(Message stage2_received) {
-        // 赋值
-        int height = stage2_received.getHeight();
-        int round = stage2_received.getRound();
-        String msgNodeName = stage2_received.getNodeName();
-        Block block = stage2_received.getBlock();
-        String blockHash = block.getHash();
-        Boolean voteValue = stage2_received.getVote();
-        // 接收投票
-        this.voteHandler.vote(height,round,blockHash,msgNodeName,voteValue);
-        // 查看是否收到sbft中大于集群节点个数2/3的同意票
-        if(this.voteHandler.getVoteRecordAgree(height,round,blockHash)*1.0f > this.clusterSize * (2/3.0f)){
-            log.info("sbftVoteBroadcastReceived(): execute, block="+blockHash+", height="+height+", round="+round+
-                    " received vote "+this.voteHandler.getVoteRecordAgree(height,round,blockHash)+
-                    "/"+this.clusterSize);
-            // 删除投票记录
-            this.voteHandler.remove(height,round,blockHash);
-            // 执行
-            stage2_received.setTopic(Message.MESSAGE_TOPIC_EXECUTE);
-            sbftExecute(stage2_received);
-            return ;
-        }
-        // 反对票超过1/3，直接开始下一轮
-        if(this.voteHandler.getVoteRecordAgainst(height,round,blockHash)*1.0f > this.clusterSize * (1/3.0f)){
-            log.info("sbftVoteBroadcastReceived(): start next round. Block="+blockHash+", height="+height+", round="+round+
-                    " received vote against "+this.voteHandler.getVoteRecordAgainst(height,round,blockHash)+
-                    "/"+this.clusterSize);
-            // 删除投票记录
-            this.voteHandler.remove(height,round,blockHash);
-            // 开始下一轮
-            stage2_received.setTopic(Message.MESSAGE_TOPIC_DROP);
-            sbftExecute(stage2_received);
-            return ;
-        }
-
-    }
-
-    /**
-     * 执行阶段，执行区块中的交易，并且持久化
-     * 这里就不通过网络广播了，直接本地执行
-     * */
-    @Override
-    public void sbftExecute(Message exec) {
-        // 检查是否为投票通过的
-        if(Message.MESSAGE_TOPIC_DROP.equals(exec.getTopic())){
-            startNewRound(exec.getHeight(),exec.getRound() + 1);
-            return ;
-        }
-        if(Message.MESSAGE_TOPIC_EXECUTE.equals(exec.getTopic())){
-            storeBlock(exec.getBlock());
-            startNewRound(exec.getHeight() + 1,0);
-            return ;
-        }
+    public String getSign() {
+        return this.nodeSign;
     }
 
     /****************************************************/
@@ -403,58 +388,32 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
     /**
      * 初始化MessageService的callback
      * */
-    private void initMessageServiceCallback(){
+    private void initConsensus(){
         BlockchainServiceImpl bs = this;
         try {
-            // 注册消息服务的回调函数
-            messageService.setMessageCallBack(new MessageCallBack() {
-                // 收到消息后的处理逻辑
-                @Override
-                public void OnMessageReceived(Object msg) {
-                    try {
-                        // 将消息还原成标准格式
-                        Message receiveMsg = JsonUtil.objectMapper.readValue((String)msg,Message.class);
-                        String topic = receiveMsg.getTopic();
-                        // 对应处理逻辑
-                        if (topic.equals(Message.MESSAGE_TOPIC_DIGEST)) {
-                            sbftDigestBroadcastReceived(receiveMsg);
-                        } else if (topic.equals(Message.MESSAGE_TOPIC_VOTE)) {
-                            sbftVoteBroadcastReceived(receiveMsg);
-                        } else if (topic.equals(Message.MESSAGE_TOPIC_SYNC)) {
-
-                        } else if (topic.equals(Message.MESSAGE_TOPIC_SYNC_REPLY)){
-
-                        } else if(topic.equals(Message.MESSAGE_TOPIC_TEST)){
-                            log.info("OnMessageReceived(): testMsg:"+receiveMsg.toString());
-                        }
-                    } catch (JsonProcessingException e) {
-                        // TODO 异常处理
-                        e.printStackTrace();
-                    }
-                }
-                // 收到集群变动后的处理逻辑
-                @Override
-                public void OnClusterChanged(Set<String> pre, Set<String> now) {
-                    log.warn("OnClusterChanged(): cluster changed pre="+pre+" now="+now);
-                    // 更新clusterSize
-                    bs.clusterSize = now.size();
-                    // TODO 其他逻辑
-                }
-            });
+            if(this.consensusType.equals(BaseConsensus.SBFT)){
+                this.consensus = new SBFTConsensusImpl(bs);
+            }
         } catch (Exception e) {
-            log.error("initMessageServiceCallback(): Failed init MessageServiceCallback. Shut down!");
+            log.error("initConsensus(): Failed init consensus "+consensusType+" in constructor.");
             e.printStackTrace();
         }
-        log.info("initMessageServiceCallback(): init complete.");
+        if(null == this.consensus){
+            log.error("initConsensus(): Null consensus. Shut down!");
+            // TODO 停止运行
+            return;
+        }
+        log.info("initConsensus(): "+consensusType+" init complete.");
     }
 
     /**
      * 测试数据摘要方法是否可用
+     * @param algorithm 算法名
      * */
-    private void testMessageDigest(){
+    private void testMessageDigest(String algorithm){
         MessageDigest test = null;
         try {
-            test = MessageDigest.getInstance(this.hashAlgorithm);
+            test = MessageDigest.getInstance(algorithm);
         } catch (Exception e) {
             if(e instanceof NoSuchAlgorithmException){
                 log.warn("initMessageDigest(): cannot init messageDigest, caused by no such algorithm \'"+hashAlgorithm+"\'.");
@@ -540,6 +499,7 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
         }
         log.info("createNewBlock(): Get valid transaction list, size="+validTransList.size());
         if(validTransList.size() < 1){
+            // 未出现可做块的交易，重新执行本轮
             startNewRound(height,round);
         }else{
             // 生成新的区块
@@ -568,9 +528,9 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
             times.setTx_length(validTransList.size());
             times.setBroadcast(new Date().getTime());
             block.setTimes(times);
-            // pbft的第一阶段广播
-            Message message = new Message(Message.MESSAGE_TOPIC_DIGEST,this.nodeName,height,round,block);
-            sbftDigestBroadcast(message);
+            // 开始共识
+            Message message = new Message(this.nodeName,height,round,block);
+            this.consensus.setup(message);
 
         }
 
@@ -647,16 +607,5 @@ public class BlockchainServiceImpl implements BlockchainService, SBFTConsensus<M
 
     }
 
-    /**
-     * 将需要广播的内容打包成为字符串形式
-     * */
-    private String message2JsonString(Message message){
-        String jsonStr = "";
-        try {
-            jsonStr = JsonUtil.objectMapper.writeValueAsString(message);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return jsonStr;
-    }
+
 }

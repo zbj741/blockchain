@@ -2,6 +2,7 @@ package com.buaa.blockchain.core;
 
 
 import com.buaa.blockchain.entity.Block;
+import com.buaa.blockchain.message.MessageCallBack;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -39,5 +40,25 @@ public interface BlockchainService {
      * 默认数据摘要生成
      * */
     String getDigest(String data);
+    /**
+     * 对某一轮的做块投票相关
+     * */
+    void voteForBlock(int height,int round,String blockHash,String nodeName,Boolean voteValue);
+    int getAgreeVoteCount(int height,int round,String blockHash);
+    int getAgainstVoteCount(int height,int round,String blockHash);
+    void removeVote(int height,int round,String blockHash);
+    /**
+     * 节点通信相关
+     * */
+    void broadcasting(Object message);
+    int getClusterNodeSize();
+    void setClusterNodeSize(int size);
+    void setMessageCallBack(MessageCallBack messageCallBack);
+    /**
+     * 自身属性相关
+     * */
+    String getName();
+    String getVersion();
+    String getSign();
 
 }

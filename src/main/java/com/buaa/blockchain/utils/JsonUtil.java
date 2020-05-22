@@ -33,6 +33,19 @@ public class JsonUtil {
 
     }
 
+    /**
+     * 将需要广播的内容打包成为字符串形式
+     * */
+    public static synchronized String message2JsonString(Message message){
+        String jsonStr = "";
+        try {
+            jsonStr = JsonUtil.objectMapper.writeValueAsString(message);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return jsonStr;
+    }
+
     public static void main(String[] args) {
         Map<String,String> map = new HashMap<>();
         map.put("233","666");

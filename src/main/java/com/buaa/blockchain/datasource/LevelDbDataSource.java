@@ -110,6 +110,16 @@ public class LevelDbDataSource implements KeyValueDataSource {
         return alive;
     }
 
+    @Override
+    public void flushAll() {
+        resetDbLock.writeLock().lock();
+        try{
+
+        }finally {
+            resetDbLock.writeLock().unlock();
+        }
+    }
+
     public void destroyDB(File fileLocation) {
         resetDbLock.writeLock().lock();
         try {

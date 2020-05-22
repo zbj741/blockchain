@@ -14,7 +14,7 @@ package com.buaa.blockchain.consensus;
  * @author hitty
  * */
 
-public interface SBFTConsensus<T> {
+public interface SBFTConsensus<T> extends BaseConsensus<T>{
     /**
      * 第一阶段广播
      * */
@@ -36,4 +36,14 @@ public interface SBFTConsensus<T> {
      * */
     void sbftExecute(T exec);
 
+    /**
+     * 各个阶段的TOPIC
+     * */
+    String SBFT_MESSAGE_TOPIC_TEST = "SBFT_MESSAGE_TOPIC_TEST";
+    String SBFT_MESSAGE_TOPIC_DIGEST = "SBFT_MESSAGE_TOPIC_DIGEST";
+    String SBFT_MESSAGE_TOPIC_VOTE = "SBFT_MESSAGE_TOPIC_VOTE";
+    String SBFT_MESSAGE_TOPIC_SYNC = "SBFT_MESSAGE_TOPIC_SYNC";
+    String SBFT_MESSAGE_TOPIC_SYNC_REPLY = "SBFT_MESSAGE_TOPIC_SYNC_REPLY";
+    String SBFT_MESSAGE_TOPIC_EXECUTE = "SBFT_MESSAGE_TOPIC_EXECUTE";
+    String SBFT_MESSAGE_TOPIC_DROP = "SBFT_MESSAGE_TOPIC_DROP";
 }

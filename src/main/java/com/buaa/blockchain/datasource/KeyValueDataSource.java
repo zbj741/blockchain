@@ -14,4 +14,6 @@ public interface KeyValueDataSource extends DataSource{
 
     void updateBatch(Map<byte[], byte[]> rows);
 
+    void flushAll();
+
 }
