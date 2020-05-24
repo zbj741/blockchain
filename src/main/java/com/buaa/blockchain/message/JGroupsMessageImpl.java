@@ -2,6 +2,7 @@ package com.buaa.blockchain.message;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.jgroups.*;
 import org.jgroups.conf.ConfiguratorFactory;
 import org.jgroups.conf.ProtocolStackConfigurator;
@@ -22,18 +23,14 @@ import java.util.*;
 /**
  * 消息系统的JGroups实现类。
  * JGroups中的Message类默认提供存储对象的空间，此处统一规定将内容打包为String类型；
- * 被打包为String类型的数据为json形式，其中key有两个：topic和content
  *
- * 由于是单线程运行的，在收到其他节点发来的消息时，会阻塞。所以调用本实现类并实现messageCallBack时也是阻塞的。
+ * 由于是单线程运行的，在收到其他节点发来的消息时，会阻塞。所以调用本实现类并实现messageCallBack时也是串行的。
  *
  * @author hitty
  * */
-
+@Slf4j
 @Service
 public class JGroupsMessageImpl extends ReceiverAdapter implements MessageService {
-
-    private static final Logger Log = LoggerFactory.getLogger(JGroupsMessageImpl.class);
-
     // 本地地址
     private String address;
     // JGroups通道
@@ -42,14 +39,14 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
     private MessageCallBack messageCallBack = null;
     // 集群节点集合，TreeSet保证有序排列
     private Set<String> clusterAddressList = new TreeSet<>();
-
-
+    static{
+        System.setProperty("java.net.preferIPv6Stack", "false");
+        System.setProperty("java.net.preferIPv4Stack", "true");
+    }
     /**
      * 初始化
      * */
     public JGroupsMessageImpl(){
-        System.setProperty("java.net.preferIPv6Stack", "false");
-        System.setProperty("java.net.preferIPv4Stack", "true");
         //InputStream is = this.getClass().getClassLoader().getResourceAsStream("msg-tcp.xml");
         try {
             InputStream is = new BufferedInputStream(new FileInputStream("."+File.separator+"config"+File.separator+"jgroups-tcp.xml"));
@@ -65,22 +62,11 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
                     Event.GET_PHYSICAL_ADDRESS, channel.getAddress())).toString();
 
         } catch (Exception e) {
-            Log.error("JGroupsMessageImpl(): Cannot init. Shut down!");
+            log.error("JGroupsMessageImpl(): Cannot init. Shut down!");
             e.printStackTrace();
         }
         // 成功从配置文件中生成channel
-        Log.warn("JGroupsMessageImpl(): init complete via jgroups-tcp.xml, address="+this.address);
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while(true){
-//                    try{
-//                        Thread.sleep(3000);
-//                        System.out.println("Cluster="+clusterAddressList.toString());
-//                    }catch (Exception e){}
-//                }
-//            }
-//        }).start();
+        log.warn("JGroupsMessageImpl(): init complete via jgroups-tcp.xml, address="+this.address);
     }
 
     /**
@@ -124,8 +110,7 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
                         this.channel.down(new Event(Event.GET_PHYSICAL_ADDRESS, address)).toString()
                 );
             }
-            // logging
-            System.out.println("Cluster Changed:pre="+pre.toString()+
+            log.warn("Cluster Changed:pre="+pre.toString()+
                     " *** now="+this.clusterAddressList.toString());
             // 回调
             if(null != this.messageCallBack){

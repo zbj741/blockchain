@@ -20,6 +20,7 @@ public interface BlockchainService {
      * 新的一轮做块
      * */
     void startNewRound(int height,int round);
+    void startNewRound();
     /**
      * 运行入口
      * */
@@ -43,10 +44,10 @@ public interface BlockchainService {
     /**
      * 对某一轮的做块投票相关
      * */
-    void voteForBlock(int height,int round,String blockHash,String nodeName,Boolean voteValue);
-    int getAgreeVoteCount(int height,int round,String blockHash);
-    int getAgainstVoteCount(int height,int round,String blockHash);
-    void removeVote(int height,int round,String blockHash);
+    void voteForBlock(String tag,int height,int round,String blockHash,String nodeName,Boolean voteValue);
+    int getAgreeVoteCount(String tag,int height,int round,String blockHash);
+    int getAgainstVoteCount(String tag,int height,int round,String blockHash);
+    void removeVote(String tag,int height,int round,String blockHash);
     /**
      * 节点通信相关
      * */

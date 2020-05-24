@@ -2,6 +2,7 @@ package com.buaa.blockchain.core;
 
 import com.buaa.blockchain.entity.Block;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -13,13 +14,14 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 记录区块投票信息的辅助类
  * 本地区块链服务需要维护一个投票记录，每当收到一次投票后，查看是否触发
- * 用于表明区块投票信息的键需要由height、round和blockhash一起组成，暂时定为 {blockhash}_{height}_{round}
- *
+ * 用于表明区块投票信息的键需要由tag、height、round和blockhash一起组成，暂时定为 {blockhash}_{height}_{round}
+ * 被删除的票不能被投，这里的删除可能是因为该区块已经被store或丢弃
  * TODO 考虑是否在本模块中管理投票是否过期？
  *
  * @author hitty
  * */
 @Component
+@Slf4j
 public class VoteHandler {
     // 投票信息
     private ConcurrentHashMap<String,VoteRecord> voteResList= new ConcurrentHashMap<>();
@@ -36,9 +38,11 @@ public class VoteHandler {
     /**
      * 生成VoteRecord的key
      * */
-    public static String createKey(int height,int round,String blockHash){
-        return blockHash+"_"+height+"_"+round;
+    public static String createKey(String tag,int height,int round,String blockHash){
+        return tag+"_"+blockHash+"_"+height+"_"+round;
     }
+
+
 
 
     /**
@@ -49,17 +53,18 @@ public class VoteHandler {
      * @param blockHash
      * @param voteValue 投票意见
      * */
-    public void vote(int height,int round,String blockHash,String nodeName,Boolean voteValue){
+    public void vote(String tag,int height,int round,String blockHash,String nodeName,Boolean voteValue){
         synchronized (this){
-            String key = createKey(height,round,blockHash);
+            String key = createKey(tag,height,round,blockHash);
             // 是否已经是被删除过的key
             if(removeKeys.contains(key)){
+                log.warn("vote(): vote for tag="+tag+", height="+height+", round="+round+", blockhash="+blockHash+" has been removed!");
                 return;
             }
             // 是否存在对应的投票记录
             if(!voteResList.keySet().contains(key)){
                 // 生成一条记录
-                VoteRecord voteRecord = new VoteRecord(blockHash,height,round);
+                VoteRecord voteRecord = new VoteRecord(tag,blockHash,height,round);
                 this.voteResList.put(key,voteRecord);
             }
             voteResList.get(key).vote(voteValue,nodeName);
@@ -69,9 +74,9 @@ public class VoteHandler {
     /**
      * 获取当前record的赞成数量
      * */
-    public int getVoteRecordAgree(int height,int round,String blockHash){
+    public int getVoteRecordAgree(String tag,int height,int round,String blockHash){
         synchronized (this){
-            String key = createKey(height,round,blockHash);
+            String key = createKey(tag,height,round,blockHash);
             if(!voteResList.keySet().contains(key)){
                 return -1;
             }else{
@@ -82,9 +87,9 @@ public class VoteHandler {
     /**
      * 获取当前record的反对数量
      * */
-    public int getVoteRecordAgainst(int height,int round,String blockHash){
+    public int getVoteRecordAgainst(String tag,int height,int round,String blockHash){
         synchronized (this){
-            String key = createKey(height,round,blockHash);
+            String key = createKey(tag,height,round,blockHash);
             if(!voteResList.keySet().contains(key)){
                 return -1;
             }else{
@@ -96,9 +101,9 @@ public class VoteHandler {
     /**
      * 删除一条记录
      * */
-    public void remove(int height,int round,String blockHash){
+    public void remove(String tag,int height,int round,String blockHash){
         synchronized (this){
-            String key = createKey(height,round,blockHash);
+            String key = createKey(tag,height,round,blockHash);
             if(voteResList.keySet().contains(key)){
                 // 删除
                 voteResList.remove(key);
@@ -108,22 +113,6 @@ public class VoteHandler {
         }
     }
 
-
-    public static void main(String[] args) {
-        Long ii = 4L;
-        System.out.println(ii*(2/3.0));
-        String bh = "blocktest";
-        int h = 1;
-        int r = 2;
-        VoteHandler voteHandler = new VoteHandler();
-
-        voteHandler.vote(h,r,bh,"node1",true);
-        for(int i = 0;i < 5;i++){
-            voteHandler.vote(h,r,bh,"node"+i,i%2==0);
-            System.out.println(voteHandler.getVoteRecordAgree(h,r,bh));
-        }
-
-    }
 
 }
 /**
@@ -147,11 +136,11 @@ class VoteRecord{
     // 反对票数
     private int against = 0;
 
-    VoteRecord(String blockHash,int height,int round){
+    VoteRecord(String tag,String blockHash,int height,int round){
         this.blockHash = blockHash;
         this.height = height;
         this.round = round;
-        this.key = VoteHandler.createKey(height,round,blockHash);
+        this.key = VoteHandler.createKey(tag,height,round,blockHash);
         this.startTime = System.currentTimeMillis();
     }
 

@@ -31,6 +31,7 @@ public class BlockchainApplication implements CommandLineRunner {
         } catch (Exception e) {
             Log.error("run(): fatal error!");
             e.printStackTrace();
+            System.exit(0);
         }
     }
 

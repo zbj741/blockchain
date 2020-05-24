@@ -26,6 +26,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 /**
  * 区块链的核心流程，用于接收peer的消息，并且进行状态转换
  * 状态转移图如下：
@@ -54,6 +57,8 @@ public class BlockchainServiceImpl implements BlockchainService {
     final VoteHandler voteHandler;
     /* 状态树 */
     final WorldState worldState;
+    /* 超时管理 */
+    final TimeoutHelper timeoutHelper;
     /* 关闭管理 */
     final ShutDownManager shutDownManager;
     /*********************** 属性字段 ***********************/
@@ -81,20 +86,26 @@ public class BlockchainServiceImpl implements BlockchainService {
 
 
     // 运行时
+    // 集群大小
     public int clusterSize = 1;
+    // 当前轮的高度（尚未做块）
     public int height = 1;
+    // 当前轮数
     public int round = 0;
     public String preHash="";
+    // 同步器，用于超时管理
+    public CountDownLatch countDownLatch;
 
     @Autowired
     public BlockchainServiceImpl(MessageService messageService, RedisTxPool redisTxpool, BlockMapper blockMapper,
-                                 TransactionMapper transactionMapper, VoteHandler voteHandler, WorldState worldState,ShutDownManager shutDownManager) {
+                                 TransactionMapper transactionMapper, VoteHandler voteHandler, WorldState worldState, TimeoutHelper timeoutHelper, ShutDownManager shutDownManager) {
         this.messageService = messageService;
         this.redisTxpool = redisTxpool;
         this.blockMapper = blockMapper;
         this.transactionMapper = transactionMapper;
         this.voteHandler = voteHandler;
         this.worldState = worldState;
+        this.timeoutHelper = timeoutHelper;
         this.shutDownManager = shutDownManager;
     }
 
@@ -130,6 +141,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         this.height = blockMapper.findMaxHeight() + 1;
         this.round = 0;
         this.preHash = blockMapper.findPreHashByHeight(this.height - 1);
+        this.clusterSize = messageService.getClusterAddressList().size();
         // 以本地的区块信息，开始新一轮的做块
         startNewRound(this.height,this.round);
     }
@@ -145,6 +157,10 @@ public class BlockchainServiceImpl implements BlockchainService {
             log.info("startNewRound(): leaderNode="+this.nodeName+", height="+height+", round="+round+" try to build new block...");
             // 轮询交易池中是否有可以新的可以做块的交易
             while(true){
+                if(!isSelfLeader(height,round)){
+                    startNewRound(height,round);
+                    return ;
+                }
                 if(redisTxpool.size(TxPool.TXPOOL_LABEL_TRANSACTION) < 1){
                     try{
                         log.info("startNewRound(): no transaction found in txpool, wait for "+this.sleepTime+"ms.");
@@ -160,14 +176,29 @@ public class BlockchainServiceImpl implements BlockchainService {
                 }
             }
             // 开始做块
-            createNewBlock(height,round);
+            Block block = createNewBlock(height,round);
+            if(null != block){
+                // 开始共识
+                Message message = new Message(this.nodeName,height,round,block);
+                this.consensus.setup(message);
+            }else{
+                log.info("startNewRound(): leader node="+nodeName+" fail to create new block at height="+height+", round="+round+".");
+                startNewRound(height,round);
+            }
         }else{
-            log.info("startNewRound(): not leader node, waiting for leader...");
+            log.info("startNewRound(): not leader node, waiting for leader or timeout");
         }
+    }
+
+
+    @Override
+    public void startNewRound() {
+        startNewRound(this.height,0);
     }
 
     @Override
     public synchronized void storeBlock(Block block) {
+        log.warn("storeBlock(): block="+block.toString());
         // 检查交易数量
         if(block.getTx_length() < 1){
             log.info("storeBlock(): get Block blockhash="+block.getHash()+" with no transation, storeBlock stop.");
@@ -193,10 +224,13 @@ public class BlockchainServiceImpl implements BlockchainService {
         worldState.sync();
         blockMapper.insertBlock(block);
         log.info("storeBlock(): Done! block="+block.toString());
+        // 通知
+        this.timeoutHelper.notified(this.height,this.round);
         // 同步
-        this.height++;
+        this.height = block.getHeight() + 1;
         this.round = 0;
         this.preHash = block.getHash();
+
     }
 
     /**
@@ -254,7 +288,7 @@ public class BlockchainServiceImpl implements BlockchainService {
             return true;
 
         }catch (Exception e){
-            log.error("verifyBlock(): exception in verify");
+            log.warn("verifyBlock(): exception in verify");
             // TODO 验证出现错误
             e.printStackTrace();
             return false;
@@ -322,23 +356,23 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 投票相关
      * */
     @Override
-    public void voteForBlock(int height, int round, String blockHash, String nodeName, Boolean voteValue) {
-        this.voteHandler.vote(height,round,blockHash,nodeName,voteValue);
+    public void voteForBlock(String tag,int height, int round, String blockHash, String nodeName, Boolean voteValue) {
+        this.voteHandler.vote(tag,height,round,blockHash,nodeName,voteValue);
     }
 
     @Override
-    public int getAgreeVoteCount(int height, int round, String blockHash) {
-        return this.voteHandler.getVoteRecordAgree(height,round,blockHash);
+    public int getAgreeVoteCount(String tag,int height, int round, String blockHash) {
+        return this.voteHandler.getVoteRecordAgree(tag,height,round,blockHash);
     }
 
     @Override
-    public int getAgainstVoteCount(int height, int round, String blockHash) {
-        return this.voteHandler.getVoteRecordAgainst(height,round,blockHash);
+    public int getAgainstVoteCount(String tag,int height, int round, String blockHash) {
+        return this.voteHandler.getVoteRecordAgainst(tag,height,round,blockHash);
     }
 
     @Override
-    public void removeVote(int height, int round, String blockHash) {
-        this.voteHandler.remove(height,round,blockHash);
+    public void removeVote(String tag,int height, int round, String blockHash) {
+        this.voteHandler.remove(tag,height,round,blockHash);
     }
     /**
      * 节点通信相关
@@ -391,6 +425,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     private void initConsensus(){
         BlockchainServiceImpl bs = this;
         try {
+            //TODO 暂时这么写 需要修改
             if(this.consensusType.equals(BaseConsensus.SBFT)){
                 this.consensus = new SBFTConsensusImpl(bs);
             }
@@ -442,6 +477,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     private boolean isSelfLeader(int height, int round){
         if(messageService.getClusterAddressList().size() <= 1){
             // 当前网络只有一个节点
+            log.info("isSelfLeader(): single node.");
             return true;
         }
         // 生成一个index，用于寻找主节点
@@ -452,16 +488,17 @@ public class BlockchainServiceImpl implements BlockchainService {
             index = index ^ (index >>> 16);
         } catch (Exception e) {
             index = 0;
-            // TODO 处理选举异
+            // TODO 处理选举异常
             e.printStackTrace();
         }
-        index = index % this.clusterSize;
+        index = index % messageService.getClusterAddressList().size();
         // 获取位于index的元素
         Iterator iterator = messageService.getClusterAddressList().iterator();
-        String leader = messageService.getLocalAddress();
+        String leader = (String) iterator.next();
         for(int i = 0;i < index;i++){
             leader = (String) iterator.next();
         }
+        log.info("isSelfLeader(): multi node, index="+index+", "+this.messageService.getClusterAddressList()+", leader="+leader);
         // 比较
         return leader.equals(messageService.getLocalAddress());
     }
@@ -471,7 +508,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * @param height
      * @param round
      * */
-    private void createNewBlock(int height, int round){
+    private Block createNewBlock(int height, int round){
         // 做块计时开始
         Date createStart = new Date();
         int tranSeq = 0;
@@ -499,8 +536,8 @@ public class BlockchainServiceImpl implements BlockchainService {
         }
         log.info("createNewBlock(): Get valid transaction list, size="+validTransList.size());
         if(validTransList.size() < 1){
-            // 未出现可做块的交易，重新执行本轮
-            startNewRound(height,round);
+            // 未出现可做块的交易
+            return null;
         }else{
             // 生成新的区块
             Block block = new Block();
@@ -528,9 +565,8 @@ public class BlockchainServiceImpl implements BlockchainService {
             times.setTx_length(validTransList.size());
             times.setBroadcast(new Date().getTime());
             block.setTimes(times);
-            // 开始共识
-            Message message = new Message(this.nodeName,height,round,block);
-            this.consensus.setup(message);
+            return block;
+
 
         }
 

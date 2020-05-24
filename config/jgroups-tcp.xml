@@ -10,7 +10,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/JGroups-3.6.xsd">
     <TCP bind_addr="192.168.0.104"
-         bind_port="7800"
+         bind_port="17800"
          loopback="false"
          recv_buf_size="${tcp.recv_buf_size:5M}"
          send_buf_size="${tcp.send_buf_size:640K}"
@@ -42,7 +42,7 @@
          oob_thread_pool.rejection_policy="discard"/>
 
     <TCPPING timeout="3000"
-             initial_hosts="${jgroups.tcpping.initial_hosts:192.168.0.104[7800],192.168.0.104[7700],192.168.0.104[7701]}"
+             initial_hosts="${jgroups.tcpping.initial_hosts:192.168.0.104[17800],192.168.0.104[17700],192.168.0.104[7701]}"
              port_range="6"
              num_initial_members="10"/>
     <MERGE2 min_interval="10000"

@@ -46,6 +46,9 @@ public class WorldState {
      * */
     public boolean switchRoot(String root){
         byte[] rootBytes = null;
+        if(root.equals(trie.getRootHash())){
+            return true;
+        }
         try {
             // 按照当前root寻找对应的trie
             rootBytes = levelDb.get(Utils.hexStringToBytes(root));

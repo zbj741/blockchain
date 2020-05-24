@@ -68,7 +68,7 @@ public class Message implements Serializable {
 
     public String toString(){
         return "topic="+topic+", nodeName="+nodeName+", height="+height+", round="+round+", vote="+vote+
-                "block="+block.toString();
+                "block="+block.getHash();
     }
     
 }

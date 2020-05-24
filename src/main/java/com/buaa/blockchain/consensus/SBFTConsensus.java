@@ -36,6 +36,7 @@ public interface SBFTConsensus<T> extends BaseConsensus<T>{
      * */
     void sbftExecute(T exec);
 
+
     /**
      * 各个阶段的TOPIC
      * */
@@ -46,4 +47,8 @@ public interface SBFTConsensus<T> extends BaseConsensus<T>{
     String SBFT_MESSAGE_TOPIC_SYNC_REPLY = "SBFT_MESSAGE_TOPIC_SYNC_REPLY";
     String SBFT_MESSAGE_TOPIC_EXECUTE = "SBFT_MESSAGE_TOPIC_EXECUTE";
     String SBFT_MESSAGE_TOPIC_DROP = "SBFT_MESSAGE_TOPIC_DROP";
+    /**
+     * 投票tag
+     * */
+    String SBFT_VOTETAG_VOTE = "SBFT_VOTETAG_VOTE";
 }

@@ -13,6 +13,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
@@ -30,6 +33,9 @@ import org.springframework.stereotype.Component;
 @EnableCaching//启用缓存，这个注解很重要；
 public class RedisConfig extends CachingConfigurerSupport {
 
+    /**
+     * 配置transaction缓存的基础的选项
+     * */
     @Bean
     public RedisTemplate<String, Transaction> transactionRedisTemplate(RedisConnectionFactory factory)  {
         RedisTemplate<String, Transaction> template = new RedisTemplate<>();
@@ -57,10 +63,14 @@ public class RedisConfig extends CachingConfigurerSupport {
         return template;
     }
 
+    /**
+     * transaction的操作类
+     * */
     @Bean
     HashOperations<String,String,Transaction> getTransHashOps(RedisTemplate<String,Transaction> redisTemplate){
         return redisTemplate.opsForHash();
     }
+
 
 
 }
