@@ -38,7 +38,7 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
                     }
                 } catch (JsonProcessingException e) {
                     // TODO 异常处理
-                    e.printStackTrace();
+                    log.error("OnMessageReceived(): unknown message data, "+msg);
                 }
             }
             // 收到集群变动后的处理逻辑

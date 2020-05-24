@@ -11,6 +11,7 @@ import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.exception.ShutDownManager;
 import com.buaa.blockchain.mapper.BlockMapper;
 import com.buaa.blockchain.mapper.TransactionMapper;
+import com.buaa.blockchain.message.JGroupsMessageImpl;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.buaa.blockchain.message.MessageService;
 import com.buaa.blockchain.txpool.RedisTxPool;
@@ -45,8 +46,6 @@ import java.util.concurrent.TimeUnit;
 @ComponentScan(basePackages = "com.buaa.blockchain.*")
 public class BlockchainServiceImpl implements BlockchainService {
 
-    /* 消息服务 */
-    final MessageService messageService;
     /* 交易池 */
     final RedisTxPool redisTxpool;
     /* Block的持久化 */
@@ -83,6 +82,8 @@ public class BlockchainServiceImpl implements BlockchainService {
     private String consensusType;
     /* 共识协议 */
     private BaseConsensus consensus = null;
+    /* 消息服务 */
+    private MessageService messageService = null;
 
 
     // 运行时
@@ -97,9 +98,8 @@ public class BlockchainServiceImpl implements BlockchainService {
     public CountDownLatch countDownLatch;
 
     @Autowired
-    public BlockchainServiceImpl(MessageService messageService, RedisTxPool redisTxpool, BlockMapper blockMapper,
+    public BlockchainServiceImpl(RedisTxPool redisTxpool, BlockMapper blockMapper,
                                  TransactionMapper transactionMapper, VoteHandler voteHandler, WorldState worldState, TimeoutHelper timeoutHelper, ShutDownManager shutDownManager) {
-        this.messageService = messageService;
         this.redisTxpool = redisTxpool;
         this.blockMapper = blockMapper;
         this.transactionMapper = transactionMapper;
@@ -117,6 +117,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * */
     @Override
     public void firstTimeSetup(){
+        this.messageService = new JGroupsMessageImpl();
         // 初始化共识
         initConsensus();
         // 初始化数据摘要工具

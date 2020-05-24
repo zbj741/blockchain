@@ -1,17 +1,10 @@
 package com.buaa.blockchain.message;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+
 import org.jgroups.*;
 import org.jgroups.conf.ConfiguratorFactory;
 import org.jgroups.conf.ProtocolStackConfigurator;
 import org.jgroups.stack.IpAddress;
-import org.springframework.stereotype.Service;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -28,8 +21,7 @@ import java.util.*;
  *
  * @author hitty
  * */
-@Slf4j
-@Service
+
 public class JGroupsMessageImpl extends ReceiverAdapter implements MessageService {
     // 本地地址
     private String address;
@@ -62,11 +54,11 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
                     Event.GET_PHYSICAL_ADDRESS, channel.getAddress())).toString();
 
         } catch (Exception e) {
-            log.error("JGroupsMessageImpl(): Cannot init. Shut down!");
+            //log.error("JGroupsMessageImpl(): Cannot init. Shut down!");
             e.printStackTrace();
         }
         // 成功从配置文件中生成channel
-        log.warn("JGroupsMessageImpl(): init complete via jgroups-tcp.xml, address="+this.address);
+        //log.warn("JGroupsMessageImpl(): init complete via jgroups-tcp.xml, address="+this.address);
     }
 
     /**
@@ -110,8 +102,8 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
                         this.channel.down(new Event(Event.GET_PHYSICAL_ADDRESS, address)).toString()
                 );
             }
-            log.warn("Cluster Changed:pre="+pre.toString()+
-                    " *** now="+this.clusterAddressList.toString());
+            //log.warn("Cluster Changed:pre="+pre.toString()+
+            //        " *** now="+this.clusterAddressList.toString());
             // 回调
             if(null != this.messageCallBack){
                 this.messageCallBack.OnClusterChanged(pre,this.clusterAddressList);
