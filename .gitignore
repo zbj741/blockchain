@@ -33,4 +33,4 @@ build/
 ### some in project ###
 testEnv/
 log/
-
+levelDb/
