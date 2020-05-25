@@ -77,7 +77,7 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
 
         // 调用messageCallBack处理
         if(null != this.messageCallBack){
-            // 将和具体业务逻辑有关的部分传递给回调接口，Message类的解析仅仅在JGroups范围内
+            // 将和具体业务逻辑有关的部分传递给回调接口
             String msgString = (String) msg.getObject();
             messageCallBack.OnMessageReceived(msgString);
         }
@@ -149,7 +149,7 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
      * @param addressList
      * */
     @Override
-    public void MultiSend(Object message, Set<String> addressList) {
+    public void multiSend(Object message, Set<String> addressList) {
 
     }
 

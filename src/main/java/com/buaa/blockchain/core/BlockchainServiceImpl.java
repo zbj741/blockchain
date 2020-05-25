@@ -14,6 +14,7 @@ import com.buaa.blockchain.mapper.TransactionMapper;
 import com.buaa.blockchain.message.JGroupsMessageImpl;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.buaa.blockchain.message.MessageService;
+import com.buaa.blockchain.message.nettyimpl.NettyMessageImpl;
 import com.buaa.blockchain.txpool.RedisTxPool;
 import com.buaa.blockchain.txpool.TxPool;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 区块链的核心流程，用于接收peer的消息，并且进行状态转换
@@ -82,20 +84,32 @@ public class BlockchainServiceImpl implements BlockchainService {
     private String consensusType;
     /* 共识协议 */
     private BaseConsensus consensus = null;
+    /* 消息服务名称 */
+    @Value("${buaa.blockchain.network}")
+    private String messageServiceType;
+    /* 消息服务器ip */
+    @Value("${buaa.blockchain.msg.ipv4}")
+    public String msgIp;
+    /* 消息服务器端口 */
+    @Value("${buaa.blockchain.msg.port}")
+    public int msgPort;
+    /* 节点消息服务器地址 */
+    @Value("${buaa.blockchain.msg.address}")
+    public String msgAddressList;
     /* 消息服务 */
     private MessageService messageService = null;
 
 
-    // 运行时
+
+
     // 集群大小
     public int clusterSize = 1;
-    // 当前轮的高度（尚未做块）
-    public int height = 1;
     // 当前轮数
-    public int round = 0;
-    public String preHash="";
+    public AtomicInteger round = new AtomicInteger(0);
     // 同步器，用于超时管理
     public CountDownLatch countDownLatch;
+    // round状态线程
+    private Thread roundThread = null;
 
     @Autowired
     public BlockchainServiceImpl(RedisTxPool redisTxpool, BlockMapper blockMapper,
@@ -117,7 +131,8 @@ public class BlockchainServiceImpl implements BlockchainService {
      * */
     @Override
     public void firstTimeSetup(){
-        this.messageService = new JGroupsMessageImpl();
+        // 初始化消息服务
+        initMessageService();
         // 初始化共识
         initConsensus();
         // 初始化数据摘要工具
@@ -137,14 +152,10 @@ public class BlockchainServiceImpl implements BlockchainService {
                 shutDownManager.shutDown();
             }
         }
-
-        // 同步当前的height和pre_hash
-        this.height = blockMapper.findMaxHeight() + 1;
-        this.round = 0;
-        this.preHash = blockMapper.findPreHashByHeight(this.height - 1);
+        this.round.set(0);
         this.clusterSize = messageService.getClusterAddressList().size();
         // 以本地的区块信息，开始新一轮的做块
-        startNewRound(this.height,this.round);
+        startNewRound(BLOCKCHAIN_SERVICE_STATE_SUCCESS);
     }
 
     /**
@@ -154,12 +165,12 @@ public class BlockchainServiceImpl implements BlockchainService {
      * */
     @Override
     public void startNewRound(int height, int round) {
-        if(isSelfLeader(height,round)){
+        if(isSelfLeader()){
             log.info("startNewRound(): leaderNode="+this.nodeName+", height="+height+", round="+round+" try to build new block...");
             // 轮询交易池中是否有可以新的可以做块的交易
             while(true){
-                if(!isSelfLeader(height,round)){
-                    startNewRound(height,round);
+                if(!isSelfLeader()){
+                    startNewRound(BLOCKCHAIN_SERVICE_STATE_CONTINUE);
                     return ;
                 }
                 if(redisTxpool.size(TxPool.TXPOOL_LABEL_TRANSACTION) < 1){
@@ -184,18 +195,31 @@ public class BlockchainServiceImpl implements BlockchainService {
                 this.consensus.setup(message);
             }else{
                 log.info("startNewRound(): leader node="+nodeName+" fail to create new block at height="+height+", round="+round+".");
-                startNewRound(height,round);
+                startNewRound(BLOCKCHAIN_SERVICE_STATE_CONTINUE);
             }
         }else{
             log.info("startNewRound(): not leader node, waiting for leader or timeout");
+
         }
     }
 
-
+    /**
+     * startNewRound的总入口
+     * 在一个节点中，startNewRound可能是瞬间执行完毕（非主节点），或者持续执行（主节点）
+     * */
     @Override
-    public void startNewRound() {
-        startNewRound(this.height,0);
+    public void startNewRound(int code) {
+        if(code == BLOCKCHAIN_SERVICE_STATE_CONTINUE){
+            startNewRound(blockMapper.findMaxHeight()+1,round.get());
+        }else if(code == BLOCKCHAIN_SERVICE_STATE_SUCCESS){
+            round.set(0);
+            startNewRound(blockMapper.findMaxHeight()+1,round.get());
+        }else if(code == BLOCKCHAIN_SERVICE_STATE_FAIL){
+            round.addAndGet(1);
+            startNewRound(blockMapper.findMaxHeight()+1,round.get());
+        }
     }
+
 
     @Override
     public synchronized void storeBlock(Block block) {
@@ -226,12 +250,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         blockMapper.insertBlock(block);
         log.info("storeBlock(): Done! block="+block.toString());
         // 通知
-        this.timeoutHelper.notified(this.height,this.round);
-        // 同步
-        this.height = block.getHeight() + 1;
-        this.round = 0;
-        this.preHash = block.getHash();
-
+        // this.timeoutHelper.notified(this.height,this.round);
     }
 
     /**
@@ -421,7 +440,29 @@ public class BlockchainServiceImpl implements BlockchainService {
     /****************************************************/
 
     /**
-     * 初始化MessageService的callback
+     * 初始化MessageService
+     * */
+    private void initMessageService(){
+        try{
+            if(this.messageServiceType.equals(MessageService.JGROUPS)){
+                this.messageService = new JGroupsMessageImpl();
+            }else if(this.messageServiceType.equals(MessageService.NETTY)){
+                this.messageService = new NettyMessageImpl(msgIp,msgPort,msgAddressList);
+            }
+        }catch (Exception e){
+            log.error("initMessageService(): Failed init message service "+messageServiceType+" in constructor.");
+            e.printStackTrace();
+        }finally {
+            if(null == this.messageService){
+                log.error("initMessageService(): Null message service. Shut down!");
+                shutDownManager.shutDown();
+                return;
+            }
+        }
+        log.info("initMessageService(): "+messageServiceType+" init complete.");
+    }
+    /**
+     * 初始化共识协议
      * */
     private void initConsensus(){
         BlockchainServiceImpl bs = this;
@@ -472,10 +513,10 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 判断本地节点是否为主节点
      * 根据块高和轮数，使用轮询的方式考察当前节点列表。
      * 若节点的集群信息一致，使用相同的height和round可以算出同一个主节点index
-     * @param height 块高
-     * @param round 轮数
      * */
-    private boolean isSelfLeader(int height, int round){
+    private boolean isSelfLeader(){
+        int height = blockMapper.findMaxHeight() + 1;
+        int round = this.round.get();
         if(messageService.getClusterAddressList().size() <= 1){
             // 当前网络只有一个节点
             log.info("isSelfLeader(): single node.");
@@ -499,7 +540,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         for(int i = 0;i < index;i++){
             leader = (String) iterator.next();
         }
-        log.info("isSelfLeader(): multi node, index="+index+", "+this.messageService.getClusterAddressList()+", leader="+leader);
+        // log.info("isSelfLeader(): multi node, index="+index+", "+this.messageService.getClusterAddressList()+", leader="+leader);
         // 比较
         return leader.equals(messageService.getLocalAddress());
     }

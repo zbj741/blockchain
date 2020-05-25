@@ -6,6 +6,7 @@ import org.spongycastle.util.encoders.Hex;
 import javax.swing.*;
 import java.lang.reflect.Array;
 import java.math.BigInteger;
+import java.net.InetSocketAddress;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.text.DateFormat;
@@ -18,6 +19,16 @@ import java.util.regex.Pattern;
 public class Utils {
 
     private static SecureRandom random = new SecureRandom();
+
+    public static String InetSocketAddress2String(InetSocketAddress i){
+        return i.getHostName()+":"+i.getPort();
+    }
+    public static InetSocketAddress String2InetSocketAddress(String address){
+        String[] tmp = address.split(":");
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(tmp[0],Integer.valueOf(tmp[1]));
+        return inetSocketAddress;
+    }
+
 
     /**
      * @param number should be in form '0x34fabd34....'

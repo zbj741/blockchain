@@ -24,7 +24,7 @@ public interface MessageService {
     /**
      * 多点发送
      * */
-    void MultiSend(Object message, Set<String> addressList);
+    void multiSend(Object message, Set<String> addressList);
     /**
      * 本地地址
      * */
@@ -42,4 +42,6 @@ public interface MessageService {
      * */
     void onClusterChange();
 
+    String JGROUPS = "JGROUPS";
+    String NETTY = "NETTY";
 }

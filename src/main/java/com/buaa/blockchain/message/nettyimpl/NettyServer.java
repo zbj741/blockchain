@@ -15,6 +15,7 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 /**
  * netty实现server端，用来被其他的节点的client端来连接
  * server端收取其他节点的消息
+ * server端不记录自身被连接的信息，其自身所感知的集群网络状况由NettyClient管理
  *
  * @author hitty
  * */
@@ -23,6 +24,7 @@ public class NettyServer {
     int port;
     String ip;
     public NettyServer(NettyMessageImpl nl, String ip, int port){
+        NettyServer ts = this;
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try{
@@ -39,7 +41,7 @@ public class NettyServer {
                                             JsonMessageProto.JsonMessage.getDefaultInstance()));
                             socketChannel.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
                             socketChannel.pipeline().addLast(new ProtobufEncoder());
-                            socketChannel.pipeline().addLast(new NettyMsgHandler(nl));
+                            socketChannel.pipeline().addLast(new NettyServerHandler(nl,ts));
 
 
                         }

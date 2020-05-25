@@ -47,7 +47,8 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
                 log.warn("OnClusterChanged(): cluster changed pre="+pre+" now="+now);
                 // 更新clusterSize
                 blockchainService.setClusterNodeSize(now.size());
-                blockchainService.startNewRound();
+                // 轮数归零
+                blockchainService.startNewRound(blockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
                 // TODO 其他逻辑
             }
         });
@@ -151,12 +152,12 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
         // 检查是否为投票通过的
         if(SBFT_MESSAGE_TOPIC_DROP.equals(exec.getTopic())){
             log.info("sbftExecute(): Drop block="+exec.getBlock().getHash());
-            blockchainService.startNewRound(exec.getHeight(),exec.getRound() + 1);
+            blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_FAIL);
             return ;
         }else if(SBFT_MESSAGE_TOPIC_EXECUTE.equals(exec.getTopic())){
             log.info("sbftExecute(): execute block="+exec.getBlock().getHash());
             blockchainService.storeBlock(exec.getBlock());
-            blockchainService.startNewRound(exec.getHeight() + 1,0);
+            blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
             return ;
         }
     }

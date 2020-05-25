@@ -17,10 +17,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * */
 public interface BlockchainService {
     /**
-     * 新的一轮做块
+     * 新的一轮做块。
+     *
      * */
     void startNewRound(int height,int round);
-    void startNewRound();
+    /**
+     * 状态码
+     * -1：做块投票未通过/集群变动，高度不变，轮数+1
+     * 0：本地做块失败，高度不变，轮数不变
+     * 1：做块投票通过，高度+1，轮数归零
+     * */
+    int BLOCKCHAIN_SERVICE_STATE_FAIL = -1;
+    int BLOCKCHAIN_SERVICE_STATE_CONTINUE = 0;
+    int BLOCKCHAIN_SERVICE_STATE_SUCCESS = 1;
+    void startNewRound(int state);
     /**
      * 运行入口
      * */

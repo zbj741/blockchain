@@ -1,12 +1,21 @@
 package com.buaa.blockchain.message.nettyimpl;
 
+import com.buaa.blockchain.entity.Message;
+import com.buaa.blockchain.utils.JsonUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class NettyMsgHandler extends ChannelInboundHandlerAdapter {
+/**
+ * netty中pipeline的最后一个环节，用于将JsonMessage解码等工作
+ *
+ * @author hitty
+ * */
+public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     NettyMessageImpl nl;
-    public NettyMsgHandler(NettyMessageImpl nl){
+    NettyClient nettyClient;
+    public NettyClientHandler(NettyMessageImpl nl,NettyClient nettyClient){
         this.nl = nl;
+        this.nettyClient = nettyClient;
     }
 
     @Override

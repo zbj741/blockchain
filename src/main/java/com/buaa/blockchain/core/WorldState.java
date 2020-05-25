@@ -46,6 +46,7 @@ public class WorldState {
      * */
     public boolean switchRoot(String root){
         byte[] rootBytes = null;
+        // 如果root和trie的初始化root一样，证明节点是第一次运行
         if(root.equals(trie.getRootHash())){
             return true;
         }
