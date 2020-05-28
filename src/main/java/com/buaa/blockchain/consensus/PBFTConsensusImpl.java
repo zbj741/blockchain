@@ -57,7 +57,7 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
 
     /**
      * pre-prepare的广播
-     * 广播的内容为被计算了merkle树和夹带各种上一区块信息的区块
+     * 广播的内容为被计算了merkle树和夹带各种上一区块信息的区块，发送的消息体为BlockService.createNewBlock
      * */
     @Override
     public void prePrepareBroadcast(Message message) {

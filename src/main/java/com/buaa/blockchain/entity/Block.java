@@ -34,7 +34,7 @@ public class Block implements Serializable, Comparable<Block> {
     private String sign;
     /* 版本号 */
     private String version;
-    /* 其他 */
+    /* 其他， 暂时用来记录从createBlock结束到storeBlock结束的时间差（毫秒）*/
     private String extra;
     /* 区块hash，作为区块持久化的主键，由区块头部数据哈希得到 */
     private String hash;

@@ -1,0 +1,2 @@
+# Platform: window10
+protoc --java_out . demo1.proto

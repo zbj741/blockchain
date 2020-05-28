@@ -78,7 +78,7 @@ public class JsonUtil {
             Block block1 = (Block) objectMapper.readValue(bstr,Block.class);
             System.out.println(block1);
 
-            Message message = new Message(Message.MESSAGE_TOPIC_DIGEST,"testNode",1,0,true,block);
+            Message message = new Message("233","testNode",1,0,true,block);
             String messagestr = objectMapper.writeValueAsString(message);
             System.out.println(messagestr);
             Message message1 = objectMapper.readValue(messagestr,Message.class);

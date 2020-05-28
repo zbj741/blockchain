@@ -7,6 +7,8 @@ import com.buaa.blockchain.message.MessageCallBack;
 import com.buaa.blockchain.utils.JsonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
+
 import java.util.Set;
 /**
  * SBFT共识协议的实现类
@@ -14,6 +16,8 @@ import java.util.Set;
 @Slf4j
 public class SBFTConsensusImpl implements SBFTConsensus<Message>{
     private BlockchainService blockchainService = null;
+    // TODO 超时检查器，即当前轮数中某一个阶段到达超时条件
+
     public SBFTConsensusImpl(BlockchainService blockchainService){
         this.blockchainService = blockchainService;
         // 定义消息系统和共识流程的结合点
@@ -38,6 +42,7 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
                     }
                 } catch (JsonProcessingException e) {
                     // TODO 异常处理
+                    e.printStackTrace();
                     log.error("OnMessageReceived(): unknown message data, "+msg);
                 }
             }
@@ -63,21 +68,25 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
      * 主节点发出第一阶段的广播
      * */
     @Override
+    @Async
     public void sbftDigestBroadcast(Message stage1_send) {
         stage1_send.setTopic(SBFT_MESSAGE_TOPIC_DIGEST);
         String jsonStr =  JsonUtil.message2JsonString(stage1_send);
         log.info("sbftDigestBroadcast(): broadcast block, message size=" + jsonStr.length() * 2 / 1024.0 + "KB.");
         blockchainService.broadcasting(jsonStr);
+        System.currentTimeMillis();
     }
 
     /**
      * 收到第一阶段的主节点做块进行检验，并且投票
      * */
     @Override
+    @Async
     public void sbftDigestBroadcastReceived(Message stage1_received) {
         log.info("sbftDigestBroadcastReceived(): received message="+stage1_received.toString());
         boolean vote = blockchainService.verifyBlock(stage1_received.getBlock(),stage1_received.getHeight(),stage1_received.getRound());
-        // TODO 计时
+        // 计时
+        stage1_received.getBlock().getTimes().setBlockReceived(System.currentTimeMillis());
         // 生成投票消息
         Message message = new Message(SBFT_MESSAGE_TOPIC_VOTE,blockchainService.getName(),
                 stage1_received.getHeight(),stage1_received.getRound(),vote,stage1_received.getBlock());
@@ -88,8 +97,10 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
      * 发出第二阶段的投票广播信息
      * */
     @Override
+    @Async
     public void sbftVoteBroadcast(Message stage2_send) {
         stage2_send.setTopic(SBFT_MESSAGE_TOPIC_VOTE);
+        stage2_send.getBlock().getTimes().setSendVote(System.currentTimeMillis());
         // 将消息打包成Json字符串
         String jsonStr = JsonUtil.message2JsonString(stage2_send);
         log.info("sbftVoteBroadcast(): node="+blockchainService.getName()+" vote "+stage2_send.getVote()+" to "+stage2_send.getBlock().toString());
@@ -102,7 +113,7 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
      * 当赞成票超过阈值时，执行sbftExcute阶段
      * 当反对票超过阈值时，开始新的一轮
      *
-     * 【注】 投票过程中会产生同步问题
+     * 【注】 投票过程中会产生同步问题，所以每一次接收投票的方法是synchronize的
      * */
     @Override
     public synchronized void sbftVoteBroadcastReceived(Message stage2_received) {
@@ -124,6 +135,8 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
                     "/"+blockchainService.getClusterNodeSize());
             // 删除投票记录
             blockchainService.removeVote(SBFT_VOTETAG_VOTE,height,round,blockHash);
+            // 计时
+            stage2_received.getBlock().getTimes().setVoteReceived(System.currentTimeMillis());
             // 执行
             stage2_received.setTopic(SBFT_MESSAGE_TOPIC_EXECUTE);
             sbftExecute(stage2_received);

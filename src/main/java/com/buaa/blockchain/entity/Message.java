@@ -13,16 +13,7 @@ import java.io.Serializable;
  * */
 @Data
 public class Message implements Serializable {
-
-    // 广播消息的主题
-    public static final String MESSAGE_TOPIC_TEST = "MESSAGE_TOPIC_TEST";
-    public static final String MESSAGE_TOPIC_DIGEST = "MESSAGE_TOPIC_DIGEST";
-    public static final String MESSAGE_TOPIC_VOTE = "MESSAGE_TOPIC_VOTE";
-    public static final String MESSAGE_TOPIC_SYNC = "MESSAGE_TOPIC_SYNC";
-    public static final String MESSAGE_TOPIC_SYNC_REPLY = "MESSAGE_TOPIC_SYNC_REPLY";
-    public static final String MESSAGE_TOPIC_EXECUTE = "MESSAGE_TOPIC_EXECUTE";
-    public static final String MESSAGE_TOPIC_DROP = "MESSAGE_TOPIC_DROP";
-
+    
     private String topic;
     private String nodeName;
     private int height;
@@ -30,14 +21,7 @@ public class Message implements Serializable {
     private Boolean vote;
     private Block block;
 
-    public Message(){
-        this.topic = MESSAGE_TOPIC_TEST;
-        this.nodeName = "";
-        this.height = -1;
-        this.round = -1;
-        this.vote = false;
-        this.block = new Block();
-    }
+    public Message(){}
 
     public Message(String nodeName,int height,int round,Block block){
         this.topic = "";

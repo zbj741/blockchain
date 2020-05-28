@@ -74,7 +74,7 @@ public class WorldState {
      * @param value 
      * */
     public void update32(Trie trie, String key, String value) {
-        log.info("update32(): key="+key+", value="+value);
+        log.debug("update32(): key="+key+", value="+value);
         //TODO 检查输入参数的合法性
         trie.update(key.getBytes(),value.getBytes());
     }
@@ -83,7 +83,7 @@ public class WorldState {
      * 默认以root为根
      * */
     public void update32(String key, String value) {
-        log.info("update32(): key="+key+", value="+value);
+        log.debug("update32(): key="+key+", value="+value);
         //TODO 检查输入参数的合法性
         trie.update(key.getBytes(),value.getBytes());
     }
@@ -106,7 +106,7 @@ public class WorldState {
     public String get32(String key){
         byte[] rlp = trie.get(key.getBytes());
         String value = new String(rlp);
-        log.info("get32(): key="+key+", value="+value);
+        log.debug("get32(): key="+key+", value="+value);
         return value;
     }
 

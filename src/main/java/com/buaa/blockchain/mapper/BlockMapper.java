@@ -12,6 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 
+/**
+ * 和数据库交互的Block相关
+ *
+ * @author hitty
+ *
+ * */
+
 @Repository
 public interface BlockMapper {
     @Select("SELECT hash from block where pre_hash = #{pre_hash}")

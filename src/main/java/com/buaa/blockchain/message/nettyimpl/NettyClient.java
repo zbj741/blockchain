@@ -151,6 +151,17 @@ public class NettyClient {
     }
 
     /**
+     * 删除channel
+     * */
+    public void removeChannel(Channel channel){
+        for(Map.Entry<String,Channel> entry : channelMap.entrySet()){
+            if(entry.getValue().equals(channel)){
+                removeChannel(entry.getKey());
+            }
+        }
+    }
+
+    /**
      * 广播
      * */
     public void broadcast(Object msg){

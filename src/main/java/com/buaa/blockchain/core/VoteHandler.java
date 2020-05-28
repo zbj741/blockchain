@@ -26,10 +26,11 @@ public class VoteHandler {
     // 投票信息
     private ConcurrentHashMap<String,VoteRecord> voteResList= new ConcurrentHashMap<>();
     // 投票超时时限
-    private final Long defaultTimeout = 20000L;
+    private int defaultTimeout;
     // 已被删除的key
-    // TODO 长度管理
     private ArrayList<String> removeKeys = new ArrayList<>();
+    // 清空删除的key的时间间隔
+
 
     public VoteHandler() {
 
@@ -42,33 +43,30 @@ public class VoteHandler {
         return tag+"_"+blockHash+"_"+height+"_"+round;
     }
 
-
-
-
     /**
      * 对一轮做块投票
      * 当被投票的记录不存在时，检查已被删除的投票记录中最大高度和轮数，若该记录没有存在于之前的投票，则新建记录
-     * @param height
-     * @param round
-     * @param blockHash
+     * @param tag       投票tag
+     * @param height    投票区块高度
+     * @param round     投票区块轮数
+     * @param blockHash 投票区块hash
+     * @param nodeName  投票者名字
      * @param voteValue 投票意见
      * */
-    public void vote(String tag,int height,int round,String blockHash,String nodeName,Boolean voteValue){
-        synchronized (this){
-            String key = createKey(tag,height,round,blockHash);
-            // 是否已经是被删除过的key
-            if(removeKeys.contains(key)){
-                log.warn("vote(): vote for tag="+tag+", height="+height+", round="+round+", blockhash="+blockHash+" has been removed!");
-                return;
-            }
-            // 是否存在对应的投票记录
-            if(!voteResList.keySet().contains(key)){
-                // 生成一条记录
-                VoteRecord voteRecord = new VoteRecord(tag,blockHash,height,round);
-                this.voteResList.put(key,voteRecord);
-            }
-            voteResList.get(key).vote(voteValue,nodeName);
+    public synchronized void vote(String tag,int height,int round,String blockHash,String nodeName,Boolean voteValue){
+        String key = createKey(tag,height,round,blockHash);
+        // 是否已经是被删除过的key
+        if(removeKeys.contains(key)){
+            log.warn("vote(): vote for tag="+tag+", height="+height+", round="+round+", blockhash="+blockHash+" has been removed!");
+            return;
         }
+        // 是否存在对应的投票记录
+        if(!voteResList.keySet().contains(key)){
+            // 生成一条记录
+            VoteRecord voteRecord = new VoteRecord(tag,blockHash,height,round);
+            this.voteResList.put(key,voteRecord);
+        }
+        voteResList.get(key).vote(voteValue,nodeName);
     }
 
     /**

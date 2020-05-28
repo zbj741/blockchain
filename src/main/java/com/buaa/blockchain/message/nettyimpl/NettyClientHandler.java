@@ -20,7 +20,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-
+        nettyClient.removeChannel(ctx.channel());
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
