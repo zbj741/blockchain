@@ -43,7 +43,7 @@ public class NettyClient {
                             addChannel(s);
                         }
                         for(Map.Entry<String,Channel> entry : channelMap.entrySet()){
-                            if(!entry.getValue().isActive()){
+                            if(!entry.getValue().isActive() || !entry.getValue().isOpen()){
                                 removeChannel(entry.getKey());
                             }
                         }
