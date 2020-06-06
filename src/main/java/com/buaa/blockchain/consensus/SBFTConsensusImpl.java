@@ -52,6 +52,9 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
                 log.warn("OnClusterChanged(): cluster changed pre="+pre+" now="+now);
                 // 更新clusterSize
                 blockchainService.setClusterNodeSize(now.size());
+                if(pre.size() < 1){
+                    // 当前
+                }
                 // 轮数归零
                 blockchainService.startNewRound(blockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
                 // TODO 其他逻辑

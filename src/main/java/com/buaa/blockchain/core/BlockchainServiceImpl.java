@@ -583,7 +583,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         for(int i = 0;i < index;i++){
             leader = (String) iterator.next();
         }
-        // log.info("isSelfLeader(): multi node, index="+index+", "+this.messageService.getClusterAddressList()+", leader="+leader);
+        log.info("isSelfLeader(): multi node, index="+index+", "+this.messageService.getClusterAddressList()+", leader="+leader);
         // 比较
         return leader.equals(messageService.getLocalAddress());
     }

@@ -17,8 +17,10 @@ import java.util.TreeSet;
 @Slf4j
 
 public class NettyMessageImpl implements MessageService {
+    // 本地地址（外网）
     public String ipv4;
     public int port;
+    // 外网节点地址列表
     public String ipv4List;
     private NettyServer server;
     private NettyClient client;

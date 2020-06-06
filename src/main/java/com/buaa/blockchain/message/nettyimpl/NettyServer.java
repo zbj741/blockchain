@@ -46,7 +46,9 @@ public class NettyServer {
 
                         }
                     });
-            ChannelFuture channelFuture = ssmpServerBootstrap.bind(ip,port).sync();
+            // ChannelFuture channelFuture = ssmpServerBootstrap.bind(ip,port).sync();
+            ChannelFuture channelFuture = ssmpServerBootstrap.bind(port).sync();
+
 
         } catch (Exception e) {
             e.printStackTrace();
