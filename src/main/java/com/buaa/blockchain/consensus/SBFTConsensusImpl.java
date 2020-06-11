@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 
+import java.util.ArrayList;
 import java.util.Set;
 /**
  * SBFT共识协议的实现类
@@ -52,9 +53,6 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
                 log.warn("OnClusterChanged(): cluster changed pre="+pre+" now="+now);
                 // 更新clusterSize
                 blockchainService.setClusterNodeSize(now.size());
-                if(pre.size() < 1){
-                    // 当前
-                }
                 // 轮数归零
                 blockchainService.startNewRound(blockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
                 // TODO 其他逻辑
@@ -71,20 +69,17 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
      * 主节点发出第一阶段的广播
      * */
     @Override
-    @Async
     public void sbftDigestBroadcast(Message stage1_send) {
         stage1_send.setTopic(SBFT_MESSAGE_TOPIC_DIGEST);
         String jsonStr =  JsonUtil.message2JsonString(stage1_send);
         log.info("sbftDigestBroadcast(): broadcast block, message size=" + jsonStr.length() * 2 / 1024.0 + "KB.");
         blockchainService.broadcasting(jsonStr);
-        System.currentTimeMillis();
     }
 
     /**
      * 收到第一阶段的主节点做块进行检验，并且投票
      * */
     @Override
-    @Async
     public void sbftDigestBroadcastReceived(Message stage1_received) {
         log.info("sbftDigestBroadcastReceived(): received message="+stage1_received.toString());
         boolean vote = blockchainService.verifyBlock(stage1_received.getBlock(),stage1_received.getHeight(),stage1_received.getRound());
@@ -94,13 +89,15 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
         Message message = new Message(SBFT_MESSAGE_TOPIC_VOTE,blockchainService.getName(),
                 stage1_received.getHeight(),stage1_received.getRound(),vote,stage1_received.getBlock());
         sbftVoteBroadcast(message);
+        // 尝试提前做块，是异步执行
+        blockchainService.createNewCacheBlock(stage1_received.getHeight()+1,stage1_received.getRound(),
+                stage1_received.getBlock());
     }
 
     /**
      * 发出第二阶段的投票广播信息
      * */
     @Override
-    @Async
     public void sbftVoteBroadcast(Message stage2_send) {
         stage2_send.setTopic(SBFT_MESSAGE_TOPIC_VOTE);
         stage2_send.getBlock().getTimes().setSendVote(System.currentTimeMillis());

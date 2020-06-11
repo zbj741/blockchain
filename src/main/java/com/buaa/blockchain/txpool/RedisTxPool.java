@@ -29,7 +29,6 @@ import java.util.Map.Entry;
 public class RedisTxPool implements TxPool{
 
     private final HashOperations<String,String,Transaction> transactionHashOperations;
-
     @Autowired
     public RedisTxPool(HashOperations<String, String, Transaction> transactionHashOperations) {
         this.transactionHashOperations = transactionHashOperations;
@@ -41,6 +40,7 @@ public class RedisTxPool implements TxPool{
      * @param tran_hash 交易的hash值
      * @return 交易
      * */
+    @Override
     public Transaction get(String hash,String tran_hash){
         return transactionHashOperations.get(hash,tran_hash);
     }
@@ -50,6 +50,7 @@ public class RedisTxPool implements TxPool{
      * @param hash 集合的hash值
      * @param tran_hash 交易的hash值
      * */
+    @Override
     public void put(String hash,String tran_hash,Transaction transaction){
         transactionHashOperations.put(hash,tran_hash,transaction);
     }
@@ -59,6 +60,7 @@ public class RedisTxPool implements TxPool{
      * @param hash 集合的hash值
      * @param tran_hash 交易的hash值
      * */
+    @Override
     public void delete(String hash,String tran_hash){
         transactionHashOperations.delete(hash,tran_hash);
     }
@@ -68,16 +70,18 @@ public class RedisTxPool implements TxPool{
      * @param hash 集合的hash值
      * @return 该集合长度
      * */
+    @Override
     public Long size(String hash){
         return transactionHashOperations.size(hash);
     }
 
     /**
-     * 获取指定hash值集合指定长度元素列表，默认初始位置
+     * 获取指定hash值集合指定长度元素列表
      * @param hash
      * @param size
      * @return
      * */
+    @Override
     public List<Transaction> getList(String hash,int size){
         List<Transaction> result = new ArrayList<>();
         if(size <= 0){
@@ -100,7 +104,6 @@ public class RedisTxPool implements TxPool{
     public Iterator<Map.Entry<String,Transaction>> getIterator(String hash){
         return transactionHashOperations.entries(hash).entrySet().iterator();
     }
-
 
 
 }

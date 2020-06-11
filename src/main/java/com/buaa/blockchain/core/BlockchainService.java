@@ -2,8 +2,11 @@ package com.buaa.blockchain.core;
 
 
 import com.buaa.blockchain.entity.Block;
+import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 /**
  * blockchain实现类需要完成的若干功能
@@ -47,6 +50,14 @@ public interface BlockchainService {
      * 生成创世区块
      * */
     Block generateFirstBlock();
+    /**
+     * 出块
+     * */
+    Block createNewBlock(int height, int round);
+    /**
+     * 提前做块
+     * */
+    void createNewCacheBlock(int height, int round, Block block);
     /**
      * 默认数据摘要生成
      * */

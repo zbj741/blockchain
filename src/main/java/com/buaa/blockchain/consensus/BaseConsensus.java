@@ -7,5 +7,8 @@ package com.buaa.blockchain.consensus;
 public interface BaseConsensus<T> {
     String PBFT = "PBFT";
     String SBFT = "SBFT";
+    /**
+     * 开启一次共识
+     * */
     void setup(T t);
 }

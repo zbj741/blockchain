@@ -90,4 +90,9 @@ public class Transaction implements Serializable,Comparable<Transaction> {
     public int compareTo(Transaction tran) {
         return this.getTranSeq().compareTo(tran.getTranSeq());
     }
+
+    public boolean equals(Transaction transaction) {
+        return tran_hash.equals(transaction.tran_hash);
+    }
+
 }

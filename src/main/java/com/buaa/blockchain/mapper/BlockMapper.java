@@ -33,7 +33,7 @@ public interface BlockMapper {
     public int insertBlock(Block Block);
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     @Select("select hash from block where height = #{height}")
-    public String findPreHashByHeight(int height);
+    public String findHashByHeight(int height);
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     @Select("select max(height) from block")
     public Integer findMaxHeight();
