@@ -1,7 +1,7 @@
 package com.buaa.blockchain.trie;
 
-import com.buaa.blockchain.datasource.KeyValueDataSource;
-import com.buaa.blockchain.datasource.LevelDbDataSource;
+import com.buaa.blockchain.trie.datasource.KeyValueDataSource;
+import com.buaa.blockchain.trie.datasource.LevelDbDataSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +45,13 @@ public class TrieTest {
             System.out.print(b);
         }
         System.out.println("\nlevelDb:"+levelDb.get(trie.getRootHash()));
-
-
+        // undo
+        trie.undo();
+        System.out.println("trie.getRootHash()"+trie.getRootHash());
+        for(byte b : trie.getRootHash()){
+            System.out.print(b);
+        }
+        System.out.println("\nlevelDb:"+levelDb.get(trie.getRootHash()));
 
 
         // 尝试一个长一点的数据

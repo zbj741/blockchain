@@ -1,4 +1,4 @@
-package com.buaa.blockchain.datasource;
+package com.buaa.blockchain.trie.datasource;
 
 
 public interface DataSource {

@@ -9,7 +9,6 @@ public class TxExecuter {
         for(Transaction transaction : transactionList){
             baseSingleExecute(transaction,worldState);
         }
-        worldState.sync();
     }
     /**
      * 执行单个交易

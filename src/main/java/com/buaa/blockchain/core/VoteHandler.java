@@ -26,7 +26,7 @@ public class VoteHandler {
     // 投票信息
     private ConcurrentHashMap<String,VoteRecord> voteResList= new ConcurrentHashMap<>();
     // 投票超时时限
-    private int defaultTimeout;
+    private Long defaultTimeout = 10000L;
     // 已被删除的key
     private ArrayList<String> removeKeys = new ArrayList<>();
     // 清空删除的key的时间间隔
@@ -128,7 +128,7 @@ class VoteRecord{
     // 该条记录的初始化时间
     private Long startTime;
     // 超时
-    // Long timeout
+    Long timeout = 0L;
     // 赞成票数
     private int agree = 0;
     // 反对票数

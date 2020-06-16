@@ -1,6 +1,6 @@
 package com.buaa.blockchain.trie;
 
-import com.buaa.blockchain.datasource.KeyValueDataSource;
+import com.buaa.blockchain.trie.datasource.KeyValueDataSource;
 import com.buaa.blockchain.utils.ByteArrayWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,6 @@ import static com.buaa.blockchain.utils.ByteUtil.*;
 import static java.util.Arrays.copyOfRange;
 import static org.spongycastle.pqc.math.linearalgebra.ByteUtils.concatenate;
 
-import com.buaa.blockchain.utils.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 /**

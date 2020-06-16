@@ -1,15 +1,12 @@
 package com.buaa.blockchain.core;
 
-import com.buaa.blockchain.datasource.KeyValueDataSource;
-import com.buaa.blockchain.datasource.LevelDbDataSource;
+import com.buaa.blockchain.trie.datasource.KeyValueDataSource;
 import com.buaa.blockchain.trie.Trie;
 import com.buaa.blockchain.trie.TrieImpl;
 import com.buaa.blockchain.trie.Values;
 import com.buaa.blockchain.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
-import org.iq80.leveldb.DBException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,7 +15,8 @@ import org.springframework.stereotype.Component;
  * 每当执行一次block中的全部交易后，将根节点存入。
  * 所使用的底层为trie模块。levelDb是初始化trie模块需要的参数，但是不直接对levelDb进行任何操作。
  *
- * WorldState的唯一构造方法中，默认创建新的trie。当区块链系统第一次运行时，WorldState状态为空
+ * WorldState的唯一构造方法中，默认创建新的trie。
+ * 当区块链系统第一次运行时，WorldState状态为空，由于trie中写入数据的RLP码小于32位则不同步到levelDB
  *
  * 为了使得key的冲突程度降低，可以将业务逻辑拆分，对应不同的key类型
  *
@@ -31,12 +29,17 @@ public class WorldState {
     private Trie trie;
     /* levelDb存储接口 */
     private KeyValueDataSource levelDb;
+    private static String init = "This is the description for worldState in buaa-blockchain, " +
+            "and the aim for this action is to initial specific value in leveldb.";
 
     @Autowired
     public WorldState(KeyValueDataSource levelDb) {
         levelDb.init();
         this.levelDb = levelDb;
         trie = new TrieImpl(levelDb);
+        // TODO 向初始化的worldState中插入既定数据
+        this.update32("init",init);
+        this.sync();
         log.info("WorldState(): init, getRootHash="+getRootHash());
     }
 
@@ -125,6 +128,12 @@ public class WorldState {
         return Utils.bytesToHexString(trie.getRootHash());
     }
 
+    /**
+     * 撤销
+     * */
+    public void undo(){
+        trie.undo();
+    }
     /**
      * 关闭
      * */

@@ -25,11 +25,18 @@ public interface PBFTConsensus<T> extends BaseConsensus<T> {
 
     void viewChanged();
 
+    /**
+     * 各个阶段Message的Topic
+     * */
     String PBFT_MESSAGE_TOPIC_REQUEST = "PBFT_MESSAGE_TOPIC_REQUEST";
     String PBFT_MESSAGE_TOPIC_PREPREPARE = "PBFT_MESSAGE_TOPIC_PREPREPARE";
     String PBFT_MESSAGE_TOPIC_PREPARE = "PBFT_MESSAGE_TOPIC_PREPARE";
     String PBFT_MESSAGE_TOPIC_COMMIT = "PBFT_MESSAGE_TOPIC_COMMIT";
-
+    /**
+     * 投票tag
+     * */
+    String PBFT_VOTETAG_PREPARE = "PBFT_VOTETAG_PREPARE";
+    String PBFT_VOTETAG_COMMIT = "PBFT_VOTETAG_COMMIT";
 
 
 }

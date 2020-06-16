@@ -38,7 +38,7 @@ public interface SBFTConsensus<T> extends BaseConsensus<T>{
 
 
     /**
-     * 各个阶段的TOPIC
+     * 各个阶段Message的Topic
      * */
     String SBFT_MESSAGE_TOPIC_TEST = "SBFT_MESSAGE_TOPIC_TEST";
     String SBFT_MESSAGE_TOPIC_DIGEST = "SBFT_MESSAGE_TOPIC_DIGEST";

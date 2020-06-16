@@ -51,8 +51,6 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
             @Override
             public void OnClusterChanged(Set<String> pre, Set<String> now) {
                 log.warn("OnClusterChanged(): cluster changed pre="+pre+" now="+now);
-                // 更新clusterSize
-                blockchainService.setClusterNodeSize(now.size());
                 // 轮数归零
                 blockchainService.startNewRound(blockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
                 // TODO 其他逻辑
@@ -127,7 +125,7 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
         Boolean voteValue = stage2_received.getVote();
         // 接收投票
         blockchainService.voteForBlock(SBFT_VOTETAG_VOTE,height,round,blockHash,msgNodeName,voteValue);
-        log.info("sbftVoteBroadcastReceived(): vote to block="+blockHash+", "+blockchainService.getAgreeVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)+"/"+blockchainService.getClusterNodeSize());
+        log.info("sbftVoteBroadcastReceived(): block="+blockHash+", "+blockchainService.getAgreeVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)+"/"+blockchainService.getClusterNodeSize());
         // 查看是否收到sbft中大于集群节点个数2/3的同意票
         if(blockchainService.getAgreeVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)*1.0f > blockchainService.getClusterNodeSize() * (2/3.0f)){
             log.info("sbftVoteBroadcastReceived(): execute, block="+blockHash+", height="+height+", round="+round+
@@ -169,6 +167,7 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
             return ;
         }else if(SBFT_MESSAGE_TOPIC_EXECUTE.equals(exec.getTopic())){
             log.info("sbftExecute(): execute block="+exec.getBlock().getHash());
+            blockchainService.transactionExec(null,exec.getBlock());
             blockchainService.storeBlock(exec.getBlock());
             blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
             return ;

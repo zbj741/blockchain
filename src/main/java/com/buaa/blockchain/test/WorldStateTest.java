@@ -1,10 +1,9 @@
 package com.buaa.blockchain.test;
 
 import com.buaa.blockchain.core.WorldState;
-import com.buaa.blockchain.datasource.KeyValueDataSource;
-import com.buaa.blockchain.datasource.LevelDbDataSource;
+import com.buaa.blockchain.trie.datasource.KeyValueDataSource;
+import com.buaa.blockchain.trie.datasource.LevelDbDataSource;
 import com.buaa.blockchain.entity.Transaction;
-import com.buaa.blockchain.trie.TrieImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class WorldStateTest {

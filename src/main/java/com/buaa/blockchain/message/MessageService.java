@@ -1,12 +1,12 @@
 package com.buaa.blockchain.message;
 
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * 消息服务的抽象类，任何实现类需要继承该抽象类
  * 消息服务只负责消息的收发、网络状态的检查；消息服务将收到的数据通知回调函数，本身不关心消息怎么处理
+ * 消息服务的实现类会持有BlockchainService的引用，从而执行其中的MessageCallBack
+ *
  *
  * @author hitty
  *

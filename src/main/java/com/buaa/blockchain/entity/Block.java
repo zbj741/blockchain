@@ -95,4 +95,25 @@ public class Block implements Serializable, Comparable<Block> {
         this.setTx_length(txLength);
     }
 
+    /**
+     * 返回一个和原block其他字段相同但是没有交易数据的新block
+     * */
+    public Block copyWithoutTrans(){
+        Block block = new Block();
+        block.setPre_hash(this.pre_hash);
+        block.setHash(this.hash);
+        block.setMerkle_root(this.merkle_root);
+        block.setState_root(this.state_root);
+        block.setPre_state_root(this.pre_state_root);
+        block.setHeight(this.height);
+        block.setSign(this.sign);
+        block.setTimestamp(this.timestamp);
+        block.setVersion(this.version);
+        block.setExtra(this.extra);
+        block.setTrans(new ArrayList<Transaction>());
+        block.setTx_length(this.tx_length);
+        block.setTimes(this.times);
+        return block;
+    }
+
 }

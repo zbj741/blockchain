@@ -21,7 +21,8 @@ import java.util.List;
 public interface BlockchainService {
     /**
      * 新的一轮做块。
-     *
+     * @param height
+     * @param round
      * */
     void startNewRound(int height,int round);
     /**
@@ -40,10 +41,15 @@ public interface BlockchainService {
     void firstTimeSetup();
     /**
      * 区块持久化，包括交易的执行、区块和交易的持久化
+     * @param block
      * */
     void storeBlock(Block block);
     /**
      * 区块确认
+     * @param block
+     * @param height
+     * @param round
+     * @return
      * */
     boolean verifyBlock(Block block, int height, int round);
     /**
@@ -52,35 +58,82 @@ public interface BlockchainService {
     Block generateFirstBlock();
     /**
      * 出块
+     * @param height
+     * @param round
      * */
     Block createNewBlock(int height, int round);
     /**
      * 提前做块
+     * @param height
+     * @param round
+     * @param block
      * */
     void createNewCacheBlock(int height, int round, Block block);
     /**
+     * 模拟交易执行并返回rootHash
+     * @param stateRoot
+     * @param block
+     * @return
+     * */
+    String transactionExec(String stateRoot,Block block);
+    /**
+     * 撤回交易执行，将worldState还原为上一次的形式
+     * 在worldState已经sync之后则无效
+     * */
+    void undoTransactionExec();
+    /**
      * 默认数据摘要生成
+     * @param data
+     * @return
      * */
     String getDigest(String data);
+
+
+    /*************  对某一轮的做块投票相关   *************/
     /**
-     * 对某一轮的做块投票相关
+     * 为某一轮做块的区块投票
      * */
     void voteForBlock(String tag,int height,int round,String blockHash,String nodeName,Boolean voteValue);
-    int getAgreeVoteCount(String tag,int height,int round,String blockHash);
-    int getAgainstVoteCount(String tag,int height,int round,String blockHash);
-    void removeVote(String tag,int height,int round,String blockHash);
     /**
-     * 节点通信相关
+     * 获取同意票数
+     * */
+    int getAgreeVoteCount(String tag,int height,int round,String blockHash);
+    /**
+     * 获取不同意票数
+     * */
+    int getAgainstVoteCount(String tag,int height,int round,String blockHash);
+    /**
+     * 删除投票记录
+     * */
+    void removeVote(String tag,int height,int round,String blockHash);
+
+
+    /*************  节点通信相关   *************/
+    /**
+     * 广播
      * */
     void broadcasting(Object message);
-    int getClusterNodeSize();
-    void setClusterNodeSize(int size);
-    void setMessageCallBack(MessageCallBack messageCallBack);
     /**
-     * 自身属性相关
+     * 获取集群大小
+     * */
+    int getClusterNodeSize();
+    /**
+     * 设置回调函数
+     * */
+    void setMessageCallBack(MessageCallBack messageCallBack);
+
+    /*************  自身属性相关  *************/
+    /**
+     * 获取节点名称
      * */
     String getName();
+    /**
+     * 获取版本号
+     * */
     String getVersion();
+    /**
+     * 获取节点的数字签名
+     * */
     String getSign();
 
 }

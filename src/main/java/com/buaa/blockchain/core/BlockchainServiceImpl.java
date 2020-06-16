@@ -2,6 +2,7 @@ package com.buaa.blockchain.core;
 
 
 import com.buaa.blockchain.consensus.BaseConsensus;
+import com.buaa.blockchain.consensus.PBFTConsensusImpl;
 import com.buaa.blockchain.consensus.SBFTConsensusImpl;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.entity.Block;
@@ -17,6 +18,7 @@ import com.buaa.blockchain.message.MessageService;
 import com.buaa.blockchain.message.nettyimpl.NettyMessageImpl;
 import com.buaa.blockchain.txpool.RedisTxPool;
 import com.buaa.blockchain.txpool.TxPool;
+
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +32,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -286,13 +286,10 @@ public class BlockchainServiceImpl implements BlockchainService {
             return ;
         }
         block.getTimes().setStoreBlock(System.currentTimeMillis());
-        // 执行交易
-        List<Transaction> transactions = block.getTrans();
-        TxExecuter.baseExecute(transactions,worldState);
         // 存储当前状态树根的值到block中
         block.setState_root(worldState.getRootHash());
         // 处理交易池
-        for(Transaction ts : transactions){
+        for(Transaction ts : block.getTrans()){
             if(null == redisTxpool.get(TxPool.TXPOOL_LABEL_TRANSACTION,ts.getTran_hash())){
                 // 本地交易池中没有此交易，认为是还没有收到（可能是网络时延）
                 redisTxpool.put(TxPool.TXPOOL_LABEL_DEL_TRANSACTION,ts.getTran_hash(),ts);
@@ -302,13 +299,12 @@ public class BlockchainServiceImpl implements BlockchainService {
             }
             ts.setBlock_hash(block.getHash());
         }
-        // 持久化交易和区块
-        worldState.sync();
         block.getTimes().setEndTime(System.currentTimeMillis());
         // 计算耗时
-        long start = Long.valueOf(block.getExtra());
-        long cost = System.currentTimeMillis() - start;
+        long cost = block.getTimes().getEndTime() - Long.valueOf(block.getExtra());
         block.setExtra(Long.toString(cost));
+        // 持久化交易和区块
+        worldState.sync();
         blockMapper.insertTimes(block.getTimes());
         blockMapper.insertBlock(block);
         log.info("storeBlock(): Done! block="+block.toString());
@@ -542,6 +538,39 @@ public class BlockchainServiceImpl implements BlockchainService {
     }
 
     /**
+     * 模拟执行交易，用于PBFT共识协议
+     * */
+    @Override
+    public synchronized String transactionExec(String stateRoot, Block block) {
+        log.info("transactionExec(): start exec transactions in block="+block.getHash()+", tranactions size="+block.getTx_length());
+        if(null == stateRoot){
+            List<Transaction> transactions = block.getTrans();
+            TxExecuter.baseExecute(transactions,worldState);
+            return worldState.getRootHash();
+        }
+        return null;
+    }
+
+    /**
+     * 撤销交易执行，回复到上一次
+     * */
+    @Override
+    public void undoTransactionExec() {
+        log.info("undoTransactionExec(): undo trie...");
+        String pre = worldState.getRootHash();
+        String rootInDb = blockMapper.findStatRoot(blockMapper.findMaxHeight());
+        worldState.undo();
+        String now = worldState.getRootHash();
+
+        // 检查是否回复到当前最高区块所记录的stateRoot值
+        if(!now.equals(rootInDb)){
+            // TODO undo失败
+            log.error("undoTransactionExec(): cannot undo to root in db, root in db is "+
+                    rootInDb+", now="+now+", pre="+pre);
+        }
+    }
+
+    /**
      * 获取String类型数据的摘要
      * 这里使用的是JDK中实现的数据摘要。
      * 考虑到线程安全，每一次调用getDigest()方法都会新建一个messageDigest实例，防止互相干扰
@@ -599,12 +628,7 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     @Override
     public int getClusterNodeSize() {
-        return this.clusterSize;
-    }
-
-    @Override
-    public void setClusterNodeSize(int size) {
-        this.clusterSize = size;
+        return this.messageService.getClusterAddressList().size();
     }
 
     @Override
@@ -643,6 +667,9 @@ public class BlockchainServiceImpl implements BlockchainService {
                 this.messageService = new JGroupsMessageImpl();
             }else if(this.messageServiceType.equals(MessageService.NETTY)){
                 this.messageService = new NettyMessageImpl(msgIp,msgPort,msgAddressList);
+            }else{
+                log.error("initMessageService(): "+this.messageServiceType+" not found! Shut down.");
+                shutDownManager.shutDown();
             }
         }catch (Exception e){
             log.error("initMessageService(): Failed init message service "+messageServiceType+" in constructor.");
@@ -665,6 +692,11 @@ public class BlockchainServiceImpl implements BlockchainService {
             //TODO 暂时这么写 需要修改
             if(this.consensusType.equals(BaseConsensus.SBFT)){
                 this.consensus = new SBFTConsensusImpl(bs);
+            }else if(this.consensusType.equals(BaseConsensus.PBFT)){
+                this.consensus = new PBFTConsensusImpl(bs);
+            }else{
+                log.error("initConsensus(): "+this.consensusType+" not found! Shut down.");
+                shutDownManager.shutDown();
             }
         } catch (Exception e) {
             log.error("initConsensus(): Failed init consensus "+consensusType+" in constructor.");
