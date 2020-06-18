@@ -19,6 +19,8 @@ import java.util.List;
  * @author hitty
  * */
 public interface BlockchainService {
+
+    /*************  区块生成相关  *************/
     /**
      * 新的一轮做块。
      * @param height
@@ -70,6 +72,19 @@ public interface BlockchainService {
      * */
     void createNewCacheBlock(int height, int round, Block block);
     /**
+     * 向其他节点广播请求同步区块
+     * */
+    void requestSyncBlocks(int nowHeight, int aimHeight);
+    /**
+     * 回复syncBlocks
+     * */
+    void replySyncBlocks();
+    /**
+     * 本地同步区块
+     * */
+    void syncBlocks(List<Block> blockList);
+
+    /**
      * 模拟交易执行并返回rootHash
      * @param stateRoot
      * @param block
@@ -107,6 +122,16 @@ public interface BlockchainService {
      * */
     void removeVote(String tag,int height,int round,String blockHash);
 
+    /*************  智能合约相关   *************/
+    /**
+     * 本地部署智能合约
+     * */
+    void deployContract(Object o);
+
+    /**
+     * 在区块链网络同步智能合约
+     * */
+    void syncContract(String contractId);
 
     /*************  节点通信相关   *************/
     /**

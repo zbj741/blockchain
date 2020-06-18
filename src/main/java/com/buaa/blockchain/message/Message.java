@@ -1,7 +1,8 @@
-package com.buaa.blockchain.entity;
+package com.buaa.blockchain.message;
 
 
 
+import com.buaa.blockchain.entity.Block;
 import lombok.Data;
 
 import java.io.Serializable;

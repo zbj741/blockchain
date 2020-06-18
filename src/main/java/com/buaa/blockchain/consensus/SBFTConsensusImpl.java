@@ -2,14 +2,12 @@ package com.buaa.blockchain.consensus;
 
 import com.buaa.blockchain.core.BlockchainService;
 import com.buaa.blockchain.entity.Block;
-import com.buaa.blockchain.entity.Message;
+import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.buaa.blockchain.utils.JsonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 
-import java.util.ArrayList;
 import java.util.Set;
 /**
  * SBFT共识协议的实现类
@@ -21,46 +19,33 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
 
     public SBFTConsensusImpl(BlockchainService blockchainService){
         this.blockchainService = blockchainService;
-        // 定义消息系统和共识流程的结合点
-        this.blockchainService.setMessageCallBack(new MessageCallBack() {
-            @Override
-            public void OnMessageReceived(Object msg) {
-                try {
-                    // 将消息还原成标准格式
-                    Message receiveMsg = JsonUtil.objectMapper.readValue((String)msg,Message.class);
-                    String topic = receiveMsg.getTopic();
-                    // 对应处理逻辑
-                    if (topic.equals(SBFT_MESSAGE_TOPIC_DIGEST)) {
-                        sbftDigestBroadcastReceived(receiveMsg);
-                    } else if (topic.equals(SBFT_MESSAGE_TOPIC_VOTE)) {
-                        sbftVoteBroadcastReceived(receiveMsg);
-                    } else if (topic.equals(SBFT_MESSAGE_TOPIC_SYNC)) {
-
-                    } else if (topic.equals(SBFT_MESSAGE_TOPIC_SYNC_REPLY)){
-
-                    } else if(topic.equals(SBFT_MESSAGE_TOPIC_TEST)){
-                        log.info("OnMessageReceived(): testMsg:"+receiveMsg.toString());
-                    }
-                } catch (JsonProcessingException e) {
-                    // TODO 异常处理
-                    e.printStackTrace();
-                    log.error("OnMessageReceived(): unknown message data, "+msg);
-                }
-            }
-            // 收到集群变动后的处理逻辑
-            @Override
-            public void OnClusterChanged(Set<String> pre, Set<String> now) {
-                log.warn("OnClusterChanged(): cluster changed pre="+pre+" now="+now);
-                // 轮数归零
-                blockchainService.startNewRound(blockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
-                // TODO 其他逻辑
-            }
-        });
     }
 
     @Override
     public void setup(Message message) {
         sbftDigestBroadcast(message);
+    }
+
+    @Override
+    public void onMessageReceived(Message receiveMsg) {
+        String topic = receiveMsg.getTopic();
+        // 对应处理逻辑
+        if (topic.equals(SBFT_MESSAGE_TOPIC_DIGEST)) {
+            sbftDigestBroadcastReceived(receiveMsg);
+        } else if (topic.equals(SBFT_MESSAGE_TOPIC_VOTE)) {
+            sbftVoteBroadcastReceived(receiveMsg);
+        } else if (topic.equals(SBFT_MESSAGE_TOPIC_SYNC)) {
+
+        } else if (topic.equals(SBFT_MESSAGE_TOPIC_SYNC_REPLY)){
+
+        } else if(topic.equals(SBFT_MESSAGE_TOPIC_TEST)){
+            log.info("OnMessageReceived(): testMsg:"+receiveMsg.toString());
+        }
+    }
+
+    @Override
+    public void onClusterChanger(Set<String> pre, Set<String> now) {
+
     }
 
     /**

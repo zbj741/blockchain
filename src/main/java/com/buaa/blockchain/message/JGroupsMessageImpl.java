@@ -5,6 +5,7 @@ import org.jgroups.*;
 import org.jgroups.conf.ConfiguratorFactory;
 import org.jgroups.conf.ProtocolStackConfigurator;
 import org.jgroups.stack.IpAddress;
+import org.jgroups.Message;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -79,7 +80,7 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
         if(null != this.messageCallBack){
             // 将和具体业务逻辑有关的部分传递给回调接口
             String msgString = (String) msg.getObject();
-            messageCallBack.OnMessageReceived(msgString);
+            messageCallBack.onMessageReceived(msgString);
         }
     }
 
@@ -106,7 +107,7 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
             //        " *** now="+this.clusterAddressList.toString());
             // 回调
             if(null != this.messageCallBack){
-                this.messageCallBack.OnClusterChanged(pre,this.clusterAddressList);
+                this.messageCallBack.onClusterChanged(pre,this.clusterAddressList);
             }
         }
 

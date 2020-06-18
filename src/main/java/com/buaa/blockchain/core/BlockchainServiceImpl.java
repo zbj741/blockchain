@@ -6,7 +6,7 @@ import com.buaa.blockchain.consensus.PBFTConsensusImpl;
 import com.buaa.blockchain.consensus.SBFTConsensusImpl;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.entity.Block;
-import com.buaa.blockchain.entity.Message;
+import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.entity.Times;
 import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.exception.ShutDownManager;
@@ -19,6 +19,8 @@ import com.buaa.blockchain.message.nettyimpl.NettyMessageImpl;
 import com.buaa.blockchain.txpool.RedisTxPool;
 import com.buaa.blockchain.txpool.TxPool;
 
+import com.buaa.blockchain.utils.JsonUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -538,6 +540,32 @@ public class BlockchainServiceImpl implements BlockchainService {
     }
 
     /**
+     * 向其他节点发起请求，获取从nowHeight到aimHeight高度的区块数据
+     * @param nowHeight 本地最高块
+     * @param aimHeight 需要获取的最高块
+     * */
+    @Override
+    public void requestSyncBlocks(int nowHeight, int aimHeight) {
+
+    }
+
+    /**
+     * 回复requestSyncBlocks，具体需要将搜索本地区块数据并且打包发送给需要的节点
+     * */
+    @Override
+    public synchronized void replySyncBlocks() {
+
+    }
+
+    /**
+     * 将参数中的blockList在本地执行并且存储
+     * */
+    @Override
+    public synchronized void syncBlocks(List<Block> blockList) {
+
+    }
+
+    /**
      * 模拟执行交易，用于PBFT共识协议
      * */
     @Override
@@ -618,6 +646,17 @@ public class BlockchainServiceImpl implements BlockchainService {
     public void removeVote(String tag,int height, int round, String blockHash) {
         this.voteHandler.remove(tag,height,round,blockHash);
     }
+
+    @Override
+    public void deployContract(Object o) {
+
+    }
+
+    @Override
+    public void syncContract(String contractId) {
+
+    }
+
     /**
      * 节点通信相关
      * */
@@ -662,6 +701,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 初始化MessageService
      * */
     private void initMessageService(){
+        BlockchainServiceImpl bs = this;
         try{
             if(this.messageServiceType.equals(MessageService.JGROUPS)){
                 this.messageService = new JGroupsMessageImpl();
@@ -671,6 +711,30 @@ public class BlockchainServiceImpl implements BlockchainService {
                 log.error("initMessageService(): "+this.messageServiceType+" not found! Shut down.");
                 shutDownManager.shutDown();
             }
+            this.messageService.setMessageCallBack(new MessageCallBack() {
+                @Override
+                public void onMessageReceived(Object content) {
+                    // 将消息还原成标准格式
+                    try {
+                        Message receiveMsg = JsonUtil.objectMapper.readValue((String)content,Message.class);
+                        // 判断是否为core需要处理的消息，否则分发给其他模块
+                        // TODO 判断core
+
+                        // 交付给共识模块
+                        bs.consensus.onMessageReceived(receiveMsg);
+                    } catch (JsonProcessingException e) {
+                        // TODO 异常处理
+                        e.printStackTrace();
+                        log.error("OnMessageReceived(): unknown message data, "+content);
+                    }
+                }
+                @Override
+                public void onClusterChanged(Set<String> pre, Set<String> now) {
+                    log.warn("OnClusterChanged(): cluster changed pre="+pre+" now="+now);
+                    // 轮数归零
+                    bs.startNewRound(bs.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
+                }
+            });
         }catch (Exception e){
             log.error("initMessageService(): Failed init message service "+messageServiceType+" in constructor.");
             e.printStackTrace();

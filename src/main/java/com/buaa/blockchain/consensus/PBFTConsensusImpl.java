@@ -1,8 +1,7 @@
 package com.buaa.blockchain.consensus;
 import com.buaa.blockchain.core.BlockchainService;
 import com.buaa.blockchain.entity.Block;
-import com.buaa.blockchain.entity.Message;
-import com.buaa.blockchain.entity.Transaction;
+import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.buaa.blockchain.utils.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -21,41 +20,47 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PBFTConsensusImpl implements PBFTConsensus<Message> {
     // 对区块链服务的引用
     private BlockchainService blockchainService = null;
-    // 暂时用来存储正在参与做块的区块，减少传输中的带宽
+    // 在commit阶段暂时用来存储正在参与做块的区块，减少传输中的带宽
     private ConcurrentHashMap<String,Block> blockList = null;
 
     public PBFTConsensusImpl(BlockchainService blockchainService){
         this.blockchainService = blockchainService;
         blockList = new ConcurrentHashMap<>();
-        this.blockchainService.setMessageCallBack(new MessageCallBack() {
-            @Override
-            public void OnMessageReceived(Object msg) {
-                try{
-                    // 将消息还原成标准格式
-                    Message receiveMsg = JsonUtil.objectMapper.readValue((String)msg,Message.class);
-                    String topic = receiveMsg.getTopic();
-                    if(topic.equals(PBFT_MESSAGE_TOPIC_REQUEST)){
-                        requestReceived(receiveMsg);
-                    }else if(topic.equals(PBFT_MESSAGE_TOPIC_PREPREPARE)){
-                        prePrepareReceived(receiveMsg);
-                    }else if(topic.equals(PBFT_MESSAGE_TOPIC_PREPARE)){
-                        prepareReceived(receiveMsg);
-                    }else if(topic.equals(PBFT_MESSAGE_TOPIC_COMMIT)){
-                        commitReceived(receiveMsg);
-                    }
+    }
 
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+    /**
+     * 入口，将Message进行共识
+     * */
+    @Override
+    public void setup(Message message) {
+        prePrepareBroadcast(message);
+    }
+
+    /**
+     * 从core.BlockchainService中获取消息
+     * */
+    @Override
+    public void onMessageReceived(Message receiveMsg) {
+        try{
+            String topic = receiveMsg.getTopic();
+            if(topic.equals(PBFT_MESSAGE_TOPIC_REQUEST)){
+                requestReceived(receiveMsg);
+            }else if(topic.equals(PBFT_MESSAGE_TOPIC_PREPREPARE)){
+                prePrepareReceived(receiveMsg);
+            }else if(topic.equals(PBFT_MESSAGE_TOPIC_PREPARE)){
+                prepareReceived(receiveMsg);
+            }else if(topic.equals(PBFT_MESSAGE_TOPIC_COMMIT)){
+                commitReceived(receiveMsg);
             }
-            // 收到集群变动后的处理逻辑
-            @Override
-            public void OnClusterChanged(Set<String> pre, Set<String> now) {
-                log.warn("OnClusterChanged(): cluster changed pre="+pre+" now="+now);
-                // 轮数归零
-                blockchainService.startNewRound(blockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
-            }
-        });
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onClusterChanger(Set<String> pre, Set<String> now) {
+
     }
 
     @Override
@@ -219,8 +224,4 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
 
     }
 
-    @Override
-    public void setup(Message message) {
-        prePrepareBroadcast(message);
-    }
 }

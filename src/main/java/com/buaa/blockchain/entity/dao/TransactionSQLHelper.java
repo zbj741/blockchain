@@ -1,4 +1,4 @@
-package com.buaa.blockchain.dao;
+package com.buaa.blockchain.entity.dao;
 
 import com.buaa.blockchain.entity.Transaction;
 

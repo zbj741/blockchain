@@ -1,10 +1,9 @@
 package com.buaa.blockchain.mapper;
 
-import com.buaa.blockchain.dao.TransactionSQLHelper;
+import com.buaa.blockchain.entity.dao.TransactionSQLHelper;
 import com.buaa.blockchain.entity.Transaction;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;

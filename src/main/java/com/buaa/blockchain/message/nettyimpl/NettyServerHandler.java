@@ -1,7 +1,5 @@
 package com.buaa.blockchain.message.nettyimpl;
 
-import com.buaa.blockchain.entity.Message;
-import com.buaa.blockchain.utils.JsonUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -28,7 +26,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         JsonMessageProto.JsonMessage jmsg = (JsonMessageProto.JsonMessage) msg;
         int type = jmsg.getMsgType();
         String content = jmsg.getContent();
-        nl.messageCallBack.OnMessageReceived(content);
+        nl.messageCallBack.onMessageReceived(content);
     }
 
 }

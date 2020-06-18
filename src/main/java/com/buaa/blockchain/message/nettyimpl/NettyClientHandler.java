@@ -1,7 +1,5 @@
 package com.buaa.blockchain.message.nettyimpl;
 
-import com.buaa.blockchain.entity.Message;
-import com.buaa.blockchain.utils.JsonUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 

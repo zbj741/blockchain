@@ -6,8 +6,8 @@ package com.buaa.blockchain.contract;
  *
  * @author hitty
  * */
-public interface BaseContract {
-    void update();
-    void get();
-    void delete();
+public interface BaseContract<T> {
+    void update(T t,String key,String value);
+    String get(T t,String key);
+    void delete(T t,String key);
 }

@@ -108,7 +108,7 @@ public class NettyClient {
                                 }
                                 nl.clusterAddressList = now;
                                 if(null != nl.messageCallBack){
-                                    nl.messageCallBack.OnClusterChanged(pre,now);
+                                    nl.messageCallBack.onClusterChanged(pre,now);
                                 }
                             }
                         }
@@ -143,7 +143,7 @@ public class NettyClient {
                 }
                 nl.clusterAddressList = now;
                 if(null != nl.messageCallBack){
-                    nl.messageCallBack.OnClusterChanged(pre,now);
+                    nl.messageCallBack.onClusterChanged(pre,now);
                 }
             }
         }

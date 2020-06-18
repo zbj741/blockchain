@@ -34,7 +34,7 @@ public interface MessageService {
      * */
     Set<String> getClusterAddressList();
     /**
-     * 注册定义回调函数
+     * 注册定义核心功能回调函数
      * */
     void setMessageCallBack(MessageCallBack messageCallBack);
     /**
