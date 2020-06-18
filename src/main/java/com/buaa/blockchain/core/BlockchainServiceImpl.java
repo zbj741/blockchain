@@ -151,10 +151,10 @@ public class BlockchainServiceImpl implements BlockchainService {
         this.daeThread = new Thread();
         this.daeThread.setDaemon(true);
         this.daeThread.start();
-        // 初始化消息服务
-        initMessageService();
         // 初始化共识
         initConsensus();
+        // 初始化消息服务
+        initMessageService();
         // 初始化数据摘要工具
         testMessageDigest(this.hashAlgorithm);
         log.info("firstTimeSetup(): init complete. buaa-blockchain version:"+this.version);
@@ -719,8 +719,6 @@ public class BlockchainServiceImpl implements BlockchainService {
                         Message receiveMsg = JsonUtil.objectMapper.readValue((String)content,Message.class);
                         // 判断是否为core需要处理的消息，否则分发给其他模块
                         // TODO 判断core
-
-                        // 交付给共识模块
                         bs.consensus.onMessageReceived(receiveMsg);
                     } catch (JsonProcessingException e) {
                         // TODO 异常处理
