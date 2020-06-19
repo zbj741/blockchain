@@ -31,12 +31,10 @@ public interface BlockchainService {
     /**
      * 状态码
      * 0：做块投票未通过，轮数+1
-     * 1：本地做块失败，轮数不变
-     * 2：做块投票通过/集群变动，轮数归零
+     * 1：做块投票通过/集群变动，轮数归零
      * */
     int BLOCKCHAIN_SERVICE_STATE_FAIL = 0;
-    int BLOCKCHAIN_SERVICE_STATE_CONTINUE = 1;
-    int BLOCKCHAIN_SERVICE_STATE_SUCCESS = 2;
+    int BLOCKCHAIN_SERVICE_STATE_SUCCESS = 1;
     void startNewRound(int state);
     /**
      * 运行入口

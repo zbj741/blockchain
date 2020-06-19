@@ -34,6 +34,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -117,13 +118,15 @@ public class BlockchainServiceImpl implements BlockchainService {
     public AtomicInteger round = new AtomicInteger(0);
     // 同步器，用于超时管理
     public CountDownLatch countDownLatch;
-    // 标志位，是否启动完成
-    boolean isSetup = false;
     // 提前做块的缓存队列，需要用height和round同时确定一个cache区块
     // TODO 长度限定
     private ConcurrentHashMap<Integer,Block> cacheBlockList = new ConcurrentHashMap<>();
     // 守护线程
     private Thread daeThread = null;
+    // 标志位，是否初始化完毕
+    private Boolean isSetup = false;
+    // startNewRound的线程记录器
+    private ConcurrentHashMap<Long,Boolean> threadMap = new ConcurrentHashMap<>();
 
 
 
@@ -195,15 +198,24 @@ public class BlockchainServiceImpl implements BlockchainService {
      * */
     @Override
     public void startNewRound(int height, int round) {
+        // 通过threadMap尝试关闭其他的startNewRound线程
+        synchronized (isSetup){
+            for(Long l : threadMap.keySet()){
+                threadMap.put(l,false);
+            }
+            threadMap.put(Thread.currentThread().getId(),true);
+        }
+        // 判断是否为主节点
         try{
             if(isSelfLeader()){
                 log.info("startNewRound(): leaderNode="+this.nodeName+", height="+height+", round="+round+" try to build new block...");
-                Block block = new Block();
+                Block block = null;
+                int waitCount = 0;
                 // 轮询交易池中是否有可以新的可以做块的交易
-                while(true){
+                while(threadMap.get(Thread.currentThread().getId())){
+                    // 若集群变动，这里的检查用于自动跳出循环
                     if(!isSelfLeader()){
                         log.info("startNewRound(): round height="+height+", round="+round+" fired, start new round.");
-                        startNewRound(BLOCKCHAIN_SERVICE_STATE_CONTINUE);
                         return ;
                     }
                     // 首先检查缓存是否能命中
@@ -222,16 +234,28 @@ public class BlockchainServiceImpl implements BlockchainService {
                             log.info("startNewRound(): hit the cache, height="+block.getHeight()+", block="+block.getHash());
                             // 删除命中的缓存区块
                             cacheBlockList.remove(height);
+                            // 开始共识
+                            Message message = new Message(this.nodeName,height,round,block);
+                            this.consensus.setup(message);
+                            return;
                         }
-                        break;
                     }else if(redisTxpool.size(TxPool.TXPOOL_LABEL_TRANSACTION) > 0){
                         // 交易池非空
                         block = createNewBlock(height,round);
-                        break;
+                        if(null != block){
+                            // 开始共识
+                            Message message = new Message(this.nodeName,height,round,block);
+                            this.consensus.setup(message);
+                            return;
+                        }else{
+                            log.info("startNewRound(): leader node="+nodeName+" fail to create new block at height="+height+", round="+round+".");
+                            continue;
+                        }
                     } else{
                         try{
-                            log.info("startNewRound(): no transaction found, wait for "+this.sleepTime+"ms.");
+                            log.info("startNewRound(): not enough transactions found, wait for "+this.sleepTime+"ms.");
                             Thread.sleep(this.sleepTime);
+                            waitCount++;
                             continue;
                         }catch (Exception e){
                             shutDownManager.shutDown();
@@ -239,14 +263,8 @@ public class BlockchainServiceImpl implements BlockchainService {
                         }
                     }
                 }
-                if(null != block){
-                    // 开始共识
-                    Message message = new Message(this.nodeName,height,round,block);
-                    this.consensus.setup(message);
-                }else{
-                    log.info("startNewRound(): leader node="+nodeName+" fail to create new block at height="+height+", round="+round+".");
-                    startNewRound(BLOCKCHAIN_SERVICE_STATE_CONTINUE);
-                }
+                log.warn("startNewRound(): thread "+Thread.currentThread().getId()+" shut down.");
+                return ;
             }else{
                 log.info("startNewRound(): not leader node, waiting for leader or timeout");
             }
@@ -262,12 +280,10 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Override
     public void startNewRound(int code) {
         if(!isSetup){
-            log.warn("startNewRound(): blockchain service has not setup yet!");
+            log.warn("startNewRound(): cannot enable new round!");
             return;
         }
-        if(code == BLOCKCHAIN_SERVICE_STATE_CONTINUE){
-            startNewRound(blockMapper.findMaxHeight()+1,round.get());
-        }else if(code == BLOCKCHAIN_SERVICE_STATE_SUCCESS){
+        if(code == BLOCKCHAIN_SERVICE_STATE_SUCCESS){
             round.set(0);
             startNewRound(blockMapper.findMaxHeight()+1,round.get());
         }else if(code == BLOCKCHAIN_SERVICE_STATE_FAIL){
@@ -435,7 +451,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         }
         log.info("createNewBlock(): Get valid transaction list, size="+validTransList.size());
         if(validTransList.size() < 1){
-            // 未出现可做块的交易
+            // 未出现可做块的交易，此时交易池应该为空
             return null;
         }else{
             // 生成新的区块
@@ -912,7 +928,9 @@ public class BlockchainServiceImpl implements BlockchainService {
                 // 交易可用
                 return true;
             }else{
-                // TODO 交易不在无效交易池中，并且已被持久化
+                // 交易不在无效交易池中，并且已被持久化，不受理此交易
+                // TODO 但是应该基于反馈
+                redisTxpool.delete(TxPool.TXPOOL_LABEL_TRANSACTION,ts.getTran_hash());
             }
         }else{
             // 此处出现的原因是本地节点在之前执行投票通过的区块交易时，执行了本地交易池中不存在的交易；可以认为是本地交易池的延时导致的
