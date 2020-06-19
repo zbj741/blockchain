@@ -3,6 +3,7 @@ package com.buaa.blockchain.core;
 
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.entity.Transaction;
+import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,13 +30,13 @@ public interface BlockchainService {
     void startNewRound(int height,int round);
     /**
      * 状态码
-     * -1：做块投票未通过/集群变动，高度不变，轮数+1
-     * 0：本地做块失败，高度不变，轮数不变
-     * 1：做块投票通过，高度+1，轮数归零
+     * 0：做块投票未通过，轮数+1
+     * 1：本地做块失败，轮数不变
+     * 2：做块投票通过/集群变动，轮数归零
      * */
-    int BLOCKCHAIN_SERVICE_STATE_FAIL = -1;
-    int BLOCKCHAIN_SERVICE_STATE_CONTINUE = 0;
-    int BLOCKCHAIN_SERVICE_STATE_SUCCESS = 1;
+    int BLOCKCHAIN_SERVICE_STATE_FAIL = 0;
+    int BLOCKCHAIN_SERVICE_STATE_CONTINUE = 1;
+    int BLOCKCHAIN_SERVICE_STATE_SUCCESS = 2;
     void startNewRound(int state);
     /**
      * 运行入口
@@ -71,10 +72,13 @@ public interface BlockchainService {
      * @param block
      * */
     void createNewCacheBlock(int height, int round, Block block);
+
+    String CORE_MESSAGE_TOPIC_SYNC = "CORE_MESSAGE_TOPIC_SYNC";
+    String CORE_MESSAGE_TOPIC_SYNCREPLY = "CORE_MESSAGE_TOPIC_SYNCREPLY";
     /**
      * 向其他节点广播请求同步区块
      * */
-    void requestSyncBlocks(int nowHeight, int aimHeight);
+    void requestSyncBlocks(int nowHeight);
     /**
      * 回复syncBlocks
      * */
@@ -137,7 +141,7 @@ public interface BlockchainService {
     /**
      * 广播
      * */
-    void broadcasting(Object message);
+    void broadcasting(Message message);
     /**
      * 获取集群大小
      * */

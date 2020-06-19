@@ -119,7 +119,7 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
      * @param message
      * */
     @Override
-    public void broadcasting(Object message) {
+    public void broadcasting(String message) {
         try{
             Message msg = new Message(null,null,message);
             channel.send(msg);
@@ -135,7 +135,7 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
      * @param address 目的地址
      * */
     @Override
-    public void singleSend(Object message, String address) {
+    public void singleSend(String message, String address) {
         try{
             Message msg = new Message(new IpAddress(address),channel.getAddress(),message);
             channel.send(msg);
@@ -150,7 +150,7 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
      * @param addressList
      * */
     @Override
-    public void multiSend(Object message, Set<String> addressList) {
+    public void multiSend(String message, Set<String> addressList) {
 
     }
 

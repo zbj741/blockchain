@@ -8,13 +8,16 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 广播的消息实体
+ * 消息实体
+ * 用于core的通信，但不是MessageService中的传输实体
  *
  * @author hitty
  * */
 @Data
 public class Message implements Serializable {
-    
+
+    private String senderAddress;
+    private String receiverAddress;
     private String topic;
     private String nodeName;
     private int height;

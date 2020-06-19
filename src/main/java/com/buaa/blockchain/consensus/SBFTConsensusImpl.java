@@ -34,10 +34,6 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
             sbftDigestBroadcastReceived(receiveMsg);
         } else if (topic.equals(SBFT_MESSAGE_TOPIC_VOTE)) {
             sbftVoteBroadcastReceived(receiveMsg);
-        } else if (topic.equals(SBFT_MESSAGE_TOPIC_SYNC)) {
-
-        } else if (topic.equals(SBFT_MESSAGE_TOPIC_SYNC_REPLY)){
-
         } else if(topic.equals(SBFT_MESSAGE_TOPIC_TEST)){
             log.info("OnMessageReceived(): testMsg:"+receiveMsg.toString());
         }
@@ -54,9 +50,9 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
     @Override
     public void sbftDigestBroadcast(Message stage1_send) {
         stage1_send.setTopic(SBFT_MESSAGE_TOPIC_DIGEST);
-        String jsonStr =  JsonUtil.message2JsonString(stage1_send);
-        log.info("sbftDigestBroadcast(): broadcast block, message size=" + jsonStr.length() * 2 / 1024.0 + "KB.");
-        blockchainService.broadcasting(jsonStr);
+        // log.info("sbftDigestBroadcast(): broadcast block, message size=" + stage1_send * 2 / 1024.0 + "KB.");
+        blockchainService.broadcasting(stage1_send);
+        log.info("sbftDigestBroadcast(): broadcast block="+stage1_send.getBlock().getHash());
     }
 
     /**
@@ -84,10 +80,8 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
     public void sbftVoteBroadcast(Message stage2_send) {
         stage2_send.setTopic(SBFT_MESSAGE_TOPIC_VOTE);
         stage2_send.getBlock().getTimes().setSendVote(System.currentTimeMillis());
-        // 将消息打包成Json字符串
-        String jsonStr = JsonUtil.message2JsonString(stage2_send);
         log.info("sbftVoteBroadcast(): node="+blockchainService.getName()+" vote "+stage2_send.getVote()+" to "+stage2_send.getBlock().toString());
-        blockchainService.broadcasting(jsonStr);
+        blockchainService.broadcasting(stage2_send);
         return ;
     }
 

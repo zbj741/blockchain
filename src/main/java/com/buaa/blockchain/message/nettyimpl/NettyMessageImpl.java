@@ -50,34 +50,31 @@ public class NettyMessageImpl implements MessageService {
 
 
     @Override
-    public void broadcasting(Object message) {
-        String jsonStr = (String) message;
+    public void broadcasting(String message) {
         // 打包成protobuf形式
         JsonMessageProto.JsonMessage.Builder builder = JsonMessageProto.JsonMessage.newBuilder();
         builder.setMsgType(0);
-        builder.setContent(jsonStr);
+        builder.setContent(message);
         JsonMessageProto.JsonMessage msg = builder.build();
         client.broadcast(msg);
     }
 
     @Override
-    public void singleSend(Object message, String address) {
-        String jsonStr = (String) message;
+    public void singleSend(String message, String address) {
         // 打包成protobuf形式
         JsonMessageProto.JsonMessage.Builder builder = JsonMessageProto.JsonMessage.newBuilder();
         builder.setMsgType(0);
-        builder.setContent(jsonStr);
+        builder.setContent(message);
         JsonMessageProto.JsonMessage msg = builder.build();
         client.singleSend(msg,address);
     }
 
     @Override
-    public void multiSend(Object message, Set<String> addressList) {
-        String jsonStr = (String) message;
+    public void multiSend(String message, Set<String> addressList) {
         // 打包成protobuf形式
         JsonMessageProto.JsonMessage.Builder builder = JsonMessageProto.JsonMessage.newBuilder();
         builder.setMsgType(0);
-        builder.setContent(jsonStr);
+        builder.setContent(message);
         JsonMessageProto.JsonMessage msg = builder.build();
         client.multiSend(msg,addressList);
     }

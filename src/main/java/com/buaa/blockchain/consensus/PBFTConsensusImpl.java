@@ -76,9 +76,9 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
     @Override
     public void prePrepareBroadcast(Message message) {
         message.setTopic(PBFT_MESSAGE_TOPIC_PREPREPARE);
-        String jsonStr = JsonUtil.message2JsonString(message);
-        log.info("prePrepareBroadcast(): broadcast block, message size=" + jsonStr.length() * 2 / 1024.0 + "KB.");
-        blockchainService.broadcasting(jsonStr);
+        log.info("prePrepareBroadcast(): broadcast block="+message.getBlock().getHash());
+        // log.info("prePrepareBroadcast(): broadcast block, message size=" + jsonStr.length() * 2 / 1024.0 + "KB.");
+        blockchainService.broadcasting(message);
     }
 
     /**
@@ -103,10 +103,8 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
      * */
     @Override
     public void prepareBroadcast(Message message) {
-        // 将消息打包成Json字符串
-        String jsonStr = JsonUtil.message2JsonString(message);
         log.info("prepareBroadcast:(): node="+blockchainService.getName()+" vote "+message.getVote()+" to "+message.getBlock().toString());
-        blockchainService.broadcasting(jsonStr);
+        blockchainService.broadcasting(message);
         return;
     }
 
@@ -158,8 +156,7 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
         blockList.put(message.getBlock().getHash(),message.getBlock());
         // block中其他的字段已经不需要了，所以可以去掉。暂时去掉占用空间最大的交易列表数据，此处深拷贝
         message.setBlock(blockList.get(message.getBlock().getHash()).copyWithoutTrans());
-        String jsonStr = JsonUtil.message2JsonString(message);
-        blockchainService.broadcasting(jsonStr);
+        blockchainService.broadcasting(message);
         log.info("commitBroadcast(): commit stateRoot="+message.getBlock().getState_root()+
                 ", block="+message.getBlock().getHash());
         return;

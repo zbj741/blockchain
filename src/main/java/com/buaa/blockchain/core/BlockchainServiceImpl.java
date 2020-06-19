@@ -542,11 +542,16 @@ public class BlockchainServiceImpl implements BlockchainService {
     /**
      * 向其他节点发起请求，获取从nowHeight到aimHeight高度的区块数据
      * @param nowHeight 本地最高块
-     * @param aimHeight 需要获取的最高块
      * */
     @Override
-    public void requestSyncBlocks(int nowHeight, int aimHeight) {
-
+    public void requestSyncBlocks(int nowHeight) {
+        // 生成Message用于请求block
+        Message message = new Message();
+        message.setSenderAddress(messageService.getLocalAddress());
+        message.setTopic(CORE_MESSAGE_TOPIC_SYNC);
+        message.setHeight(blockMapper.findMaxHeight());
+        // 广播
+        broadcasting(message);
     }
 
     /**
@@ -661,8 +666,8 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 节点通信相关
      * */
     @Override
-    public void broadcasting(Object message) {
-        this.messageService.broadcasting(message);
+    public void broadcasting(Message message) {
+        this.messageService.broadcasting(JsonUtil.message2JsonString(message));
     }
 
     @Override

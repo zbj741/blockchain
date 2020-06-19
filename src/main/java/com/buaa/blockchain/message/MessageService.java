@@ -3,7 +3,7 @@ package com.buaa.blockchain.message;
 import java.util.Set;
 
 /**
- * 消息服务的抽象类，任何实现类需要继承该抽象类
+ * 消息服务的接口
  * 消息服务只负责消息的收发、网络状态的检查；消息服务将收到的数据通知回调函数，本身不关心消息怎么处理
  * 消息服务的实现类会持有BlockchainService的引用，从而执行其中的MessageCallBack
  *
@@ -16,15 +16,15 @@ public interface MessageService {
     /**
      * 广播消息给集群中所有的节点
      * */
-    void broadcasting(Object message);
+    void broadcasting(String message);
     /**
      * 单点发送
      * */
-    void singleSend(Object message,String address);
+    void singleSend(String message,String address);
     /**
      * 多点发送
      * */
-    void multiSend(Object message, Set<String> addressList);
+    void multiSend(String message, Set<String> addressList);
     /**
      * 本地地址
      * */
