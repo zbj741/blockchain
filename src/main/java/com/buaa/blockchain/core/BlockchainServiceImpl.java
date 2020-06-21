@@ -243,7 +243,6 @@ public class BlockchainServiceImpl implements BlockchainService {
                         // 交易池非空
                         block = createNewBlock(height,round);
                         if(null != block){
-                            // 开始共识
                             Message message = new Message(this.nodeName,height,round,block);
                             this.consensus.setup(message);
                             return;
@@ -321,12 +320,13 @@ public class BlockchainServiceImpl implements BlockchainService {
         // 计算耗时
         long cost = block.getTimes().getEndTime() - Long.valueOf(block.getExtra());
         block.setExtra(Long.toString(cost));
+        block.getTimes().setEndTime(System.currentTimeMillis());
         // 持久化交易和区块
         worldState.sync();
+        insertTransactionList(block);
         blockMapper.insertTimes(block.getTimes());
         blockMapper.insertBlock(block);
         log.info("storeBlock(): Done! block="+block.toString());
-        insertTransactionList(block);
         // 删除缓存
         cacheBlockList.remove(block.getHeight());
 
@@ -342,19 +342,20 @@ public class BlockchainServiceImpl implements BlockchainService {
     public boolean verifyBlock(Block block, int height, int round) {
         try{
             Block rawBlock = (Block) block;
+            int maxHeight = blockMapper.findMaxHeight();
             // 检查height
-            if(height - 1 < blockMapper.findMaxHeight()){
-                log.info("verifyBlock(): height="+height+" has already recorded in database!");
+            if(height - 1 != maxHeight){
+                log.info("verifyBlock(): height="+height+" is not the next height! The maxHeight in database is "+maxHeight);
                 return false;
             }
             // 检查preHash
-            String preHash = blockMapper.findHashByHeight(height - 1);
+            String preHash = blockMapper.findHashByHeight(maxHeight);
             if(!rawBlock.getPre_hash().equals(preHash)) {
                 log.info("verifyBlock(): wrong preHash! Block preHash="+rawBlock.getPre_hash()+", database prehash="+preHash);
                 return false;
             }
             // 检查状态树，仍旧是和mysql数据库中的表项做对比
-            String preStateHash = blockMapper.findStatRoot(height - 1);
+            String preStateHash = blockMapper.findStatRoot(maxHeight);
             if(!rawBlock.getPre_state_root().equals(preStateHash)){
                 log.info("verifyBlock(): wrong preStateHash! Block preStateHash="+rawBlock.getPre_state_root()+", database preStateHash="+preStateHash);
                 return false;
@@ -477,7 +478,6 @@ public class BlockchainServiceImpl implements BlockchainService {
             // 填写时间信息
             times.setBlock_hash(hash);
             times.setTx_length(validTransList.size());
-            times.setBroadcast(System.currentTimeMillis());
             block.setTimes(times);
             return block;
         }
@@ -487,6 +487,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     /**
      * 提前做块并且放入缓存队列中，按照高度作为键值来区分缓存的块，每一个高度只对应一个块，不按照轮数
      * 在SBFT中，提前做块的实际在于收到第一轮广播后，所有的节点可以提前做块，但是做块使用的交易需要避开该广播中的交易
+     * 为了避免提前做块过程耗时太长导致TxPool数据变化，需要检查做块是否过期
      *
      * TODO 由于使用redisTxpool缓存交易，内部遍历hashmap的顺序是不固定的，暂时的方案是在本方法中遍历(txMaxAmout+transLength)个交易并且删除和正在投票区块重复的交易
      *
@@ -495,64 +496,72 @@ public class BlockchainServiceImpl implements BlockchainService {
      * @param height
      * @param round
      * @param baseBlock 调用者需要提供收到的区块中交易的数量，提前做块时需要跳过
-     * 该方法需要异步执行，否则会降低加速的意义
+     * TODO 考虑是否用线程的形式执行
      * */
     @Override
     public void createNewCacheBlock(int height, int round, Block baseBlock) {
         int transLength = baseBlock.getTx_length();
-        if(cacheEnable == false || cacheBlockList.keySet().contains(height) || transLength <= 0){
+        if(cacheEnable == false || transLength <= 0){
             return ;
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                log.info("createNewCacheBlock(): start, height="+height+", round="+round);
-                TreeSet<String> treeSet = new TreeSet<>();
-                for(Transaction ts : baseBlock.getTrans()){
-                    treeSet.add(ts.getTran_hash());
-                }
-                int tranSeq = 0;
-                List<Transaction> rawTransList = redisTxpool.getList(TxPool.TXPOOL_LABEL_TRANSACTION,txMaxAmount+transLength);
-                // 被筛选出的可以入块执行的交易列表
-                List<Transaction> validTransList = new ArrayList<Transaction>();
-                // 逐个检查交易列表中的交易，交易在交易池中和数据库中没有记录，则为合法交易
-                for(Transaction transaction : rawTransList){
-                    if(isValidTransaction(transaction) && !treeSet.contains(transaction.getTran_hash())){
-                        // 交易合法
-                        transaction.setTranSeq(tranSeq++);
-                        validTransList.add(transaction);
-                    }
-                }
-                if(validTransList.size() < 1){
-                    return ;
-                }else{
-                    // 生成新的区块
-                    Block block = new Block();
-                    Times times = new Times();
-                    times.setStartCompute(new Date().getTime());
-                    Collections.sort(validTransList);
-                    String merkleRoot = getMerkleRoot(validTransList);
-                    // 填写属性
-                    block.setHeight(height);
-                    block.setMerkle_root(merkleRoot);
-                    block.setTimestamp((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date()));
-                    block.setTrans((ArrayList<Transaction>) validTransList);
-                    block.setTx_length(validTransList.size());
-                    block.setVersion(version);
-                    block.setSign(nodeSign);
-                    // 填写时间
-                    times.setBlock_hash(block.getHash());
-                    times.setTx_length(validTransList.size());
-                    times.setBroadcast(System.currentTimeMillis());
-                    block.setTimes(times);
-                    // 放入缓存队列中
-                    cacheBlockList.put(height,block);
-                    log.info("createNewCacheBlock(): Done, height="+height+", round="+round+", txLength="+block.getTx_length());
-                }
+        log.info("createNewCacheBlock(): start, height="+height+", round="+round);
+        TreeSet<String> treeSet = new TreeSet<>();
+        for(Transaction ts : baseBlock.getTrans()){
+            treeSet.add(ts.getTran_hash());
+        }
+        int tranSeq = 0;
+        List<Transaction> rawTransList = redisTxpool.getList(TxPool.TXPOOL_LABEL_TRANSACTION,txMaxAmount);
+        // 被筛选出的可以入块执行的交易列表
+        List<Transaction> validTransList = new ArrayList<Transaction>();
+        // 逐个检查交易列表中的交易，交易在交易池中和数据库中没有记录，则为合法交易
+        for(Transaction transaction : rawTransList){
+            if(isValidTransaction(transaction) && !treeSet.contains(transaction.getTran_hash())){
+                // 交易合法
+                transaction.setTranSeq(tranSeq++);
+                validTransList.add(transaction);
             }
-        }).start();
+        }
+        if(validTransList.size() < 1){
+            log.info("createNewCacheBlock(): no trans valid for create new cache block.");
+            return ;
+        }else{
+            // 生成新的区块
+            Block block = new Block();
+            Times times = new Times();
+            times.setStartCompute(new Date().getTime());
+            Collections.sort(validTransList);
+            String merkleRoot = getMerkleRoot(validTransList);
+            // 填写属性
+            block.setHeight(height);
+            block.setMerkle_root(merkleRoot);
+            block.setTimestamp((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date()));
+            block.setTrans((ArrayList<Transaction>) validTransList);
+            block.setTx_length(validTransList.size());
+            block.setVersion(version);
+            block.setSign(nodeSign);
+            // 填写时间
+            times.setBlock_hash(block.getHash());
+            times.setTx_length(validTransList.size());
+            block.setTimes(times);
+            // 检查是否过期
+            if(height <= blockMapper.findMaxHeight()){
+                log.info("createNewCacheBlock(): height="+height+" is expired, drop it.");
+                return;
+            }
+            // 放入缓存队列中
+            cacheBlockList.put(height,block);
+            log.info("createNewCacheBlock(): Done, height="+height+", round="+round+", txLength="+block.getTx_length());
+        }
+    }
 
+    /**
+     * 删除提前做块
+     * */
+    @Override
+    public void flushCacheBlock() {
+        if(this.cacheEnable){
+            this.cacheBlockList.clear();
+        }
     }
 
     /**
@@ -649,8 +658,8 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 投票相关
      * */
     @Override
-    public void voteForBlock(String tag,int height, int round, String blockHash, String nodeName, Boolean voteValue) {
-        this.voteHandler.vote(tag,height,round,blockHash,nodeName,voteValue);
+    public Boolean voteForBlock(String tag,int height, int round, String blockHash, String nodeName, Boolean voteValue) {
+        return this.voteHandler.vote(tag,height,round,blockHash,nodeName,voteValue);
     }
 
     @Override

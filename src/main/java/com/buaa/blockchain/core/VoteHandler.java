@@ -53,12 +53,12 @@ public class VoteHandler {
      * @param nodeName  投票者名字
      * @param voteValue 投票意见
      * */
-    public synchronized void vote(String tag,int height,int round,String blockHash,String nodeName,Boolean voteValue){
+    public synchronized Boolean vote(String tag,int height,int round,String blockHash,String nodeName,Boolean voteValue){
         String key = createKey(tag,height,round,blockHash);
         // 是否已经是被删除过的key
         if(removeKeys.contains(key)){
-            log.warn("vote(): vote for tag="+tag+", height="+height+", round="+round+", blockhash="+blockHash+" has been removed!");
-            return;
+            // log.warn("vote(): removed item tag="+tag+", height="+height+", round="+round+", blockhash="+blockHash+"!");
+            return false;
         }
         // 是否存在对应的投票记录
         if(!voteResList.keySet().contains(key)){
@@ -67,6 +67,7 @@ public class VoteHandler {
             this.voteResList.put(key,voteRecord);
         }
         voteResList.get(key).vote(voteValue,nodeName);
+        return true;
     }
 
     /**
@@ -130,9 +131,9 @@ class VoteRecord{
     // 超时
     Long timeout = 0L;
     // 赞成票数
-    private int agree = 0;
+    private volatile int agree = 0;
     // 反对票数
-    private int against = 0;
+    private volatile int against = 0;
 
     VoteRecord(String tag,String blockHash,int height,int round){
         this.blockHash = blockHash;

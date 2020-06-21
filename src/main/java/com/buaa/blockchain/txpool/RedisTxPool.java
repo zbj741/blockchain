@@ -2,16 +2,9 @@ package com.buaa.blockchain.txpool;
 
 
 import com.buaa.blockchain.entity.Transaction;
-import com.buaa.blockchain.redis.RedisConfig;
-import com.buaa.blockchain.test.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

@@ -31,10 +31,6 @@ public interface SBFTConsensus<T> extends BaseConsensus<T>{
      * 收到第二阶段广播
      * */
     void sbftVoteBroadcastReceived(T stage2_received);
-    /**
-     * 第三阶段执行
-     * */
-    void sbftExecute(T exec);
 
 
     /**
@@ -43,8 +39,6 @@ public interface SBFTConsensus<T> extends BaseConsensus<T>{
     String SBFT_MESSAGE_TOPIC_TEST = "SBFT_MESSAGE_TOPIC_TEST";
     String SBFT_MESSAGE_TOPIC_DIGEST = "SBFT_MESSAGE_TOPIC_DIGEST";
     String SBFT_MESSAGE_TOPIC_VOTE = "SBFT_MESSAGE_TOPIC_VOTE";
-    String SBFT_MESSAGE_TOPIC_EXECUTE = "SBFT_MESSAGE_TOPIC_EXECUTE";
-    String SBFT_MESSAGE_TOPIC_DROP = "SBFT_MESSAGE_TOPIC_DROP";
     /**
      * 投票tag
      * */

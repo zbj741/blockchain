@@ -70,6 +70,10 @@ public interface BlockchainService {
      * @param block
      * */
     void createNewCacheBlock(int height, int round, Block block);
+    /**
+     * 删除提前做块
+     * */
+    void flushCacheBlock();
 
     String CORE_MESSAGE_TOPIC_SYNC = "CORE_MESSAGE_TOPIC_SYNC";
     String CORE_MESSAGE_TOPIC_SYNCREPLY = "CORE_MESSAGE_TOPIC_SYNCREPLY";
@@ -110,7 +114,7 @@ public interface BlockchainService {
     /**
      * 为某一轮做块的区块投票
      * */
-    void voteForBlock(String tag,int height,int round,String blockHash,String nodeName,Boolean voteValue);
+    Boolean voteForBlock(String tag,int height,int round,String blockHash,String nodeName,Boolean voteValue);
     /**
      * 获取同意票数
      * */

@@ -2,8 +2,6 @@ package com.buaa.blockchain.consensus;
 import com.buaa.blockchain.core.BlockchainService;
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.message.Message;
-import com.buaa.blockchain.message.MessageCallBack;
-import com.buaa.blockchain.utils.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -21,11 +19,10 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
     // 对区块链服务的引用
     private BlockchainService blockchainService = null;
     // 在commit阶段暂时用来存储正在参与做块的区块，减少传输中的带宽
-    private ConcurrentHashMap<String,Block> blockList = null;
+    private ConcurrentHashMap<String,Block> blockList = new ConcurrentHashMap<>();
 
     public PBFTConsensusImpl(BlockchainService blockchainService){
         this.blockchainService = blockchainService;
-        blockList = new ConcurrentHashMap<>();
     }
 
     /**
@@ -76,8 +73,8 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
     @Override
     public void prePrepareBroadcast(Message message) {
         message.setTopic(PBFT_MESSAGE_TOPIC_PREPREPARE);
+        message.getBlock().getTimes().setBroadcast(System.currentTimeMillis());
         log.info("prePrepareBroadcast(): broadcast block="+message.getBlock().getHash());
-        // log.info("prePrepareBroadcast(): broadcast block, message size=" + jsonStr.length() * 2 / 1024.0 + "KB.");
         blockchainService.broadcasting(message);
     }
 
@@ -94,7 +91,9 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
                 message.getHeight(),message.getRound(),vote,message.getBlock());
         prepareBroadcast(voteMessage);
         // 尝试提前做块，已经获知当前区块了，可以避开已存在在区块中的交易
-        blockchainService.createNewCacheBlock(message.getHeight() + 1,message.getRound(),message.getBlock());
+        if(vote){
+            blockchainService.createNewCacheBlock(message.getHeight() + 1,message.getRound(),message.getBlock());
+        }
 
     }
 
@@ -114,34 +113,46 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
      * */
     @Override
     public synchronized void prepareReceived(Message message) {
+        // 赋值
+        int height = message.getHeight();
+        int round = message.getRound();
+        String msgNodeName = message.getNodeName();
+        Block block = message.getBlock();
+        String blockHash = block.getHash();
+        Boolean voteValue = message.getVote();
         // 投票
-        blockchainService.voteForBlock(PBFT_VOTETAG_PREPARE,message.getHeight(),message.getRound(),
-                message.getBlock().getHash(),message.getNodeName(),message.getVote());
-        int agree = blockchainService.getAgreeVoteCount(PBFT_VOTETAG_PREPARE,message.getHeight(),message.getRound(),
-                message.getBlock().getHash());
-        int against = blockchainService.getAgainstVoteCount(PBFT_VOTETAG_PREPARE,message.getHeight(),message.getRound(),
-                message.getBlock().getHash());
-
-        // 查看是否收到大于2/3的同意票
-        if(agree * 1.0f > blockchainService.getClusterNodeSize() * (2/3.0f)){
-            log.info("prepareReceived:() block="+message.getBlock().getHash()+", agree="+ agree + ", waiting to exec...");
-            // 删除投票信息
-            blockchainService.removeVote(PBFT_VOTETAG_PREPARE,message.getHeight(),message.getRound(),
+        if(blockchainService.voteForBlock(PBFT_VOTETAG_PREPARE,height,round, blockHash,msgNodeName,voteValue)){
+            int agree = blockchainService.getAgreeVoteCount(PBFT_VOTETAG_PREPARE,message.getHeight(),message.getRound(),
                     message.getBlock().getHash());
-            // 模拟执行交易
-            String fakeStateRoot = blockchainService.transactionExec(null,message.getBlock());
-            // 在消息的区块中存入自己本地模拟执行交易后的worldState的rootHash
-            message.getBlock().setState_root(fakeStateRoot);
-            // 广播commit消息
-            commitBroadcast(message);
-            log.info("prepareReceived(): block="+message.getBlock().getHash()+" confirm at prepare, exec tx stateRoot="+fakeStateRoot+", and wait to commit.");
-        }else if(against*1.0f > blockchainService.getClusterNodeSize() * (1/3.0f)){
-            // 反对票大于1/3，开始下一轮
-            log.info("prepareReceived(): block="+message.getBlock().getHash()+", against="+against+", start new round.");
-            // 删除投票信息
-            blockchainService.removeVote(PBFT_VOTETAG_PREPARE,message.getHeight(),message.getRound(),
+            int against = blockchainService.getAgainstVoteCount(PBFT_VOTETAG_PREPARE,message.getHeight(),message.getRound(),
                     message.getBlock().getHash());
-            blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_FAIL);
+            // 查看是否收到大于2/3的同意票
+            if(agree * 1.0f > blockchainService.getClusterNodeSize() * (2/3.0f)){
+                log.info("prepareReceived:() block="+message.getBlock().getHash()+", agree="+ agree + ", waiting to exec...");
+                // 删除投票信息
+                blockchainService.removeVote(PBFT_VOTETAG_PREPARE,message.getHeight(),message.getRound(),
+                        message.getBlock().getHash());
+                // 模拟执行交易
+                String fakeStateRoot = blockchainService.transactionExec(null,message.getBlock());
+                // 在消息的区块中存入自己本地模拟执行交易后的worldState的rootHash
+                message.getBlock().setState_root(fakeStateRoot);
+                // 广播commit消息
+                commitBroadcast(message);
+                log.info("prepareReceived(): block="+message.getBlock().getHash()+" confirm at prepare, exec tx stateRoot="+fakeStateRoot+", and wait to commit.");
+            }else if(against*1.0f > blockchainService.getClusterNodeSize() * (1/3.0f)){
+                // 反对票大于1/3，开始下一轮
+                log.info("prepareReceived(): block="+message.getBlock().getHash()+", against="+against+", start new round.");
+                // 删除投票信息
+                blockchainService.removeVote(PBFT_VOTETAG_PREPARE,message.getHeight(),message.getRound(),
+                        message.getBlock().getHash());
+                // 清空做块缓存
+                blockchainService.flushCacheBlock();
+                // 开启新的一轮
+                blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_FAIL);
+            }
+        }else{
+            log.info("prepareReceived(): removed item tag="+PBFT_VOTETAG_PREPARE+", height="+height+", round="+round+", blockhash="+blockHash+"!");
+            return;
         }
     }
 
@@ -173,47 +184,53 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
         // 计算投票意见
         boolean vote = false;
         if(blockList.containsKey(hash)){
-            // 当前处理的区块本地存在，并且本地模拟执行的stateRoot和接收到的message中的stateRoot想同
+            // 当前处理的区块本地存在，并且本地模拟执行的stateRoot和接收到的message中的stateRoot相同
             if(blockList.get(hash).getState_root().equals(message.getBlock().getState_root())){
                 vote = true;
             }
         }
         // 投票
-        blockchainService.voteForBlock(PBFT_VOTETAG_COMMIT,message.getHeight(),message.getRound(),
-                message.getBlock().getHash(),message.getNodeName(),vote);
-        int agree = blockchainService.getAgreeVoteCount(PBFT_VOTETAG_COMMIT,message.getHeight(),
-                message.getRound(),message.getBlock().getHash());
-        int against = blockchainService.getAgainstVoteCount(PBFT_VOTETAG_COMMIT,message.getHeight(),
-                message.getRound(),message.getBlock().getHash());
-        // 查看是否收到大于2/3的同意票
-        if(agree * 1.0f > blockchainService.getClusterNodeSize() * (2/3.0f)){
-            log.info("commitReceived:() block="+message.getBlock().getHash()+" confirm through stateRoot consistency, "+agree+"/"+blockchainService.getClusterNodeSize());
-            Block block = blockList.get(message.getBlock().getHash());
-            // 删除投票信息
-            blockchainService.removeVote(PBFT_VOTETAG_COMMIT,message.getHeight(),message.getRound(),
-                    message.getBlock().getHash());
-            // 删除blockList中的存储
-            blockList.remove(message.getBlock().getHash());
-            // 存储区块
-            blockchainService.storeBlock(block);
-            // 开启下一轮
-            blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
-            return;
-        }else if(against * 1.0f > blockchainService.getClusterNodeSize() * (1/3.0f)){
-            // 投票未通过，无法commit
-            log.info("commitReceived:() block="+message.getBlock().getHash()+" drop due to against, "+against+"/"+blockchainService.getClusterNodeSize());
-            // 删除投票信息
-            blockchainService.removeVote(PBFT_VOTETAG_COMMIT,message.getHeight(),message.getRound(),
-                    message.getBlock().getHash());
-            // 删除blockList中的存储
-            blockList.remove(message.getBlock().getHash());
-            // 撤回交易执行
-            blockchainService.undoTransactionExec();
-            // 开启新的一轮
-            blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_FAIL);
-            return;
+        if(blockchainService.voteForBlock(PBFT_VOTETAG_COMMIT,message.getHeight(),message.getRound(),
+                message.getBlock().getHash(),message.getNodeName(),vote)){
+            blockchainService.voteForBlock(PBFT_VOTETAG_COMMIT,message.getHeight(),message.getRound(),
+                    message.getBlock().getHash(),message.getNodeName(),vote);
+            int agree = blockchainService.getAgreeVoteCount(PBFT_VOTETAG_COMMIT,message.getHeight(),
+                    message.getRound(),message.getBlock().getHash());
+            int against = blockchainService.getAgainstVoteCount(PBFT_VOTETAG_COMMIT,message.getHeight(),
+                    message.getRound(),message.getBlock().getHash());
+            // 查看是否收到大于2/3的同意票
+            if(agree * 1.0f > blockchainService.getClusterNodeSize() * (2/3.0f)){
+                log.info("commitReceived:() block="+message.getBlock().getHash()+" confirm through stateRoot consistency, "+agree+"/"+blockchainService.getClusterNodeSize());
+                Block block = blockList.get(message.getBlock().getHash());
+                // 删除投票信息
+                blockchainService.removeVote(PBFT_VOTETAG_COMMIT,message.getHeight(),message.getRound(),
+                        message.getBlock().getHash());
+                // 删除blockList中的存储
+                blockList.remove(message.getBlock().getHash());
+                // 存储区块
+                blockchainService.storeBlock(block);
+                // 开启下一轮
+                blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
+                return;
+            }else if(against * 1.0f > blockchainService.getClusterNodeSize() * (1/3.0f)){
+                // 投票未通过，无法commit
+                log.info("commitReceived:() block="+message.getBlock().getHash()+" drop due to against, "+against+"/"+blockchainService.getClusterNodeSize());
+                // 删除投票信息
+                blockchainService.removeVote(PBFT_VOTETAG_COMMIT,message.getHeight(),message.getRound(),
+                        message.getBlock().getHash());
+                // 删除blockList中的存储
+                blockList.remove(message.getBlock().getHash());
+                // 撤回交易执行
+                blockchainService.undoTransactionExec();
+                // 开启新的一轮
+                blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_FAIL);
+                return;
+            }
+        }else{
+            log.info("commitReceived(): no key found in vote.");
         }
-        return;
+
+
     }
 
     @Override

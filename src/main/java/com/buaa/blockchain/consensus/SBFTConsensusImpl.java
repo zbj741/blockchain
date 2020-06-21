@@ -3,9 +3,6 @@ package com.buaa.blockchain.consensus;
 import com.buaa.blockchain.core.BlockchainService;
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.message.Message;
-import com.buaa.blockchain.message.MessageCallBack;
-import com.buaa.blockchain.utils.JsonUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
@@ -50,9 +47,10 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
     @Override
     public void sbftDigestBroadcast(Message stage1_send) {
         stage1_send.setTopic(SBFT_MESSAGE_TOPIC_DIGEST);
-        // log.info("sbftDigestBroadcast(): broadcast block, message size=" + stage1_send * 2 / 1024.0 + "KB.");
+        stage1_send.getBlock().getTimes().setBroadcast(System.currentTimeMillis());
         blockchainService.broadcasting(stage1_send);
-        log.info("sbftDigestBroadcast(): broadcast block="+stage1_send.getBlock().getHash());
+        log.info("sbftDigestBroadcast(): broadcast block="+stage1_send.getBlock().getHash()+", height="+
+                stage1_send.getBlock().getHeight());
     }
 
     /**
@@ -60,7 +58,8 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
      * */
     @Override
     public void sbftDigestBroadcastReceived(Message stage1_received) {
-        log.info("sbftDigestBroadcastReceived(): received message="+stage1_received.toString());
+        log.info("sbftDigestBroadcastReceived(): received block="+stage1_received.getBlock().getHash()+", height="+
+                stage1_received.getBlock().getHeight());
         boolean vote = blockchainService.verifyBlock(stage1_received.getBlock(),stage1_received.getHeight(),stage1_received.getRound());
         // 计时
         stage1_received.getBlock().getTimes().setBlockReceived(System.currentTimeMillis());
@@ -69,8 +68,11 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
                 stage1_received.getHeight(),stage1_received.getRound(),vote,stage1_received.getBlock());
         sbftVoteBroadcast(message);
         // 尝试提前做块，是异步执行
-        blockchainService.createNewCacheBlock(stage1_received.getHeight()+1,stage1_received.getRound(),
-                stage1_received.getBlock());
+        if(vote){
+            blockchainService.createNewCacheBlock(stage1_received.getHeight()+1,stage1_received.getRound(),
+                    stage1_received.getBlock());
+        }
+
     }
 
     /**
@@ -80,7 +82,8 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
     public void sbftVoteBroadcast(Message stage2_send) {
         stage2_send.setTopic(SBFT_MESSAGE_TOPIC_VOTE);
         stage2_send.getBlock().getTimes().setSendVote(System.currentTimeMillis());
-        log.info("sbftVoteBroadcast(): node="+blockchainService.getName()+" vote "+stage2_send.getVote()+" to "+stage2_send.getBlock().toString());
+        log.info("sbftVoteBroadcast(): node="+blockchainService.getName()+" vote "+stage2_send.getVote()+" to block="
+                +stage2_send.getBlock().getHash()+", height="+ stage2_send.getBlock().getHeight());
         blockchainService.broadcasting(stage2_send);
         return ;
     }
@@ -94,7 +97,6 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
      * */
     @Override
     public synchronized void sbftVoteBroadcastReceived(Message stage2_received) {
-        log.info("sbftVoteBroadcastReceived(): vote message="+stage2_received.toString());
         // 赋值
         int height = stage2_received.getHeight();
         int round = stage2_received.getRound();
@@ -103,52 +105,37 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
         String blockHash = block.getHash();
         Boolean voteValue = stage2_received.getVote();
         // 接收投票
-        blockchainService.voteForBlock(SBFT_VOTETAG_VOTE,height,round,blockHash,msgNodeName,voteValue);
-        log.info("sbftVoteBroadcastReceived(): block="+blockHash+", "+blockchainService.getAgreeVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)+"/"+blockchainService.getClusterNodeSize());
-        // 查看是否收到sbft中大于集群节点个数2/3的同意票
-        if(blockchainService.getAgreeVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)*1.0f > blockchainService.getClusterNodeSize() * (2/3.0f)){
-            log.info("sbftVoteBroadcastReceived(): execute, block="+blockHash+", height="+height+", round="+round+
-                    " received vote "+blockchainService.getAgreeVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)+
-                    "/"+blockchainService.getClusterNodeSize());
-            // 删除投票记录
-            blockchainService.removeVote(SBFT_VOTETAG_VOTE,height,round,blockHash);
-            // 计时
-            stage2_received.getBlock().getTimes().setVoteReceived(System.currentTimeMillis());
-            // 执行
-            stage2_received.setTopic(SBFT_MESSAGE_TOPIC_EXECUTE);
-            sbftExecute(stage2_received);
-            return ;
-        }else if(blockchainService.getAgainstVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)*1.0f > blockchainService.getClusterNodeSize() * (1/3.0f)){
-            // 反对票超过1/3，直接开始下一轮
-            log.info("sbftVoteBroadcastReceived(): start next round. Block="+blockHash+", height="+height+", round="+round+
-                    " received vote against "+blockchainService.getAgainstVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)+
-                    "/"+blockchainService.getClusterNodeSize());
-            // 删除投票记录
-            blockchainService.removeVote(SBFT_VOTETAG_VOTE,height,round,blockHash);
-            // 开始下一轮
-            stage2_received.setTopic(SBFT_MESSAGE_TOPIC_DROP);
-            sbftExecute(stage2_received);
-            return ;
-        }
-
-    }
-
-    /**
-     * 执行阶段，执行区块中的交易，并且持久化
-     * 这里就不通过网络广播了，直接本地执行
-     * */
-    @Override
-    public void sbftExecute(Message exec) {
-        // 检查是否为投票通过的
-        if(SBFT_MESSAGE_TOPIC_DROP.equals(exec.getTopic())){
-            log.info("sbftExecute(): Drop block="+exec.getBlock().getHash());
-            blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_FAIL);
-            return ;
-        }else if(SBFT_MESSAGE_TOPIC_EXECUTE.equals(exec.getTopic())){
-            log.info("sbftExecute(): execute block="+exec.getBlock().getHash());
-            blockchainService.transactionExec(null,exec.getBlock());
-            blockchainService.storeBlock(exec.getBlock());
-            blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
+        if(blockchainService.voteForBlock(SBFT_VOTETAG_VOTE,height,round,blockHash,msgNodeName,voteValue)){
+            log.info("sbftVoteBroadcastReceived():node="+msgNodeName+", vote="+voteValue+" to block="+blockHash+", height="+height+", round="+round);
+            // 查看是否收到sbft中大于集群节点个数2/3的同意票
+            if(blockchainService.getAgreeVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)*1.0f > blockchainService.getClusterNodeSize() * (2/3.0f)){
+                log.info("sbftVoteBroadcastReceived(): execute, block="+blockHash+", height="+height+", round="+round+
+                        " received vote "+blockchainService.getAgreeVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)+
+                        "/"+blockchainService.getClusterNodeSize());
+                // 删除投票记录
+                blockchainService.removeVote(SBFT_VOTETAG_VOTE,height,round,blockHash);
+                // 计时
+                stage2_received.getBlock().getTimes().setVoteReceived(System.currentTimeMillis());
+                // 执行
+                blockchainService.transactionExec(null,stage2_received.getBlock());
+                blockchainService.storeBlock(stage2_received.getBlock());
+                blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
+                return ;
+            }else if(blockchainService.getAgainstVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)*1.0f > blockchainService.getClusterNodeSize() * (1/3.0f)){
+                // 反对票超过1/3，直接开始下一轮
+                log.info("sbftVoteBroadcastReceived(): start next round. Block="+blockHash+", height="+height+", round="+round+
+                        " received vote against "+blockchainService.getAgainstVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)+
+                        "/"+blockchainService.getClusterNodeSize());
+                // 删除投票记录
+                blockchainService.removeVote(SBFT_VOTETAG_VOTE,height,round,blockHash);
+                // 清空提前做块缓存，因为是基于当前区块进行的提前做块
+                blockchainService.flushCacheBlock();
+                // 开始下一轮
+                blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_FAIL);
+                return ;
+            }
+        }else{
+            log.info("sbftVoteBroadcastReceived(): removed item tag="+SBFT_VOTETAG_VOTE+", height="+height+", round="+round+", blockhash="+blockHash+"!");
             return ;
         }
     }
