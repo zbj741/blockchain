@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * PBFTConsensus的实现类
+ * TODO 流程之间同步性还没有完成
  *
  * @author hitty
  * */
