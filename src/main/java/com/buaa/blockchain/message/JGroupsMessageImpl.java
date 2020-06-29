@@ -40,7 +40,6 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
      * 初始化
      * */
     public JGroupsMessageImpl(){
-        //InputStream is = this.getClass().getClassLoader().getResourceAsStream("msg-tcp.xml");
         try {
             InputStream is = new BufferedInputStream(new FileInputStream("."+File.separator+"config"+File.separator+"jgroups-tcp.xml"));
             // 从msg-tcp.xml中获取配置参数

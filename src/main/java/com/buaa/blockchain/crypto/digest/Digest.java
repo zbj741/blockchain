@@ -1,6 +1,6 @@
 // $Id: Digest.java 232 2010-06-17 14:19:24Z tp $
 
-package com.buaa.blockchain.crypto;
+package com.buaa.blockchain.crypto.digest;
 
 /**
  * <p>This interface documents the API for a hash function. This
@@ -130,7 +130,7 @@ public interface Digest {
 	 *
 	 * @return  the clone
 	 */
-	com.buaa.blockchain.crypto.Digest copy();
+	Digest copy();
 
 	/**
 	 * <p>Return the "block length" for the hash function. This

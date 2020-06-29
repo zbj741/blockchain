@@ -150,6 +150,8 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
                 blockchainService.flushCacheBlock();
                 // 开启新的一轮
                 blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_FAIL);
+            }else{
+
             }
         }else{
             log.info("prepareReceived(): removed item tag="+PBFT_VOTETAG_PREPARE+", height="+height+", round="+round+", blockhash="+blockHash+"!");
@@ -226,6 +228,8 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
                 // 开启新的一轮
                 blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_FAIL);
                 return;
+            }else{
+
             }
         }else{
             log.info("commitReceived(): no key found in vote.");

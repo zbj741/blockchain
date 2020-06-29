@@ -10,8 +10,8 @@ import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.entity.Times;
 import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.exception.ShutDownManager;
-import com.buaa.blockchain.mapper.BlockMapper;
-import com.buaa.blockchain.mapper.TransactionMapper;
+import com.buaa.blockchain.entity.mapper.BlockMapper;
+import com.buaa.blockchain.entity.mapper.TransactionMapper;
 import com.buaa.blockchain.message.JGroupsMessageImpl;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.buaa.blockchain.message.MessageService;
@@ -34,7 +34,6 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -50,7 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * */
 @Slf4j
 @Component
-@MapperScan(basePackages ="com.buaa.blockchain.mapper")
+@MapperScan(basePackages ="com.buaa.blockchain.entity.mapper")
 @ComponentScan(basePackages = "com.buaa.blockchain.*")
 public class BlockchainServiceImpl implements BlockchainService {
 
@@ -108,6 +107,12 @@ public class BlockchainServiceImpl implements BlockchainService {
     /* 单个区块内期望交易量 */
     @Value("${buaa.blockchain.tx-max-amount}")
     public int txMaxAmount;
+    /* 做块阈值，交易量超过则开始做块 */
+    @Value("${buaa.blockchain.txgate}")
+    private int txGate;
+    /* 运行模式 */
+    @Value("${buaa.blockchain.debug}")
+    private Boolean debug;
 
     /*********************** 功能模块 ***********************/
     // 消息服务
@@ -127,6 +132,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     private Boolean isSetup = false;
     // startNewRound的线程记录器
     private ConcurrentHashMap<Long,Boolean> threadMap = new ConcurrentHashMap<>();
+
 
 
 
@@ -177,6 +183,8 @@ public class BlockchainServiceImpl implements BlockchainService {
         }
         this.round.set(0);
         this.clusterSize = messageService.getClusterAddressList().size();
+        // 等待连接建立，此时不能触发开始
+        // TODO 更好的解决方案
         try{
             Thread.sleep(5000);
         }catch (Exception e){
@@ -239,8 +247,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                             this.consensus.setup(message);
                             return;
                         }
-                    }else if(redisTxpool.size(TxPool.TXPOOL_LABEL_TRANSACTION) > 0){
-                        // 交易池非空
+                    }else if(redisTxpool.size(TxPool.TXPOOL_LABEL_TRANSACTION) > txGate){
                         block = createNewBlock(height,round);
                         if(null != block){
                             Message message = new Message(this.nodeName,height,round,block);
@@ -600,7 +607,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * */
     @Override
     public synchronized String transactionExec(String stateRoot, Block block) {
-        log.info("transactionExec(): start exec transactions in block="+block.getHash()+", tranactions size="+block.getTx_length());
+        log.info("transactionExec(): start exec transactions in block="+block.getHash()+", transactions size="+block.getTx_length());
         if(null == stateRoot){
             List<Transaction> transactions = block.getTrans();
             TxExecuter.baseExecute(transactions,worldState);
@@ -622,9 +629,10 @@ public class BlockchainServiceImpl implements BlockchainService {
 
         // 检查是否回复到当前最高区块所记录的stateRoot值
         if(!now.equals(rootInDb)){
-            // TODO undo失败
+            // undo失败，区块链不可用
             log.error("undoTransactionExec(): cannot undo to root in db, root in db is "+
                     rootInDb+", now="+now+", pre="+pre);
+            shutDownManager.shutDown();
         }
     }
 

@@ -1,6 +1,6 @@
 // $Id: KeccakCore.java 258 2011-07-15 22:16:50Z tp $
 
-package com.buaa.blockchain.crypto;
+package com.buaa.blockchain.crypto.digest;
 
 /**
  * This class implements the core operations for the Keccak digest
@@ -568,7 +568,7 @@ abstract class KeccakCore extends DigestEngine {
 	}
 
 
-	protected com.buaa.blockchain.crypto.Digest copyState(com.buaa.blockchain.crypto.KeccakCore dst)
+	protected Digest copyState(KeccakCore dst)
 	{
 		System.arraycopy(A, 0, dst.A, 0, 25);
 		return super.copyState(dst);

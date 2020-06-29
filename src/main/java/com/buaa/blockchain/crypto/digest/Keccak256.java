@@ -1,6 +1,6 @@
 // $Id: Keccak256.java 189 2010-05-14 21:21:46Z tp $
 
-package com.buaa.blockchain.crypto;
+package com.buaa.blockchain.crypto.digest;
 
 /**
  * <p>This class implements the Keccak-256 digest algorithm under the
@@ -44,9 +44,9 @@ public class Keccak256 extends KeccakCore {
 	}
 
 
-	public com.buaa.blockchain.crypto.Digest copy()
+	public Digest copy()
 	{
-		return copyState(new com.buaa.blockchain.crypto.Keccak256());
+		return copyState(new Keccak256());
 	}
 
 

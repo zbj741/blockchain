@@ -1,6 +1,7 @@
 package com.buaa.blockchain.crypto;
 
-import com.buaa.blockchain.crypto.Keccak256;
+import com.buaa.blockchain.crypto.digest.Keccak256;
+import com.buaa.blockchain.crypto.digest.SHA3Helper;
 import com.buaa.blockchain.trie.RLP;
 import com.buaa.blockchain.utils.Utils;
 import org.spongycastle.crypto.Digest;
@@ -15,7 +16,7 @@ import java.util.Random;
 
 import static com.buaa.blockchain.utils.ByteUtil.EMPTY_BYTE_ARRAY;
 import static java.util.Arrays.copyOfRange;
-import static com.buaa.blockchain.crypto.SHA3Helper.Size.*;
+import static com.buaa.blockchain.crypto.digest.SHA3Helper.Size.*;
 
 /**
  * hash工具类

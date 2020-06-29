@@ -1,7 +1,7 @@
 package com.buaa.blockchain;
 
 import com.buaa.blockchain.entity.Transaction;
-import com.buaa.blockchain.mapper.TransactionMapper;
+import com.buaa.blockchain.entity.mapper.TransactionMapper;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

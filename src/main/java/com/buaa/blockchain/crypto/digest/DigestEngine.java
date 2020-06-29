@@ -1,6 +1,6 @@
 // $Id: DigestEngine.java 229 2010-06-16 20:22:27Z tp $
 
-package com.buaa.blockchain.crypto;
+package com.buaa.blockchain.crypto.digest;
 
 /**
  * <p>This class is a template which can be used to implement hash
@@ -44,7 +44,7 @@ package com.buaa.blockchain.crypto;
  * </pre>
  */
 
-public abstract class DigestEngine implements com.buaa.blockchain.crypto.Digest {
+public abstract class DigestEngine implements Digest {
 
 	/**
 	 * Reset the hash algorithm state.
@@ -248,7 +248,7 @@ public abstract class DigestEngine implements com.buaa.blockchain.crypto.Digest 
 	 * @param dest   the copy
 	 * @return  the value {@code dest}
 	 */
-	protected com.buaa.blockchain.crypto.Digest copyState(com.buaa.blockchain.crypto.DigestEngine dest)
+	protected Digest copyState(DigestEngine dest)
 	{
 		dest.inputLen = inputLen;
 		dest.blockCount = blockCount;

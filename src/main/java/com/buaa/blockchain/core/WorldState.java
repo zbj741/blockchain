@@ -30,14 +30,15 @@ public class WorldState {
     /* levelDb存储接口 */
     private KeyValueDataSource levelDb;
     private static String init = "This is the description for worldState in buaa-blockchain, " +
-            "and the aim for this action is to initial specific value in leveldb.";
+            "and the aim for this action is to initial specific value in leveldb." +
+            "This data needs to longer than 32 bytes in order to write into disk";
 
     @Autowired
     public WorldState(KeyValueDataSource levelDb) {
         levelDb.init();
         this.levelDb = levelDb;
         trie = new TrieImpl(levelDb);
-        // TODO 向初始化的worldState中插入既定数据
+        // 向初始化的worldState中插入既定数据，硬编码统一
         this.update32("init",init);
         this.sync();
         log.info("WorldState(): init, getRootHash="+getRootHash());

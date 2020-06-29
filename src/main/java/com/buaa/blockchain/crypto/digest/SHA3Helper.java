@@ -1,4 +1,4 @@
-package com.buaa.blockchain.crypto;
+package com.buaa.blockchain.crypto.digest;
 
 import org.spongycastle.crypto.digests.SHA3Digest;
 import org.spongycastle.util.encoders.Hex;

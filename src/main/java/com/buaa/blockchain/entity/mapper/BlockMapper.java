@@ -1,4 +1,4 @@
-package com.buaa.blockchain.mapper;
+package com.buaa.blockchain.entity.mapper;
 
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.entity.Times;

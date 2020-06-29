@@ -1,4 +1,4 @@
-package com.buaa.blockchain.mapper;
+package com.buaa.blockchain.entity.mapper;
 
 import com.buaa.blockchain.entity.dao.TransactionSQLHelper;
 import com.buaa.blockchain.entity.Transaction;

@@ -16,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 本地区块链服务需要维护一个投票记录，每当收到一次投票后，查看是否触发
  * 用于表明区块投票信息的键需要由tag、height、round和blockhash一起组成，暂时定为 {blockhash}_{height}_{round}
  * 被删除的票不能被投，这里的删除可能是因为该区块已经被store或丢弃
+ *
+ * 清除过期key的策略，可以按照vote的执行次数或超时
  * TODO 考虑是否在本模块中管理投票是否过期？
  *
  * @author hitty
@@ -148,7 +150,7 @@ class VoteRecord{
      * 接收来自节点的投票
      * */
     public boolean vote(boolean voteValue, String nodeName){
-        // TODO 超时
+        // 检查超时
 
         // 是否在已投票节点列表中
         if(this.voters.contains(nodeName)){
