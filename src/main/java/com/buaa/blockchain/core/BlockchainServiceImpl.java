@@ -590,8 +590,8 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 回复requestSyncBlocks，具体需要将搜索本地区块数据并且打包发送给需要的节点
      * */
     @Override
-    public synchronized void replySyncBlocks() {
-
+    public synchronized void replySyncBlocks(int height,String address) {
+        
     }
 
     /**
@@ -737,6 +737,8 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     /**
      * 初始化MessageService
+     * MessageService将所有收到的消息传递给BlockchainService，BlockchainService在此处分发
+     * TODO 显式的使用多线程来处理消息接收后的处理逻辑
      * */
     private void initMessageService(){
         BlockchainServiceImpl bs = this;
@@ -755,9 +757,16 @@ public class BlockchainServiceImpl implements BlockchainService {
                     // 将消息还原成标准格式
                     try {
                         Message receiveMsg = JsonUtil.objectMapper.readValue((String)content,Message.class);
-                        // 判断是否为core需要处理的消息，否则分发给其他模块
-                        // TODO 判断core
-                        bs.consensus.onMessageReceived(receiveMsg);
+                        // 判断是否为core可以处理的消息，否则分发
+                        if(CORE_MESSAGE_TOPIC_SYNC.equals(receiveMsg.getTopic())){
+                            // 收到了同步区块的请求
+                            replySyncBlocks(receiveMsg.getHeight(),receiveMsg.getSenderAddress());
+                        }else if(CORE_MESSAGE_TOPIC_SYNCREPLY.equals(receiveMsg.getTopic())){
+                            // 收到了需要在本地同步的区块
+                            syncBlocks(null);
+                        }else{
+                            bs.consensus.onMessageReceived(receiveMsg);
+                        }
                     } catch (JsonProcessingException e) {
                         // TODO 异常处理
                         e.printStackTrace();

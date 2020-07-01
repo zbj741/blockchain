@@ -84,7 +84,7 @@ public interface BlockchainService {
     /**
      * 回复syncBlocks
      * */
-    void replySyncBlocks();
+    void replySyncBlocks(int requireHeight,String address);
     /**
      * 本地同步区块
      * */
