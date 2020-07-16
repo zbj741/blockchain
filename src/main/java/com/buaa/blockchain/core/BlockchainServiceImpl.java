@@ -41,9 +41,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 区块链的核心流程，用于接收peer的消息，并且进行状态转换
  * 状态转移图如下：
  * firstTimeSetup --> (startNewRound ~~> verifyBlock ~~> storeBlock --> startNewRound ...)
- * 这里规定，共识协议之间的状态转换只能通过协议接口，区块链状态转换只能通过区块链接口
- * 比如sbftVoteBroadcastReceived只能转换到sbftExecute，在sbftExecute中调用的storeBlock可以转换到startNewRound
- *     但是不推荐在sbftVoteBroadcastReceived中直接出现storeBlock或者startNewRound
  *
  * @author hitty
  * */
@@ -61,12 +58,12 @@ public class BlockchainServiceImpl implements BlockchainService {
     final TransactionMapper transactionMapper;
     /* 投票处理 */
     final VoteHandler voteHandler;
-    /* 状态树 */
-    final WorldState worldState;
     /* 超时管理 */
     final TimeoutHelper timeoutHelper;
     /* 关闭管理 */
     final ShutDownManager shutDownManager;
+    /* 状态树 */
+    WorldState worldState;
     /*********************** 属性字段 ***********************/
 
     /* 节点名 */
@@ -89,6 +86,12 @@ public class BlockchainServiceImpl implements BlockchainService {
     private String consensusType;
     /* 共识协议 */
     private BaseConsensus consensus = null;
+    /* leveldb数据库路径 */
+    @Value("${buaa.blockchain.leveldb.dir}")
+    String statedbDir;
+    /* leveldb数据库名称 */
+    @Value("${buaa.blockchain.leveldb.dbname}")
+    String statedbName;
     /* 消息服务名称 */
     @Value("${buaa.blockchain.network}")
     private String messageServiceType;
@@ -123,8 +126,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     public AtomicInteger round = new AtomicInteger(0);
     // 同步器，用于超时管理
     public CountDownLatch countDownLatch;
-    // 提前做块的缓存队列，需要用height和round同时确定一个cache区块
-    // TODO 长度限定
+    // 提前做块的缓存队列，需要用height和round同时确定一个cache区块 TODO 长度限定
     private ConcurrentHashMap<Integer,Block> cacheBlockList = new ConcurrentHashMap<>();
     // 守护线程
     private Thread daeThread = null;
@@ -133,17 +135,13 @@ public class BlockchainServiceImpl implements BlockchainService {
     // startNewRound的线程记录器
     private ConcurrentHashMap<Long,Boolean> threadMap = new ConcurrentHashMap<>();
 
-
-
-
     @Autowired
     public BlockchainServiceImpl(RedisTxPool redisTxpool, BlockMapper blockMapper,
-                                 TransactionMapper transactionMapper, VoteHandler voteHandler, WorldState worldState, TimeoutHelper timeoutHelper, ShutDownManager shutDownManager) {
+                                 TransactionMapper transactionMapper, VoteHandler voteHandler, TimeoutHelper timeoutHelper, ShutDownManager shutDownManager) {
         this.redisTxpool = redisTxpool;
         this.blockMapper = blockMapper;
         this.transactionMapper = transactionMapper;
         this.voteHandler = voteHandler;
-        this.worldState = worldState;
         this.timeoutHelper = timeoutHelper;
         this.shutDownManager = shutDownManager;
     }
@@ -160,6 +158,8 @@ public class BlockchainServiceImpl implements BlockchainService {
         this.daeThread = new Thread();
         this.daeThread.setDaemon(true);
         this.daeThread.start();
+        // 初始化statedb
+        this.worldState = new WorldState(statedbDir,statedbName);
         // 初始化共识
         initConsensus();
         // 初始化消息服务
@@ -300,6 +300,12 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     /**
      * 存储区块
+     * 这个方法十分耗时，依照生产-消费者模型，在这个方法正在执行的过程中，其余的方法对区块链数据进行读操作是不推荐的
+     * （此处为一个例子，当一个很慢的节点的一个线程执行了高度为h1的storeBlock，而此时另一个线程了高度为h1+1的区块，
+     *   那么理想状况下storeBlock不需要时间，h1+1的区块可以通过认证。但是storeBlock还没有执行完导致这个很慢的节点投反对票）
+     * storeBlock方法执行一定是单例串行的！
+     * 在其他BlockchainService的函数对本地数据进行读操作时，需要检查当前是否正在storeBlock，如果是则等待其执行完成
+     *
      * */
     @Override
     public synchronized void storeBlock(Block block) {
@@ -348,7 +354,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Override
     public boolean verifyBlock(Block block, int height, int round) {
         try{
-            Block rawBlock = (Block) block;
+            Block rawBlock = block;
             int maxHeight = blockMapper.findMaxHeight();
             // 检查height
             if(height - 1 != maxHeight){

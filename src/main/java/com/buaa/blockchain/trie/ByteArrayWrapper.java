@@ -1,4 +1,4 @@
-package com.buaa.blockchain.utils;
+package com.buaa.blockchain.trie;
 
 import org.spongycastle.util.encoders.Hex;
 

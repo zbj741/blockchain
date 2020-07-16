@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.buaa.blockchain.utils;
+package com.buaa.blockchain.trie;
 
 import com.google.common.primitives.UnsignedBytes;
 

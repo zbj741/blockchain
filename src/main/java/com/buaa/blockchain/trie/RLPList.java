@@ -1,7 +1,5 @@
 package com.buaa.blockchain.trie;
 
-import com.buaa.blockchain.utils.ByteUtil;
-
 import java.util.ArrayList;
 
 

@@ -10,12 +10,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.buaa.blockchain.trie.Values.fromRlpEncoded;
-import static com.buaa.blockchain.utils.ByteUtil.length;
-import static com.buaa.blockchain.utils.ByteUtil.wrap;
+import static com.buaa.blockchain.trie.ByteUtil.length;
+import static com.buaa.blockchain.trie.ByteUtil.wrap;
 import static java.lang.String.format;
 
 import com.buaa.blockchain.trie.datasource.KeyValueDataSource;
-import com.buaa.blockchain.utils.ByteArrayWrapper;
 
 public class Cache {
 

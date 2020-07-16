@@ -17,6 +17,6 @@ public class TxExecuter {
     public static void baseSingleExecute(Transaction transaction,WorldState worldState){
         //TODO 当下为测试交易执行，仅仅写入交易的hash
         String hash = transaction.getTran_hash();
-        worldState.update32(hash,hash);
+        worldState.update(hash,hash);
     }
 }

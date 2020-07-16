@@ -1,7 +1,6 @@
 package com.buaa.blockchain.trie;
 
 import com.buaa.blockchain.trie.datasource.KeyValueDataSource;
-import com.buaa.blockchain.utils.ByteArrayWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +10,7 @@ import java.util.*;
 import static com.buaa.blockchain.crypto.HashUtil.EMPTY_TRIE_HASH;
 import static com.buaa.blockchain.trie.CompactEncoder.*;
 import static com.buaa.blockchain.trie.RLP.calcElementPrefixSize;
-import static com.buaa.blockchain.utils.ByteUtil.*;
+import static com.buaa.blockchain.trie.ByteUtil.*;
 import static java.util.Arrays.copyOfRange;
 import static org.spongycastle.pqc.math.linearalgebra.ByteUtils.concatenate;
 

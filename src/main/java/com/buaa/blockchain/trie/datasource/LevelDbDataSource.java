@@ -4,8 +4,6 @@ import org.iq80.leveldb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,15 +29,11 @@ import static org.fusesource.leveldbjni.JniDBFactory.factory;
  * @author hitty
  * */
 
-@Component
+
 public class LevelDbDataSource implements KeyValueDataSource {
 
     private static final Logger logger = LoggerFactory.getLogger("leveldb");
-
-    @Value("${spring.leveldb.dir}")
     String dir;
-
-    @Value("${spring.leveldb.dbname}")
     String name;
     public DB db;
     boolean alive;

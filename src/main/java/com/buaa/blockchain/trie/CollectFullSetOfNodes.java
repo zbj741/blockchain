@@ -1,7 +1,5 @@
 package com.buaa.blockchain.trie;
 
-import com.buaa.blockchain.utils.ByteArrayWrapper;
-
 import java.util.HashSet;
 import java.util.Set;
 

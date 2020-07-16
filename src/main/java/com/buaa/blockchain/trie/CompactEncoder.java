@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.buaa.blockchain.utils.ByteUtil.appendByte;
+import static com.buaa.blockchain.trie.ByteUtil.appendByte;
 import static java.util.Arrays.copyOf;
 import static java.util.Arrays.copyOfRange;
 import static org.spongycastle.util.Arrays.concatenate;

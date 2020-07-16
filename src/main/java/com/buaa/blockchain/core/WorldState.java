@@ -1,12 +1,15 @@
 package com.buaa.blockchain.core;
 
+import com.buaa.blockchain.contract.State;
 import com.buaa.blockchain.trie.datasource.KeyValueDataSource;
 import com.buaa.blockchain.trie.Trie;
 import com.buaa.blockchain.trie.TrieImpl;
 import com.buaa.blockchain.trie.Values;
+import com.buaa.blockchain.trie.datasource.LevelDbDataSource;
 import com.buaa.blockchain.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,23 +26,22 @@ import org.springframework.stereotype.Component;
  * @author hitty
  * */
 @Slf4j
-@Component
-public class WorldState {
+public class WorldState implements State {
     /* 字符树 */
     private Trie trie;
     /* levelDb存储接口 */
-    private KeyValueDataSource levelDb;
+    private KeyValueDataSource levelDb = null;
+
     private static String init = "This is the description for worldState in buaa-blockchain, " +
             "and the aim for this action is to initial specific value in leveldb." +
-            "This data needs to longer than 32 bytes in order to write into disk";
+            "This data needs to longer than 32 bytes in order to write into disk.";
 
-    @Autowired
-    public WorldState(KeyValueDataSource levelDb) {
+    public WorldState(String dir,String name) {
+        levelDb = new LevelDbDataSource(dir,name);
         levelDb.init();
-        this.levelDb = levelDb;
         trie = new TrieImpl(levelDb);
         // 向初始化的worldState中插入既定数据，硬编码统一
-        this.update32("init",init);
+        this.update("init",init);
         this.sync();
         log.info("WorldState(): init, getRootHash="+getRootHash());
     }
@@ -77,7 +79,7 @@ public class WorldState {
      * @param key   键值
      * @param value 
      * */
-    public void update32(Trie trie, String key, String value) {
+    public void update(Trie trie, String key, String value) {
         log.debug("update32(): key="+key+", value="+value);
         //TODO 检查输入参数的合法性
         trie.update(key.getBytes(),value.getBytes());
@@ -86,7 +88,7 @@ public class WorldState {
     /**
      * 默认以root为根
      * */
-    public void update32(String key, String value) {
+    public void update(String key, String value) {
         log.debug("update32(): key="+key+", value="+value);
         //TODO 检查输入参数的合法性
         trie.update(key.getBytes(),value.getBytes());
@@ -97,7 +99,7 @@ public class WorldState {
      * @param trie
      * @param key
      * */
-    public String get32(Trie trie, String key){
+    public String get(Trie trie, String key){
         byte[] rlp = trie.get(key.getBytes());
         String value = new String(rlp);
         log.info("get32(): key="+key+", value="+value);
@@ -107,11 +109,16 @@ public class WorldState {
     /**
      * 默认以root为根
      * */
-    public String get32(String key){
+    public String get(String key){
         byte[] rlp = trie.get(key.getBytes());
         String value = new String(rlp);
         log.debug("get32(): key="+key+", value="+value);
         return value;
+    }
+
+    @Override
+    public void delete(String key) {
+        trie.delete(key.getBytes());
     }
 
     /**

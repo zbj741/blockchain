@@ -1,8 +1,6 @@
 package com.buaa.blockchain.trie;
 
 
-import com.buaa.blockchain.utils.ByteArrayWrapper;
-import com.buaa.blockchain.utils.ByteUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -11,12 +9,10 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-import static com.buaa.blockchain.utils.ByteUtil.*;
+import static com.buaa.blockchain.trie.ByteUtil.*;
 import static java.util.Arrays.copyOfRange;
 import static org.spongycastle.util.Arrays.concatenate;
 import static org.spongycastle.util.BigIntegers.asUnsignedByteArray;
-
-import com.buaa.blockchain.utils.ByteUtil.*;
 
 /**
  * Recursive Length Prefix (RLP) encoding.

@@ -14,7 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 
-import static com.buaa.blockchain.utils.ByteUtil.EMPTY_BYTE_ARRAY;
+import static com.buaa.blockchain.trie.ByteUtil.EMPTY_BYTE_ARRAY;
 import static java.util.Arrays.copyOfRange;
 import static com.buaa.blockchain.crypto.digest.SHA3Helper.Size.*;
 

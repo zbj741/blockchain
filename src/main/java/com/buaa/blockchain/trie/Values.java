@@ -1,6 +1,5 @@
 package com.buaa.blockchain.trie;
 
-import com.buaa.blockchain.utils.ByteUtil;
 import com.cedarsoftware.util.DeepEquals;
 
 import com.buaa.blockchain.crypto.HashUtil;
