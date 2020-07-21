@@ -1,6 +1,8 @@
 package com.buaa.blockchain.core;
 
 
+import com.buaa.blockchain.annotation.ReadData;
+import com.buaa.blockchain.annotation.WriteData;
 import com.buaa.blockchain.consensus.BaseConsensus;
 import com.buaa.blockchain.consensus.PBFTConsensusImpl;
 import com.buaa.blockchain.consensus.SBFTConsensusImpl;
@@ -36,6 +38,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 区块链的核心流程，用于接收peer的消息，并且进行状态转换
@@ -62,6 +65,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     final TimeoutHelper timeoutHelper;
     /* 关闭管理 */
     final ShutDownManager shutDownManager;
+
     /* 状态树 */
     WorldState worldState;
     /*********************** 属性字段 ***********************/
@@ -117,13 +121,13 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Value("${buaa.blockchain.debug}")
     private Boolean debug;
 
-    /*********************** 功能模块 ***********************/
+    /*********************** 运行时功能组件 ***********************/
     // 消息服务
     private MessageService messageService = null;
-    // 集群大小
-    public int clusterSize = 1;
-    // 当前轮数
+    // 当前轮数，需要同步
     public AtomicInteger round = new AtomicInteger(0);
+    // 持久化锁，包括对state和mysql的读写
+    private ReentrantReadWriteLock dbLock = new ReentrantReadWriteLock();
     // 同步器，用于超时管理
     public CountDownLatch countDownLatch;
     // 提前做块的缓存队列，需要用height和round同时确定一个cache区块 TODO 长度限定
@@ -132,8 +136,16 @@ public class BlockchainServiceImpl implements BlockchainService {
     private Thread daeThread = null;
     // 标志位，是否初始化完毕
     private Boolean isSetup = false;
-    // startNewRound的线程记录器
+    // startNewRound的线程记录器，被启动的新startNewRound会去标记其他正在运行的startNewRound不可用
     private ConcurrentHashMap<Long,Boolean> threadMap = new ConcurrentHashMap<>();
+
+
+    // 缓存的数据库变量，在verifyBlock时读，在storeBlock的靠前流程中写
+    private int nowHeight = 0;
+    private String nowPreHash = "";
+    private String nowStateRoot = "";
+
+
 
     @Autowired
     public BlockchainServiceImpl(RedisTxPool redisTxpool, BlockMapper blockMapper,
@@ -182,7 +194,7 @@ public class BlockchainServiceImpl implements BlockchainService {
             }
         }
         this.round.set(0);
-        this.clusterSize = messageService.getClusterAddressList().size();
+
         // 等待连接建立，此时不能触发开始
         // TODO 更好的解决方案
         try{
@@ -269,6 +281,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                         }
                     }
                 }
+                // 新的线程占领了startNewRound的轮询权，旧的线程退出
                 log.warn("startNewRound(): thread "+Thread.currentThread().getId()+" shut down.");
                 return ;
             }else{
@@ -282,9 +295,11 @@ public class BlockchainServiceImpl implements BlockchainService {
     /**
      * startNewRound的总入口
      * 在一个节点中，startNewRound可能是瞬间执行完毕（非主节点），或者持续执行（主节点）
+     * 将任务交付给newRoundExecutor，然后结束线程
      * */
     @Override
     public void startNewRound(int code) {
+        // 尚未进入可执行状态
         if(!isSetup){
             log.warn("startNewRound(): cannot enable new round!");
             return;
@@ -307,53 +322,67 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 在其他BlockchainService的函数对本地数据进行读操作时，需要检查当前是否正在storeBlock，如果是则等待其执行完成
      *
      * */
+    @WriteData
     @Override
     public synchronized void storeBlock(Block block) {
-        log.warn("storeBlock(): block="+block.toString());
-        // 检查交易数量
-        if(block.getTx_length() < 1){
-            log.info("storeBlock(): get Block blockhash="+block.getHash()+" with no transation, storeBlock stop.");
-            return ;
-        }
-        block.getTimes().setStoreBlock(System.currentTimeMillis());
-        // 存储当前状态树根的值到block中
-        block.setState_root(worldState.getRootHash());
-        // 处理交易池
-        for(Transaction ts : block.getTrans()){
-            if(null == redisTxpool.get(TxPool.TXPOOL_LABEL_TRANSACTION,ts.getTran_hash())){
-                // 本地交易池中没有此交易，认为是还没有收到（可能是网络时延）
-                redisTxpool.put(TxPool.TXPOOL_LABEL_DEL_TRANSACTION,ts.getTran_hash(),ts);
-            }else{
-                // 本地交易池存在该交易，删除该交易
-                redisTxpool.delete(TxPool.TXPOOL_LABEL_TRANSACTION,ts.getTran_hash());
+        try{
+            // 上锁
+            dbLock.writeLock().lock();
+            log.warn("storeBlock(): block="+block.toString());
+            // 检查交易数量
+            if(block.getTx_length() < 1){
+                log.info("storeBlock(): get Block blockhash="+block.getHash()+" with no transaction, storeBlock stop.");
+                return ;
             }
-            ts.setBlock_hash(block.getHash());
-        }
-        block.getTimes().setEndTime(System.currentTimeMillis());
-        // 计算耗时
-        long cost = block.getTimes().getEndTime() - Long.valueOf(block.getExtra());
-        block.setExtra(Long.toString(cost));
-        block.getTimes().setEndTime(System.currentTimeMillis());
-        // 持久化交易和区块
-        worldState.sync();
-        insertTransactionList(block);
-        blockMapper.insertTimes(block.getTimes());
-        blockMapper.insertBlock(block);
-        log.info("storeBlock(): Done! block="+block.toString());
-        // 删除缓存
-        cacheBlockList.remove(block.getHeight());
+            block.getTimes().setStoreBlock(System.currentTimeMillis());
+            // 存储当前状态树根的值到block中
+            block.setState_root(worldState.getRootHash());
+            // 处理交易池
+            for(Transaction ts : block.getTrans()){
+                if(null == redisTxpool.get(TxPool.TXPOOL_LABEL_TRANSACTION,ts.getTran_hash())){
+                    // 本地交易池中没有此交易，认为是还没有收到（可能是网络时延）
+                    redisTxpool.put(TxPool.TXPOOL_LABEL_DEL_TRANSACTION,ts.getTran_hash(),ts);
+                }else{
+                    // 本地交易池存在该交易，删除该交易
+                    redisTxpool.delete(TxPool.TXPOOL_LABEL_TRANSACTION,ts.getTran_hash());
+                }
+                ts.setBlock_hash(block.getHash());
+            }
+            block.getTimes().setEndTime(System.currentTimeMillis());
+            // 计算耗时
+            long cost = block.getTimes().getEndTime() - Long.valueOf(block.getExtra());
+            block.setExtra(Long.toString(cost));
+            block.getTimes().setEndTime(System.currentTimeMillis());
+            // 持久化交易和区块
+            worldState.sync();
+            insertTransactionList(block);
+            blockMapper.insertTimes(block.getTimes());
+            blockMapper.insertBlock(block);
+            log.info("storeBlock(): Done! block="+block.toString());
+            // 删除缓存
+            cacheBlockList.remove(block.getHeight());
 
-        // 通知
-        // this.timeoutHelper.notified(this.height,this.round);
+            // 通知
+            // this.timeoutHelper.notified(this.height,this.round);
+        }catch (Exception e){
+            // TODO storeBlock存储失败
+            e.printStackTrace();
+        }finally {
+            dbLock.writeLock().unlock();
+        }
+
     }
 
     /**
      * 验证区块是否合法
      * 当前实现中，检查了区块高度、前区块hash、区块merkle树根、区块头部hash。任何一个出错即返回false
      * */
+    @ReadData
     @Override
     public boolean verifyBlock(Block block, int height, int round) {
         try{
+            // 获取读锁
+            dbLock.readLock().lock();
             Block rawBlock = block;
             int maxHeight = blockMapper.findMaxHeight();
             // 检查height
@@ -407,6 +436,8 @@ public class BlockchainServiceImpl implements BlockchainService {
             // TODO 验证出现错误
             e.printStackTrace();
             return false;
+        }finally {
+            dbLock.readLock().unlock();
         }
 
     }
@@ -509,62 +540,71 @@ public class BlockchainServiceImpl implements BlockchainService {
      * @param height
      * @param round
      * @param baseBlock 调用者需要提供收到的区块中交易的数量，提前做块时需要跳过
-     * TODO 考虑是否用线程的形式执行
      * */
+    @ReadData
     @Override
     public void createNewCacheBlock(int height, int round, Block baseBlock) {
-        int transLength = baseBlock.getTx_length();
-        if(cacheEnable == false || transLength <= 0){
-            return ;
-        }
-        log.info("createNewCacheBlock(): start, height="+height+", round="+round);
-        TreeSet<String> treeSet = new TreeSet<>();
-        for(Transaction ts : baseBlock.getTrans()){
-            treeSet.add(ts.getTran_hash());
-        }
-        int tranSeq = 0;
-        List<Transaction> rawTransList = redisTxpool.getList(TxPool.TXPOOL_LABEL_TRANSACTION,txMaxAmount);
-        // 被筛选出的可以入块执行的交易列表
-        List<Transaction> validTransList = new ArrayList<Transaction>();
-        // 逐个检查交易列表中的交易，交易在交易池中和数据库中没有记录，则为合法交易
-        for(Transaction transaction : rawTransList){
-            if(isValidTransaction(transaction) && !treeSet.contains(transaction.getTran_hash())){
-                // 交易合法
-                transaction.setTranSeq(tranSeq++);
-                validTransList.add(transaction);
+        try{
+            dbLock.readLock().lock();
+            int transLength = baseBlock.getTx_length();
+            if(cacheEnable == false || transLength <= 0){
+                return ;
             }
-        }
-        if(validTransList.size() < 1){
-            log.info("createNewCacheBlock(): no trans valid for create new cache block.");
-            return ;
-        }else{
-            // 生成新的区块
-            Block block = new Block();
-            Times times = new Times();
-            times.setStartCompute(new Date().getTime());
-            Collections.sort(validTransList);
-            String merkleRoot = getMerkleRoot(validTransList);
-            // 填写属性
-            block.setHeight(height);
-            block.setMerkle_root(merkleRoot);
-            block.setTimestamp((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date()));
-            block.setTrans((ArrayList<Transaction>) validTransList);
-            block.setTx_length(validTransList.size());
-            block.setVersion(version);
-            block.setSign(nodeSign);
-            // 填写时间
-            times.setBlock_hash(block.getHash());
-            times.setTx_length(validTransList.size());
-            block.setTimes(times);
-            // 检查是否过期
-            if(height <= blockMapper.findMaxHeight()){
-                log.info("createNewCacheBlock(): height="+height+" is expired, drop it.");
-                return;
+            log.info("createNewCacheBlock(): start, height="+height+", round="+round);
+            TreeSet<String> treeSet = new TreeSet<>();
+            for(Transaction ts : baseBlock.getTrans()){
+                treeSet.add(ts.getTran_hash());
             }
-            // 放入缓存队列中
-            cacheBlockList.put(height,block);
-            log.info("createNewCacheBlock(): Done, height="+height+", round="+round+", txLength="+block.getTx_length());
+            int tranSeq = 0;
+            List<Transaction> rawTransList = redisTxpool.getList(TxPool.TXPOOL_LABEL_TRANSACTION,txMaxAmount);
+            // 被筛选出的可以入块执行的交易列表
+            List<Transaction> validTransList = new ArrayList<Transaction>();
+            // 逐个检查交易列表中的交易，交易在交易池中和数据库中没有记录，则为合法交易
+            for(Transaction transaction : rawTransList){
+                if(isValidTransaction(transaction) && !treeSet.contains(transaction.getTran_hash())){
+                    // 交易合法
+                    transaction.setTranSeq(tranSeq++);
+                    validTransList.add(transaction);
+                }
+            }
+            if(validTransList.size() < 1){
+                log.info("createNewCacheBlock(): no trans valid for create new cache block.");
+                return ;
+            }else{
+                // 生成新的区块
+                Block block = new Block();
+                Times times = new Times();
+                times.setStartCompute(new Date().getTime());
+                Collections.sort(validTransList);
+                String merkleRoot = getMerkleRoot(validTransList);
+                // 填写属性
+                block.setHeight(height);
+                block.setMerkle_root(merkleRoot);
+                block.setTimestamp((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date()));
+                block.setTrans((ArrayList<Transaction>) validTransList);
+                block.setTx_length(validTransList.size());
+                block.setVersion(version);
+                block.setSign(nodeSign);
+                // 填写时间
+                times.setBlock_hash(block.getHash());
+                times.setTx_length(validTransList.size());
+                block.setTimes(times);
+                // 检查是否过期
+                if(height <= blockMapper.findMaxHeight()){
+                    log.info("createNewCacheBlock(): height="+height+" is expired, drop it.");
+                    return;
+                }
+                // 放入缓存队列中
+                cacheBlockList.put(height,block);
+                log.info("createNewCacheBlock(): Done, height="+height+", round="+round+", txLength="+block.getTx_length());
+            }
+        }catch (Exception e){
+            // TODO createNewCacheBlock异常
+            e.printStackTrace();
+        }finally {
+            dbLock.readLock().unlock();
         }
+
     }
 
     /**
@@ -575,6 +615,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         if(this.cacheEnable){
             this.cacheBlockList.clear();
         }
+        return ;
     }
 
     /**
@@ -596,7 +637,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 回复requestSyncBlocks，具体需要将搜索本地区块数据并且打包发送给需要的节点
      * */
     @Override
-    public synchronized void replySyncBlocks(int height,String address) {
+    public void replySyncBlocks(int height,String address) {
         
     }
 
@@ -604,7 +645,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 将参数中的blockList在本地执行并且存储
      * */
     @Override
-    public synchronized void syncBlocks(List<Block> blockList) {
+    public void syncBlocks(List<Block> blockList) {
 
     }
 
@@ -771,6 +812,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                             // 收到了需要在本地同步的区块
                             syncBlocks(null);
                         }else{
+                            // 非CORE消息，交付给共识协议的实现类
                             bs.consensus.onMessageReceived(receiveMsg);
                         }
                     } catch (JsonProcessingException e) {
@@ -977,4 +1019,5 @@ public class BlockchainServiceImpl implements BlockchainService {
     public void insertTransactionList(Block block){
         transactionMapper.insertAllTrans(block.getTrans());
     }
+
 }

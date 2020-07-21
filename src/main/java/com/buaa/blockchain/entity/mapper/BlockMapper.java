@@ -21,8 +21,15 @@ import java.util.ArrayList;
 
 @Repository
 public interface BlockMapper {
+
+    @Select("SELECT pre_hash,hash,merkle_root,state_root,pre_state_root,height,sign,timestamp,extra,version,tx_length from block where hash = #{hash}")
+    public Block findBlockByHash(String hash);
+
+    @Select("SELECT pre_hash,hash,merkle_root,state_root,pre_state_root,height,sign,timestamp,extra,version,tx_length from block where height = #{height}")
+    public Block findBlockByHeight(int height);
+
     @Select("SELECT hash from block where pre_hash = #{pre_hash}")
-    public String findBlockByPreHash(String pre_hash);
+    public Block findBlockByPreHash(String pre_hash);
 
     @Select("SELECT count(1) as num from block where hash = #{hash}")
     public int findBlockNum(String hash);
@@ -49,6 +56,4 @@ public interface BlockMapper {
             + " (#{block_hash},#{tx_length},#{startCompute},#{broadcast},#{blockReceived},#{sendVote},#{voteReceived},#{storeBlock},#{removeTrans},#{storeTrans},#{endTime})")
     public void insertTimes(Times times);
 
-    @Select("SELECT money from person")
-    public int findPersonMoney();
 }
