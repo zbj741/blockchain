@@ -12,12 +12,23 @@ import java.util.List;
 @Component
 public class BlockchainApiImpl implements BlockchainApi{
 
-    @Autowired
-    BlockMapper blockMapper;
+    final
+    private BlockMapper blockMapper;
+
+    final
+    private TransactionMapper transactionMapper;
 
     @Autowired
-    TransactionMapper transactionMapper;
+    public BlockchainApiImpl(BlockMapper blockMapper, TransactionMapper transactionMapper) {
+        this.blockMapper = blockMapper;
+        this.transactionMapper = transactionMapper;
+    }
 
+    @Override
+    public Boolean syncBlocks(List<Block> blockList, String address) {
+
+        return null;
+    }
 
     @Override
     public Block findBlockByHash(String hash) {
@@ -30,32 +41,12 @@ public class BlockchainApiImpl implements BlockchainApi{
     }
 
     @Override
-    public Block findBkByHash(String hash) {
-        return null;
-    }
-
-    @Override
-    public Block findBkByHeight(int height) {
-        return null;
-    }
-
-    @Override
     public List<Block> listBlock() {
         return null;
     }
 
     @Override
     public List<Block> listBlockByHeight(int min, int max) {
-        return null;
-    }
-
-    @Override
-    public List<Block> listBk() {
-        return null;
-    }
-
-    @Override
-    public List<Block> listBkByHeight(int min, int max) {
         return null;
     }
 

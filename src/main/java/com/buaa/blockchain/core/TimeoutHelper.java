@@ -5,8 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 超时等待器，用于检测主节点做块流程的超时
@@ -20,36 +19,55 @@ import java.util.concurrent.TimeUnit;
 public class TimeoutHelper {
 
     private long timeout = 20000l;
+    private CountDownLatch countDownLatch = null;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    private HashMap<String, CountDownLatch> timeoutList = new HashMap<>();
-
+    private Boolean isBusy = false;
+    private int height;
+    private int round;
+    boolean res = true;
     @Autowired
     TimeoutHelper(){
 
     }
-    public Boolean startWait(int height,int round){
-        String key = height+"_"+round;
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        timeoutList.put(key,countDownLatch);
-        try {
-            countDownLatch.await(timeout, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException interruptedException){
-            // TODO 处理异常
-        }finally {
-            timeoutList.remove(key);
-            if(countDownLatch.getCount() > 0){
-                // 超时结束
-                return false;
-            }else{
-                // 被正常notified结束
-                return true;
-            }
+
+    /**
+     * 开始等待
+     * */
+    public synchronized void startWait(int height,int round){
+        if(!isBusy){
+            this.height = height;
+            this.round = round;
+            this.res = true;
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    countDownLatch = new CountDownLatch(1);
+                    try{
+                        // 开始等待超时
+                        res = countDownLatch.await(timeout,TimeUnit.MILLISECONDS);
+                    }catch (InterruptedException e){
+
+                    }finally {
+                        if(!res){
+                            // 是超时引起的
+
+                        }
+                    }
+                }
+            });
         }
     }
+
+    /**
+     * 解除等待并且定时器删除
+     * */
     public void notified(int height,int round){
-        String key = height+"_"+round;
-        if(this.timeoutList.keySet().contains(key)){
-            timeoutList.get(key).countDown();
+        if(this.height == height && this.round == round && isBusy){
+            countDownLatch.countDown();
+            this.height = 0;
+            this.round = 0;
+            this.isBusy = false;
         }
     }
 }

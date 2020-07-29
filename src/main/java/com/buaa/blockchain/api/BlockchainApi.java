@@ -11,19 +11,19 @@ import java.util.List;
  * @author hitty
  * */
 public interface BlockchainApi {
+    /*************  运行时相关  *************/
+    /**
+     * 同步区块
+     * */
+    Boolean syncBlocks(List<Block> blockList,String address);
     /*************  持久化数据查询相关  *************/
     /**
      * 获取区块数据
      * */
     Block findBlockByHash(String hash);
     Block findBlockByHeight(int height);
-    // Bk意为不完整的block，省略了交易数据
-    Block findBkByHash(String hash);
-    Block findBkByHeight(int height);
     List<Block> listBlock();
     List<Block> listBlockByHeight(int min,int max);
-    List<Block> listBk();
-    List<Block> listBkByHeight(int min,int max);
 
     /**
      * 获取交易数据
@@ -33,4 +33,5 @@ public interface BlockchainApi {
     Transaction findTxByBlockHash(String bhash);
     List<Transaction> listTx();
     List<Transaction> listTxByStartTime();
+    /***/
 }

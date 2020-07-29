@@ -23,7 +23,7 @@ public class NettyServer {
     NettyMessageImpl nl;
     int port;
     String ip;
-    public NettyServer(NettyMessageImpl nl, String ip, int port){
+    NettyServer(NettyMessageImpl nl, String ip, int port){
         NettyServer ts = this;
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();

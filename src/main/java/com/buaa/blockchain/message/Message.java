@@ -6,6 +6,7 @@ import com.buaa.blockchain.entity.Block;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 消息实体
@@ -24,9 +25,13 @@ public class Message implements Serializable {
     private int round;
     private Boolean vote;
     private Block block;
+    private List<Block> blockList;
 
     public Message(){}
 
+    /**
+     * 无topic，一般用于共识协议的发起
+     * */
     public Message(String nodeName,int height,int round,Block block){
         this.topic = "";
         this.nodeName = nodeName;
@@ -36,15 +41,9 @@ public class Message implements Serializable {
         this.block = block;
     }
 
-    public Message(String topic,String nodeName,int height,int round,Block block){
-        this.topic = topic;
-        this.nodeName = nodeName;
-        this.height = height;
-        this.round = round;
-        this.vote = false;
-        this.block = block;
-    }
-
+    /**
+     * 注明topic
+     * */
     public Message(String topic,String nodeName,int height,int round,Boolean vote,Block block){
         this.topic = topic;
         this.nodeName = nodeName;
@@ -53,6 +52,18 @@ public class Message implements Serializable {
         this.vote = vote;
         this.block = block;
     }
+
+    /**
+     * 用于同步区块
+     * */
+    public Message(String topic,String senderAddress,int height, List<Block> blockList){
+        this.topic = topic;
+        this.senderAddress = senderAddress;
+        this.height = height;
+        this.blockList = blockList;
+    }
+
+
 
     public String toString(){
         return "topic="+topic+", nodeName="+nodeName+", height="+height+", round="+round+", vote="+vote+

@@ -145,6 +145,10 @@ public interface BlockchainService {
      * */
     void broadcasting(Message message);
     /**
+     * 单播
+     * */
+    void singleSend(Message message, String address);
+    /**
      * 获取集群大小
      * */
     int getClusterNodeSize();

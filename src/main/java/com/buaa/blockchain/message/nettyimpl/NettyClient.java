@@ -29,7 +29,7 @@ public class NettyClient {
     private Bootstrap bootstrap;
     // 记录集群节点的地址和netty的channel的映射关系，要求这些channel是可用的
     ConcurrentHashMap<String, Channel> channelMap = new ConcurrentHashMap<>();
-    public NettyClient(NettyMessageImpl nl){
+    NettyClient(NettyMessageImpl nl){
         this.nl = nl;
         initClient();
         // 开启一个线程，尝试重连所有在配置文件中出现的地址【线程中不能出现阻塞】

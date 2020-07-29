@@ -8,8 +8,8 @@
         <version>2.2.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.buaa</groupId>
-    <artifactId>blockchain</artifactId>
+    <groupId>com.buaa.blockchain</groupId>
+    <artifactId>core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>blockchain</name>
     <description>the base blockchain project</description>

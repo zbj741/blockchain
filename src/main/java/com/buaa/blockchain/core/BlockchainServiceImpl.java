@@ -70,6 +70,9 @@ public class BlockchainServiceImpl implements BlockchainService {
     WorldState worldState;
     /*********************** 属性字段 ***********************/
 
+    /* 是否单节点运行 */
+    @Value("${buaa.blockchain.single}")
+    public Boolean singleMode;
     /* 节点名 */
     @Value("${buaa.blockchain.nodename}")
     public String nodeName;
@@ -105,6 +108,9 @@ public class BlockchainServiceImpl implements BlockchainService {
     /* 消息服务器端口 */
     @Value("${buaa.blockchain.msg.port}")
     public int msgPort;
+    /* 最小连接数 */
+    @Value("${buaa.blockchain.msg.minconnect}")
+    public int minConnect;
     /* 节点消息服务器地址 */
     @Value("${buaa.blockchain.msg.address}")
     public String msgAddressList;
@@ -189,19 +195,27 @@ public class BlockchainServiceImpl implements BlockchainService {
             int maxHeight = blockMapper.findMaxHeight();
             String maxHeightStateRoot =  blockMapper.findStatRoot(maxHeight);
             if(!worldState.switchRoot(maxHeightStateRoot)){
-                log.error("firstTimeSetup(): cannot sync data between block and state! Shut down!");
+                log.error("firstTimeSetup(): cannot sync data between block and state! Shut down!\nAdvise: clear the mysql and leveldb, restart node.");
                 shutDownManager.shutDown();
             }
         }
         this.round.set(0);
 
-        // 等待连接建立，此时不能触发开始
-        // TODO 更好的解决方案
-        try{
-            Thread.sleep(5000);
-        }catch (Exception e){
+        if(!singleMode){
+            // 等待连接建立，此时不能触发开始
+            while(messageService.getClusterAddressList().size() < minConnect){
+                try{
+                    Thread.sleep(5000);
+                    log.warn("firstTimeSetup(): waiting for enough connections, minConnect="+minConnect+", now="+
+                            messageService.getClusterAddressList().toString());
+                }catch (Exception e){
+                    // TODO 处理异常
+                }
+            }
+
 
         }
+        // 连接数达到要求，可以开始做块
         isSetup = true;
         // 以本地的区块信息，开始新一轮的做块
         startNewRound(BLOCKCHAIN_SERVICE_STATE_SUCCESS);
@@ -212,7 +226,11 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 当一轮做块开始后，主节点轮询查找交易池中的交易，其他节点无状态（非主节点仅仅检查后发现自己不是主节点，然后startNewRound执行完毕）
      * 主节点创建了新的块时，startNewRound也执行完毕，此时各个节点均处于等待区块投票结束和下一轮开始的状态。
      *
-     * 需要检查当前有没有其他的线程在运行主节点的while循环。如果出现多次进入startNewRound并且自己为主节点时，会出现多个线程执行startNewRound的while
+     * 由于每一个被触发的startNewRound都是独立线程运行的，但是不建议多个线程运行不同的该函数
+     * 当一个线程开始执行startNewRound时，需要检查当前有没有其他的线程在运行主节点的while循环。
+     * 如果出现多次进入startNewRound并且自己为主节点时，会出现多个线程执行startNewRound的while，
+     * 当前的threadMap用于记录每一个执行startNewRound的线程，所以后来的执行者需要给其他的执行者发信号将其关闭
+     *
      * @param height 区块高度
      * @param round 轮数
      * */
@@ -301,7 +319,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     public void startNewRound(int code) {
         // 尚未进入可执行状态
         if(!isSetup){
-            log.warn("startNewRound(): cannot enable new round!");
+            log.warn("startNewRound(): not setup yet, cannot enable new round!");
             return;
         }
         if(code == BLOCKCHAIN_SERVICE_STATE_SUCCESS){
@@ -324,7 +342,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * */
     @WriteData
     @Override
-    public synchronized void storeBlock(Block block) {
+    public void storeBlock(Block block) {
         try{
             // 上锁
             dbLock.writeLock().lock();
@@ -625,28 +643,54 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Override
     public void requestSyncBlocks(int nowHeight) {
         // 生成Message用于请求block
-        Message message = new Message();
-        message.setSenderAddress(messageService.getLocalAddress());
-        message.setTopic(CORE_MESSAGE_TOPIC_SYNC);
-        message.setHeight(blockMapper.findMaxHeight());
+        Message message = new Message(CORE_MESSAGE_TOPIC_SYNC,this.messageService.getLocalAddress(),blockMapper.findMaxHeight(),null);
         // 广播
         broadcasting(message);
     }
 
     /**
      * 回复requestSyncBlocks，具体需要将搜索本地区块数据并且打包发送给需要的节点
+     * @param height  请求同步区块的节点当前的区块高度
+     * @param address 请求懂不区块的节点的地址
      * */
     @Override
     public void replySyncBlocks(int height,String address) {
-        
+        // 为了减少广播量，主节点来发请求
+        if(isSelfLeader()){
+            int maxHeight = blockMapper.findMaxHeight();
+            if(height >= maxHeight){
+                // 不需要同步
+                Message message = new Message(CORE_MESSAGE_TOPIC_SYNCREPLY,address,height,null);
+                singleSend(message,address);
+            } else{
+                // 将需要的区块信息找到
+                List<Block> blockList = new ArrayList<>();
+                for(int i = height+1;i <= maxHeight;i++){
+                    Block block = blockMapper.findBlockByHeight(i);
+                    block.setTrans(transactionMapper.findTransByBlockHash(block.getHash()));
+                    blockList.add(block);
+                }
+                Message message = new Message(CORE_MESSAGE_TOPIC_SYNCREPLY,address,maxHeight,blockList);
+                singleSend(message,address);
+            }
+        }
     }
 
     /**
      * 将参数中的blockList在本地执行并且存储
      * */
+    @WriteData
     @Override
-    public void syncBlocks(List<Block> blockList) {
-
+    public synchronized void syncBlocks(List<Block> blockList) {
+        try{
+            for(Block block : blockList){
+                transactionExec(null,block);
+                storeBlock(block);
+            }
+            isSetup = true;
+        }catch (Exception e){
+            // TODO syncBlocks的异常处理
+        }
     }
 
     /**
@@ -751,6 +795,11 @@ public class BlockchainServiceImpl implements BlockchainService {
     }
 
     @Override
+    public void singleSend(Message message, String address) {
+        this.messageService.singleSend(JsonUtil.message2JsonString(message),address);
+    }
+
+    @Override
     public int getClusterNodeSize() {
         return this.messageService.getClusterAddressList().size();
     }
@@ -810,7 +859,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                             replySyncBlocks(receiveMsg.getHeight(),receiveMsg.getSenderAddress());
                         }else if(CORE_MESSAGE_TOPIC_SYNCREPLY.equals(receiveMsg.getTopic())){
                             // 收到了需要在本地同步的区块
-                            syncBlocks(null);
+                            syncBlocks(receiveMsg.getBlockList());
                         }else{
                             // 非CORE消息，交付给共识协议的实现类
                             bs.consensus.onMessageReceived(receiveMsg);

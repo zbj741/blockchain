@@ -30,7 +30,7 @@ public interface MessageService {
      * */
     String getLocalAddress();
     /**
-     * 获取集群节点地址
+     * 获取已连接的集群节点地址
      * */
     Set<String> getClusterAddressList();
     /**

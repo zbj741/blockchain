@@ -8,6 +8,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
 
+
+/**
+ * 用于展示数据的接口
+ *
+ * @author hitty
+ * */
 @ComponentScan(basePackages = "com.buaa.blockchain.*")
 @RestController
 @Scope("prototype")
@@ -16,6 +22,7 @@ public class DataController {
 
     private final BlockchainApi blockchainApi;
 
+    @Autowired
     public DataController(BlockchainApi blockchainApi) {
         this.blockchainApi = blockchainApi;
     }
