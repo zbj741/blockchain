@@ -289,7 +289,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                         }
                     } else{
                         try{
-                            log.info("startNewRound(): not enough transactions found, wait for "+this.sleepTime+"ms.");
+                            log.info("startNewRound(): not enough transactions found, wait for "+this.sleepTime+"ms."+this.txGate+"  "+redisTxpool.size(TxPool.TXPOOL_LABEL_TRANSACTION));
                             Thread.sleep(this.sleepTime);
                             waitCount++;
                             continue;
