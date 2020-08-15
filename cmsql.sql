@@ -66,7 +66,6 @@ CREATE TABLE `transaction` (
 -- Records of transaction
 -- ----------------------------
 
-  
 CREATE TABLE `times` (
   `block_hash` varchar(100) NOT NULL,
   `tx_length` int(32) DEFAULT NULL,

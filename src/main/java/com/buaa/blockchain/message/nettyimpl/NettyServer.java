@@ -2,6 +2,7 @@ package com.buaa.blockchain.message.nettyimpl;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -48,10 +49,21 @@ public class NettyServer {
                     });
             // ChannelFuture channelFuture = ssmpServerBootstrap.bind(ip,port).sync();
             ChannelFuture channelFuture = ssmpServerBootstrap.bind(port).sync();
+            channelFuture.channel().closeFuture().addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                    // TODO 关闭前的处理
+
+                    bossGroup.shutdownGracefully();
+                    workerGroup.shutdownGracefully();
+                }
+            });
 
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+
         }
     }
 }
