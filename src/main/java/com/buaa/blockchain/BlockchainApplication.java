@@ -19,10 +19,6 @@ public class BlockchainApplication implements CommandLineRunner {
     private static final Logger Log = LoggerFactory.getLogger(BlockchainApplication.class);
     private final BlockchainService blockchainService;
 
-    /* 是否开启区块链节点功能 */
-    @Value("${buaa.blockchain.enable}")
-    private Boolean enable;
-
     @Autowired
     public BlockchainApplication(BlockchainService bs) { blockchainService = bs;
     }
