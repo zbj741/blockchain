@@ -11,12 +11,13 @@ import java.util.Random;
 public class BaseTest {
     public static void main(String[] args) {
         // 39.105.129.47
+        String localhost = "127.0.0.1";
         Random random = new Random(1);
         ObjectMapper objectMapper = new ObjectMapper();
-        Jedis jedis27600 = new Jedis("192.168.0.104",27600);
-        Jedis jedis27700 = new Jedis("192.168.0.104",27700);
-        Jedis jedis27800 = new Jedis("192.168.0.108",27800);
-        Jedis jedis27900 = new Jedis("192.168.0.108",27900);
+        Jedis jedis27600 = new Jedis(localhost,27600);
+        Jedis jedis27700 = new Jedis(localhost,27700);
+        Jedis jedis27800 = new Jedis(localhost,27800);
+        Jedis jedis27900 = new Jedis(localhost,27900);
 
         Jedis jedis1 = new Jedis("39.105.129.47",27600);
         //Jedis jedis = new Jedis("39.105.129.47",27601);
@@ -31,7 +32,7 @@ public class BaseTest {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-            jedis1.hset("TRANSACTION", ts.getTran_hash(), tsStr);
+            jedis27600.hset("TRANSACTION", ts.getTran_hash(), tsStr);
             //jedis27600.hset("TRANSACTION", ts.getTran_hash(), tsStr);
             //jedis27700.hset("TRANSACTION", ts.getTran_hash(), tsStr);
             //jedis27800.hset("TRANSACTION", ts.getTran_hash(), tsStr);

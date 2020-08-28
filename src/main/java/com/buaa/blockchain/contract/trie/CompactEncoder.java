@@ -1,11 +1,11 @@
-package com.buaa.blockchain.trie;
+package com.buaa.blockchain.contract.trie;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.buaa.blockchain.trie.ByteUtil.appendByte;
+import static com.buaa.blockchain.contract.trie.ByteUtil.appendByte;
 import static java.util.Arrays.copyOf;
 import static java.util.Arrays.copyOfRange;
 import static org.spongycastle.util.Arrays.concatenate;

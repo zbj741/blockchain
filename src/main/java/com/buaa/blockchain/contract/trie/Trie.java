@@ -1,4 +1,4 @@
-package com.buaa.blockchain.trie;
+package com.buaa.blockchain.contract.trie;
 
 /**
  * 字符树的接口，用于规范MPT树的实现类

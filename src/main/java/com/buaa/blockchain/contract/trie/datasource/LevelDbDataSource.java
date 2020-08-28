@@ -1,4 +1,4 @@
-package com.buaa.blockchain.trie.datasource;
+package com.buaa.blockchain.contract.trie.datasource;
 
 import org.iq80.leveldb.*;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.buaa.blockchain.trie;
+package com.buaa.blockchain.contract.trie;
 
 import java.util.ArrayList;
 import java.util.List;

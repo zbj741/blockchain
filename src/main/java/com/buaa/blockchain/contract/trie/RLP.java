@@ -1,4 +1,4 @@
-package com.buaa.blockchain.trie;
+package com.buaa.blockchain.contract.trie;
 
 
 import org.slf4j.Logger;
@@ -9,7 +9,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-import static com.buaa.blockchain.trie.ByteUtil.*;
+import static com.buaa.blockchain.contract.trie.ByteUtil.*;
 import static java.util.Arrays.copyOfRange;
 import static org.spongycastle.util.Arrays.concatenate;
 import static org.spongycastle.util.BigIntegers.asUnsignedByteArray;

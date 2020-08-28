@@ -1,16 +1,12 @@
 package com.buaa.blockchain.contract;
 
-import com.buaa.blockchain.contract.State;
-import com.buaa.blockchain.trie.datasource.KeyValueDataSource;
-import com.buaa.blockchain.trie.Trie;
-import com.buaa.blockchain.trie.TrieImpl;
-import com.buaa.blockchain.trie.Values;
-import com.buaa.blockchain.trie.datasource.LevelDbDataSource;
+import com.buaa.blockchain.contract.trie.datasource.KeyValueDataSource;
+import com.buaa.blockchain.contract.trie.Trie;
+import com.buaa.blockchain.contract.trie.TrieImpl;
+import com.buaa.blockchain.contract.trie.Values;
+import com.buaa.blockchain.contract.trie.datasource.LevelDbDataSource;
 import com.buaa.blockchain.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 /**
  * 区块链中的全局状态树，用于记录交易的执行情况。

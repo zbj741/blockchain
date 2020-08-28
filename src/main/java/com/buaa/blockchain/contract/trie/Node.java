@@ -1,4 +1,4 @@
-package com.buaa.blockchain.trie;
+package com.buaa.blockchain.contract.trie;
 public class Node {
 
     /* RLP encoded value of the Trie-node */

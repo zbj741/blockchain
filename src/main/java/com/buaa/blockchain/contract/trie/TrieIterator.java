@@ -1,8 +1,8 @@
-package com.buaa.blockchain.trie;
+package com.buaa.blockchain.contract.trie;
 
 import java.util.List;
 
-import static com.buaa.blockchain.trie.CompactEncoder.unpackToNibbles;
+import static com.buaa.blockchain.contract.trie.CompactEncoder.unpackToNibbles;
 
 
 public class TrieIterator {

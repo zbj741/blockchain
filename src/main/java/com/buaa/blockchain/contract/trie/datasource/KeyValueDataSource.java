@@ -1,4 +1,4 @@
-package com.buaa.blockchain.trie.datasource;
+package com.buaa.blockchain.contract.trie.datasource;
 
 import java.util.Map;
 import java.util.Set;

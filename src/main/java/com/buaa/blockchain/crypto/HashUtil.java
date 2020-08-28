@@ -2,7 +2,7 @@ package com.buaa.blockchain.crypto;
 
 import com.buaa.blockchain.crypto.digest.Keccak256;
 import com.buaa.blockchain.crypto.digest.SHA3Helper;
-import com.buaa.blockchain.trie.RLP;
+import com.buaa.blockchain.contract.trie.RLP;
 import com.buaa.blockchain.utils.Utils;
 import org.spongycastle.crypto.Digest;
 import org.spongycastle.crypto.digests.RIPEMD160Digest;
@@ -14,7 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 
-import static com.buaa.blockchain.trie.ByteUtil.EMPTY_BYTE_ARRAY;
+import static com.buaa.blockchain.contract.trie.ByteUtil.EMPTY_BYTE_ARRAY;
 import static java.util.Arrays.copyOfRange;
 import static com.buaa.blockchain.crypto.digest.SHA3Helper.Size.*;
 

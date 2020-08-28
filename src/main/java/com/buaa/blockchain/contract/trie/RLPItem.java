@@ -1,7 +1,7 @@
-package com.buaa.blockchain.trie;
+package com.buaa.blockchain.contract.trie;
 
 
-public class RLPItem implements com.buaa.blockchain.trie.RLPElement {
+public class RLPItem implements com.buaa.blockchain.contract.trie.RLPElement {
 
     private final byte[] rlpData;
 

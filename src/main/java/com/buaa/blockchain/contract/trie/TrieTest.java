@@ -1,7 +1,7 @@
-package com.buaa.blockchain.trie;
+package com.buaa.blockchain.contract.trie;
 
-import com.buaa.blockchain.trie.datasource.KeyValueDataSource;
-import com.buaa.blockchain.trie.datasource.LevelDbDataSource;
+import com.buaa.blockchain.contract.trie.datasource.KeyValueDataSource;
+import com.buaa.blockchain.contract.trie.datasource.LevelDbDataSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

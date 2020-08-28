@@ -1,4 +1,4 @@
-package com.buaa.blockchain.trie;
+package com.buaa.blockchain.contract.trie;
 
 
 import org.slf4j.Logger;
@@ -9,12 +9,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.buaa.blockchain.trie.Values.fromRlpEncoded;
-import static com.buaa.blockchain.trie.ByteUtil.length;
-import static com.buaa.blockchain.trie.ByteUtil.wrap;
+import static com.buaa.blockchain.contract.trie.Values.fromRlpEncoded;
+import static com.buaa.blockchain.contract.trie.ByteUtil.length;
+import static com.buaa.blockchain.contract.trie.ByteUtil.wrap;
 import static java.lang.String.format;
 
-import com.buaa.blockchain.trie.datasource.KeyValueDataSource;
+import com.buaa.blockchain.contract.trie.datasource.KeyValueDataSource;
 
 public class Cache {
 
