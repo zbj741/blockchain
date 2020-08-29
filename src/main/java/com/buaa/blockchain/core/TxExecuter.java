@@ -1,11 +1,12 @@
 package com.buaa.blockchain.core;
 
+import com.buaa.blockchain.contract.WorldState;
 import com.buaa.blockchain.entity.Transaction;
 
 import java.util.List;
 
 public class TxExecuter {
-    public static void baseExecute(List<Transaction> transactionList,WorldState worldState){
+    public static void baseExecute(List<Transaction> transactionList, WorldState worldState){
         for(Transaction transaction : transactionList){
             baseSingleExecute(transaction,worldState);
         }

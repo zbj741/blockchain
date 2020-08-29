@@ -6,6 +6,7 @@ import com.buaa.blockchain.annotation.WriteData;
 import com.buaa.blockchain.consensus.BaseConsensus;
 import com.buaa.blockchain.consensus.PBFTConsensusImpl;
 import com.buaa.blockchain.consensus.SBFTConsensusImpl;
+import com.buaa.blockchain.contract.WorldState;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.message.Message;

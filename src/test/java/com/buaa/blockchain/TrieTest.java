@@ -1,10 +1,10 @@
 package com.buaa.blockchain;
 
 
-import com.buaa.blockchain.trie.datasource.KeyValueDataSource;
+import com.buaa.blockchain.contract.trie.datasource.KeyValueDataSource;
 
-import com.buaa.blockchain.trie.TrieImpl;
-import com.buaa.blockchain.trie.Values;
+import com.buaa.blockchain.contract.trie.TrieImpl;
+import com.buaa.blockchain.contract.trie.Values;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

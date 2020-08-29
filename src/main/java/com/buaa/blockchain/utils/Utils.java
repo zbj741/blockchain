@@ -16,11 +16,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * 工具类
+ *
+ * @author hitty
+ * */
 public class Utils {
 
     private static SecureRandom random = new SecureRandom();
 
-    public static String InetSocketAddress2String(InetSocketAddress i){
+    /**
+     * java中的地址和Inet互相转换，暂时先这样写
+     * */
+    public static String inetSocketAddress2String(InetSocketAddress i){
         return i.getHostName()+":"+i.getPort();
     }
     public static InetSocketAddress String2InetSocketAddress(String address){

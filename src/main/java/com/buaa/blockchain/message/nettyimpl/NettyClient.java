@@ -32,7 +32,7 @@ public class NettyClient {
     NettyClient(NettyMessageImpl nl){
         this.nl = nl;
         initClient();
-        // 开启一个线程，尝试重连所有在配置文件中出现的地址【线程中不能出现阻塞】
+        // 开启一个线程，尝试重连所有在配置文件中出现的地址【线程中不能出现阻塞】 TODO 使用Quartz
         new Thread(new Runnable() {
             @Override
             public void run() {
