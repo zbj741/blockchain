@@ -25,7 +25,7 @@ public class InstructionTable {
             int i = 0;
             String line;
             Integer ins = null;
-            //这段代码很漂亮啊，巧妙地将ins.txt中的16进制与对应的机器码指令存入map
+            //将ins.txt中的16进制与对应的机器码指令存入map
             while ((line = bufferedReader.readLine()) != null) {
                 if (i % 2 == 0) {
                     ins = Integer.parseInt(line.substring(2, 4), 16);  //将读到的string转化为16进制

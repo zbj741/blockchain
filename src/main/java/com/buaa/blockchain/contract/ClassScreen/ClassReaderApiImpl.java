@@ -17,6 +17,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class ClassReaderApiImpl implements ClassReaderApi{
+    public ClassReaderApiImpl(){
+
+    }
+
     public void read(String classPath){
         File file = new File(classPath);
         try {
@@ -30,7 +34,7 @@ public class ClassReaderApiImpl implements ClassReaderApi{
             int constant_pool_count = U2.read(inputStream);
             ConstantPool constantPool = new ConstantPool(constant_pool_count);
             constantPool.read(inputStream);
-
+            System.out.println("解析常量池完毕！");
             //获取常量池信息
             constantPool.printConstanPoolInfo(constantPool);
 
