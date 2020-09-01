@@ -15,9 +15,13 @@ import java.util.Map;
  * */
 public interface Contract {
     /**
-     * 返回智能合约名
+     * 返回智能合约名，用作uuid
      * */
     String getName();
+    /**
+     * 返回智能合约信息，Json字符串形式给出
+     * */
+    String getIntro();
     /**
      * 初始化参数
      * @param args 参数，以<标识名,值>的形式放入Map中

@@ -22,9 +22,10 @@ public class BaseTest {
         Jedis jedis1 = new Jedis("39.105.129.47",27600);
         //Jedis jedis = new Jedis("39.105.129.47",27601);
         int count = 0;
-        while(count < 10000){
+        while(count < 20000){
             Transaction ts = createRandom();
             ts.setSequence(count);
+            ts.setSign("1");
             ts.setTran_hash("hash"+count);
             String tsStr = "";
             try {
@@ -33,7 +34,7 @@ public class BaseTest {
                 e.printStackTrace();
             }
             jedis27600.hset("TRANSACTION", ts.getTran_hash(), tsStr);
-            //jedis27600.hset("TRANSACTION", ts.getTran_hash(), tsStr);
+            jedis27700.hset("TRANSACTION", ts.getTran_hash(), tsStr);
             //jedis27700.hset("TRANSACTION", ts.getTran_hash(), tsStr);
             //jedis27800.hset("TRANSACTION", ts.getTran_hash(), tsStr);
             //jedis27900.hset("TRANSACTION", ts.getTran_hash(), tsStr);

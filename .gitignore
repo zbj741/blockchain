@@ -35,4 +35,3 @@ build/
 testEnv/
 logs/
 levelDb/
-config/

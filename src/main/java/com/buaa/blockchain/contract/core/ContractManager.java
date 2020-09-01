@@ -1,7 +1,7 @@
 package com.buaa.blockchain.contract.core;
 
 
-import com.buaa.blockchain.contract.MyClassLoader;
+import com.buaa.blockchain.contract.util.MyClassLoader;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;

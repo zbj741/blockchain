@@ -1,29 +1,25 @@
-package com.buaa.blockchain.contract.develop;
+package com.buaa.blockchain.contract.origin;
 
 import com.buaa.blockchain.contract.State;
 import com.buaa.blockchain.contract.core.Contract;
 import com.buaa.blockchain.contract.core.DataUnit;
 
-
 import java.util.Map;
 
-
 /**
- * 智能合约样例
- * 简单的将传入的两个参数作为kv存入statedb
+ * 原生的Insert智能合约
+ * 用于将一对K-V以String的形式插入StateDB
  *
  * @author hitty
  * */
-public class SimpleUpdate implements Contract {
+public class OriginalInsert implements Contract {
 
     String key;
     String value;
 
-    public SimpleUpdate(){}
-
     @Override
     public String getName() {
-        return "SimpleUpdate";
+        return "OriginalInsert";
     }
 
     @Override

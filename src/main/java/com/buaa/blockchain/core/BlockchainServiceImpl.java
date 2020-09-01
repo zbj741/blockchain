@@ -6,7 +6,6 @@ import com.buaa.blockchain.annotation.WriteData;
 import com.buaa.blockchain.consensus.BaseConsensus;
 import com.buaa.blockchain.consensus.PBFTConsensusImpl;
 import com.buaa.blockchain.consensus.SBFTConsensusImpl;
-import com.buaa.blockchain.contract.WorldState;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.message.Message;
@@ -566,7 +565,15 @@ public class BlockchainServiceImpl implements BlockchainService {
         try{
             dbLock.readLock().lock();
             int transLength = baseBlock.getTx_length();
-            if(cacheEnable == false || transLength <= 0){
+            if(!cacheEnable){
+                return ;
+            }
+            if(transLength <= 0){
+                log.info("createNewCacheBlock(): baseBlock has no transactions, cancel.");
+                return ;
+            }
+            if(height - blockMapper.findMaxHeight() > 2){
+                log.info("createNewCacheBlock(): cannot get enough tx message, cancel.");
                 return ;
             }
             log.info("createNewCacheBlock(): start, height="+height+", round="+round);
