@@ -1,4 +1,4 @@
-package com.buaa.blockchain.contract.util;
+package com.buaa.blockchain.contract.util.classloader;
 
 
 import java.nio.file.Files;
@@ -13,22 +13,21 @@ import java.nio.file.Paths;
  *
  * @author hitty
  * */
-public class MyClassLoader extends ClassLoader {
+public class FileClassLoader extends ClassLoader {
     // 被动态加载的class路径
     private String path;
 
     /**
-     * 按照参数返回class
-     * 本类的唯一可调用的方法
+     * 按照参数返回class-
      * @param filePath class文件完整路径
      * @param className class代码的全限定类名
      * @return 对应class文件生成的Class对象
      * */
-    public static Class getClass(String filePath,String className){
-        MyClassLoader myClassLoader = new MyClassLoader(filePath);
+    public static synchronized Class getClass(String filePath,String className){
+        FileClassLoader fileClassLoader = new FileClassLoader(filePath);
         Class clazz = null;
         try {
-            clazz = myClassLoader.loadClass(className);
+            clazz = fileClassLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
             // TODO 未找到class
             clazz = null;
@@ -41,7 +40,7 @@ public class MyClassLoader extends ClassLoader {
 
 
 
-    private MyClassLoader(String path) {
+    private FileClassLoader(String path) {
         this.path = path;
     }
 

@@ -29,7 +29,7 @@ public interface Contract {
     int initParam(Map<String, DataUnit> args);
 
     /**
-     * 直接执行，跳过vm执行环境直接完成对state的操作，不可控
+     * 执行
      * */
     void run(State state);
 }

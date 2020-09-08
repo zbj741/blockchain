@@ -1,11 +1,19 @@
 package com.buaa.blockchain.core;
 
+import com.buaa.blockchain.contract.WorldState;
+import com.buaa.blockchain.contract.core.DataUnit;
 import com.buaa.blockchain.entity.Transaction;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 public class TxExecuter {
+    static String KEY = "KEY";
+    static String VALUE = "VALUE";
+    static Map<String, DataUnit> args = new HashMap<>();
+
+
     public static void baseExecute(List<Transaction> transactionList, WorldState worldState){
         for(Transaction transaction : transactionList){
             baseSingleExecute(transaction,worldState);
@@ -18,20 +26,9 @@ public class TxExecuter {
     public static void baseSingleExecute(Transaction transaction,WorldState worldState){
         //TODO 当下为测试交易执行，仅仅写入交易的hash
         String hash = transaction.getTran_hash();
-        if(transaction.getSign().equals("0")){
-            worldState.update(hash,hash);
-        }else{
-            try {
-                int a = (new Random()).nextInt(200);
-                if(a < 10){
-                    Thread.sleep(100);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }finally {
-                worldState.update(hash,hash);
-            }
-        }
+        args.put(KEY,new DataUnit(hash));
+        args.put(VALUE,new DataUnit(hash));
+
 
     }
 }

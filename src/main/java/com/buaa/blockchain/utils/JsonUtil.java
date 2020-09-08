@@ -1,5 +1,6 @@
 package com.buaa.blockchain.utils;
 
+import com.buaa.blockchain.contract.account.Account;
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.entity.Transaction;

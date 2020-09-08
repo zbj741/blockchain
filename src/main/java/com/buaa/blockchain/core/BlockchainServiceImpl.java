@@ -6,6 +6,8 @@ import com.buaa.blockchain.annotation.WriteData;
 import com.buaa.blockchain.consensus.BaseConsensus;
 import com.buaa.blockchain.consensus.PBFTConsensusImpl;
 import com.buaa.blockchain.consensus.SBFTConsensusImpl;
+import com.buaa.blockchain.contract.WorldState;
+import com.buaa.blockchain.contract.core.ContractManager;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.message.Message;
@@ -68,6 +70,8 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     /* 状态树 */
     WorldState worldState;
+    /* 智能合约管理 */
+    ContractManager contractManager;
     /*********************** 属性字段 ***********************/
 
     /* 是否单节点运行 */
@@ -176,8 +180,8 @@ public class BlockchainServiceImpl implements BlockchainService {
         this.daeThread = new Thread();
         this.daeThread.setDaemon(true);
         this.daeThread.start();
-        // 初始化statedb
-        this.worldState = new WorldState(statedbDir,statedbName);
+        // 初始化智能合约功能
+        initContract();
         // 初始化共识
         initConsensus();
         // 初始化消息服务
@@ -869,6 +873,10 @@ public class BlockchainServiceImpl implements BlockchainService {
                             // 收到了需要在本地同步的区块
                             syncBlocks(receiveMsg.getBlockList());
                         }else{
+                            if(!isSetup){
+                                log.warn("OnMessageReceived(): receive msg but isn't setup, drop it.");
+                                return;
+                            }
                             // 非CORE消息，交付给共识协议的实现类
                             bs.consensus.onMessageReceived(receiveMsg);
                         }
@@ -896,6 +904,15 @@ public class BlockchainServiceImpl implements BlockchainService {
             }
         }
         log.info("initMessageService(): "+messageServiceType+" init complete.");
+    }
+    /**
+     * 初始化智能合约模块
+     * */
+    private void initContract(){
+        // 初始化状态树
+        this.worldState = new WorldState(statedbDir,statedbName);
+        // 初始化智能合约管理
+        this.contractManager = ContractManager.getInstance();
     }
     /**
      * 初始化共识协议

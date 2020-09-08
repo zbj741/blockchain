@@ -14,19 +14,19 @@ public class BaseTest {
         String localhost = "127.0.0.1";
         Random random = new Random(1);
         ObjectMapper objectMapper = new ObjectMapper();
-        Jedis jedis27600 = new Jedis(localhost,27600);
-        Jedis jedis27700 = new Jedis(localhost,27700);
-        Jedis jedis27800 = new Jedis(localhost,27800);
-        Jedis jedis27900 = new Jedis(localhost,27900);
+        Jedis jedis27600 = new Jedis("192.168.2.101",27600);
+        Jedis jedis27700 = new Jedis("192.168.2.101",27700);
+        Jedis jedis27800 = new Jedis("192.168.2.102",27800);
+        Jedis jedis27900 = new Jedis("192.168.2.102",27900);
 
         Jedis jedis1 = new Jedis("39.105.129.47",27600);
         //Jedis jedis = new Jedis("39.105.129.47",27601);
         int count = 0;
-        while(count < 20000){
+        while(count < 10000){
             Transaction ts = createRandom();
             ts.setSequence(count);
-            ts.setSign("1");
-            ts.setTran_hash("hash"+count);
+            ts.setSign("0");
+            ts.setTran_hash("hash"+count+30000);
             String tsStr = "";
             try {
                 tsStr = objectMapper.writeValueAsString(ts);
@@ -35,9 +35,8 @@ public class BaseTest {
             }
             jedis27600.hset("TRANSACTION", ts.getTran_hash(), tsStr);
             jedis27700.hset("TRANSACTION", ts.getTran_hash(), tsStr);
-            //jedis27700.hset("TRANSACTION", ts.getTran_hash(), tsStr);
-            //jedis27800.hset("TRANSACTION", ts.getTran_hash(), tsStr);
-            //jedis27900.hset("TRANSACTION", ts.getTran_hash(), tsStr);
+            jedis27800.hset("TRANSACTION", ts.getTran_hash(), tsStr);
+            jedis27900.hset("TRANSACTION", ts.getTran_hash(), tsStr);
 
             System.out.println(ts);
             count++;
