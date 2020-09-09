@@ -2,11 +2,23 @@ package com.buaa.blockchain.contract.core;
 
 
 import com.buaa.blockchain.contract.State;
+import com.buaa.blockchain.contract.account.Account;
+import com.buaa.blockchain.contract.account.ContractAccount;
+import com.buaa.blockchain.contract.account.ContractEntrance;
+import com.buaa.blockchain.contract.util.classloader.ByteClassLoader;
 import com.buaa.blockchain.contract.util.classloader.FileClassLoader;
 
+import com.buaa.blockchain.utils.JsonUtil;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,53 +34,49 @@ import java.util.Map;
  * */
 
 @Slf4j
-public class ContractManager {
+public class ContractManager implements IContractManager{
 
     private static ContractManager instance = null;
+    private ContractEntrance contractEntrance = null;
     // 指定的合约class文件存放目录
     public static final String dir = System.getProperty("user.dir")+ File.separator + "contract" + File.separator;
-    // 指定的合约前缀，用于生成载入时的全限定类名
-    public static final String classPrefix = "com.buaa.blockchain.contract.develop.";
-    // 合约表
-    private HashMap<String,Class> contractMap;
+    // 合约表 <合约名，合约账户实例>
+    private HashMap<String,ContractAccount> contractMap;
     // 原生合约的硬编码表
     public static final String UPDATE = "UPDATE";
     public static final String DELETE = "DELETE";
     public static final String DEV = "DEV";
     // 原生合约方法表
     public HashSet<String> oriContracts;
+
     /**
      * 初始化方法
      * */
-    private ContractManager(){
+    private ContractManager(State state){
+        this.contractEntrance = ContractEntrance.getInstance(state);
         // 初始化原生合约表
         this.oriContracts = OriginContract.getAllOriMethods();
-        // 从文件系统中获取智能合约
         this.contractMap = new HashMap<>();
-        File fd = new File(dir);
-        // 遍历存放目录，加载智能合约
-        for(File f : fd.listFiles()){
-            // 获取合约名
-            String contractName = f.getName().substring(0,f.getName().lastIndexOf("."));
-            Class contract = loadContractFromFile(contractName,f.getAbsolutePath());
-            if(null != contract){
-                contractMap.put(contractName,contract);
-                log.info("loadContractFromFile(): load contract: " + contractName + " from "+dir);
+        // 通过ContractEntrance维护的智能合约<name,key>映射表，从statedb中生成寻找智能合约账户实体类
+        Map<String,String> map = this.contractEntrance.getContracts();
+        for(Map.Entry<String,String> entry : map.entrySet()){
+            ContractAccount contractAccount = loadContractAccountFromState(entry.getKey(), entry.getValue(),state);
+            if(contractAccount != null){
+                this.contractMap.put(contractAccount.getName(),contractAccount);
             }
         }
-        // TODO 从statedb中提前寻找合约
-
-
+        log.info("ContractManager(): init done! origin="+oriContracts.toString()+" ,contractMap="+contractMap.toString());
     }
     /**
      * 单例
      * */
-    public static synchronized ContractManager getInstance(){
+    public static synchronized ContractManager getInstance(State state){
         if(null == instance){
-            instance = new ContractManager();
+            instance = new ContractManager(state);
         }
         return instance;
     }
+
 
     /**
      * 调用智能合约
@@ -77,32 +85,48 @@ public class ContractManager {
      * @param args  智能合约参数
      * @return 是否调用成功
      * */
+    @Override
     public boolean invokeContract(State state, String contractName, Map<String, DataUnit> args){
         boolean res = true;
         // 先查看是否为原生合约
         if(this.oriContracts.contains(contractName)){
-
+            // 是原生合约，调用原生合约
+            OriginContract.invoke(state,contractName,args);
             return true;
         }
-        // 从contractMap中找合约
-        if(this.contractMap.containsKey(contractName)){
-            try {
-                Contract contract = this.getContractInstance(contractName);
-                contract.initParam(args);
-                contract.run(state);
-                res = true;
-            } catch (Exception e) {
-                res = false;
-                e.printStackTrace();
-            } finally {
-                return  res;
+        // 尝试添加
+        if(!this.contractMap.containsKey(contractName)){
+            // 通过ContractEntrance，从statedb中同步合约到contractMap
+            if(contractEntrance.getContracts().keySet().contains(contractName)){
+                String key = contractEntrance.getContracts().get(contractName);
+                ContractAccount account = new ContractAccount(state,key);
+                this.contractMap.put(account.getName(),account);
+            }else{
+                // 没有该智能合约
+                return false;
             }
         }
-        else{
-            // 从statedb中同步合约
-            // TODO
+        try {
+            Contract contract = this.getContractInstance(contractName);
+            contract.initParam(args);
+            contract.run(state);
+            res = true;
+        } catch (Exception e) {
+            res = false;
+            e.printStackTrace();
+        } finally {
+            return  res;
         }
-        return res;
+
+    }
+
+    @Override
+    public boolean addContract(State state, String key, String contractName, byte[] classData) {
+        ContractAccount contractAccount = new ContractAccount(contractName,contractName,contractName,classData);
+        // 同步ContractEntrance
+        contractEntrance.addContract(contractAccount);
+        contractMap.put(contractName,contractAccount);
+        return true;
     }
 
 
@@ -115,7 +139,7 @@ public class ContractManager {
      private Contract getContractInstance(String name){
         Contract res = null;
         try {
-            res = (Contract) contractMap.get(name).newInstance();
+            res = (Contract) contractMap.get(name).getClazz().newInstance();
         } catch (InstantiationException e) {
             // TODO
             res = null;
@@ -148,9 +172,21 @@ public class ContractManager {
     /**
      * 从statedb中获取智能合约到contractMap中
      * @param name 智能合约名
+     * @param key 智能合约在state中的key
+     * @param state
+     * @return 找到的智能合约账户
      * */
-    private Class loadContractFromState(String name, State state){
-
+    private ContractAccount loadContractAccountFromState(String name, String key, State state){
+        byte[] res = state.getAsBytes(key);
+        try {
+            ContractAccount contractAccount = (ContractAccount) JsonUtil.objectMapper.readValue(res,ContractAccount.class);
+            if(name.equals(contractAccount.getName())){
+                return contractAccount;
+            }
+        } catch (IOException e) {
+            // TODO 处理读入异常
+            e.printStackTrace();
+        }
         return null;
     }
 }

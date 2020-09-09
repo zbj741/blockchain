@@ -1,21 +1,18 @@
 package com.buaa.blockchain.contract.core;
 
-
-
 import com.buaa.blockchain.contract.State;
-import com.buaa.blockchain.contract.core.DataUnit;
 
 import java.util.Map;
 
 /**
  * 智能合约接口
- * 用户编写的智能合约需要实现这个接口，完成参数写入和生成原子合约
+ * 用户编写的智能合约需要实现这个接口
  *
  * @author hitty
  * */
 public interface Contract {
     /**
-     * 返回智能合约名，用作uuid
+     * 返回智能合约名
      * */
     String getName();
     /**

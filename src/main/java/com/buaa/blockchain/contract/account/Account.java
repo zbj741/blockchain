@@ -25,15 +25,7 @@ public abstract class Account {
     float balance;
     // 数据
     String data;
-    // 序列化工具
-    public static ObjectMapper objectMapper = new ObjectMapper();
-    static{
-        // 转化为格式化的json
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        // 如果json中有新增的字段并且在实体类中不存在，不报错
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-    }
+
 
     public Account(){
 
@@ -44,6 +36,8 @@ public abstract class Account {
     public Account(String key, String id){
         this.key = key;
         this.id = id;
+        this.name = "";
+        this.balance = 0.0f;
     }
     public Account(String key, String id,String name){
         this.key = key;
@@ -52,17 +46,64 @@ public abstract class Account {
         this.balance = 0.0f;
     }
 
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public float getBalance() {
+        return balance;
+    }
+
+    public void setBalance(float balance) {
+        this.balance = balance;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
     /**
-     * 将自身打包为Json，并且以byte数组的形式插入state中
-     * 交由子类自身实现，仅仅提供Jackson支持
+     * 从state中还原自身
+     * 交由子类实现
      * */
-    public abstract void writeStateAsBytes(State state);
+    public abstract void loadFromState(State state);
+
+    /**
+     * 复制属性
+     * 参数由调用者去强转类型，转为自己的类型
+     * */
+    abstract void copy(Object o);
 
     /**
      * 查看是否有重复key，没有则返回true
      * */
-    public boolean hasConflict(State state){
-        return (state.get(this.key).length() != 0 || null != state.get(key));
+    boolean hasConflict(State state){
+        boolean res = (state.get(this.key).length() != 0);
+        return res;
     }
 
 }

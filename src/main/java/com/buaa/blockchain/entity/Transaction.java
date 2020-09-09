@@ -18,38 +18,23 @@ import lombok.Data;
 public class Transaction implements Serializable,Comparable<Transaction> {
 
     private static final long serialVersionUID = 4695627546411078836L;
-
-
+    // 区块hash
     private String block_hash;
-
-    /* 交易内容生成后算出的字段，在交易池中作为本交易的key */
-
+    //交易内容生成后算出的字段，在交易池中作为本交易的key
     private String tran_hash;
-
-    /* 交易种类 */
-
+    // 交易种类
     private String type;
-
-    /* 时间戳 */
-
+    // 时间戳
     private Timestamp timestamp;
-
-    /* 序列号 */
-
+    // 序列号
     private Integer sequence;
-
-
+    // 签名
     private String sign;
-
-    /* 版本号 */
-
+    // 版本号
     private String version;
-
-
+    // 其他
     private String extra;
-
-    /* 交易内容 */
-
+    // 交易内容
     private String data;
 
     private Integer tranSeq;

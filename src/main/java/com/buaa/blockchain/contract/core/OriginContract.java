@@ -1,9 +1,17 @@
 package com.buaa.blockchain.contract.core;
 
 import com.buaa.blockchain.contract.State;
+import com.buaa.blockchain.contract.account.Account;
+import com.buaa.blockchain.contract.account.ContractAccount;
+import com.buaa.blockchain.contract.account.ContractEntrance;
 import com.buaa.blockchain.contract.util.classloader.ByteClassLoader;
+import com.buaa.blockchain.utils.JsonUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
+
+import static com.buaa.blockchain.contract.account.ContractEntrance.CONTRACT_ENTRANCE_KEY;
 
 /**
  * 原生合约，每一个节点在启动时初始化的合约
@@ -11,6 +19,8 @@ import java.util.*;
  *
  * @author hitty
  * */
+
+@Slf4j
 public class OriginContract {
     // 原生合约提供的方法名
     public static final String UPDATE = "update";
@@ -39,6 +49,7 @@ public class OriginContract {
      * @param args 参数
      * */
     public static void invoke(State state,String function,Map<String, DataUnit> args){
+        log.info("invoke(): "+function+", args="+args.toString());
         // 分发函数的调用
         switch (function){
             case UPDATE:{
@@ -77,9 +88,31 @@ public class OriginContract {
     private static void dev(State state, Map<String, DataUnit> args){
         String contractName = args.get("CONTRACT_NAME").value.toString();
         byte[] classData = (byte[]) args.get("CONTRACT_BYTES").value;
-        // 写入
-        state.update(contractName,classData);
-        // 向ContractEntrance注册
+        // 建立ContractAccount实例
+        // TODO 暂时将智能合约用户的 key，id，name设为一样的，过后修改
+        ContractAccount contractAccount = new ContractAccount(contractName,contractName,contractName,classData);
+        boolean done = false;
+        // 将自己写入state
+        try {
+            state.update(contractAccount.getKey(), JsonUtil.objectMapper.writeValueAsBytes(contractAccount));
+            // 更新ContractEntrance
+            ContractEntrance.getInstance(state).addContract(contractAccount);
+            state.update(CONTRACT_ENTRANCE_KEY,JsonUtil.objectMapper.writeValueAsBytes(ContractEntrance.getInstance(state)));
+            done = true;
+        } catch (JsonProcessingException e) {
+            // 写入错误则删除
+            e.printStackTrace();
+            done = false;
+        }finally {
+            if(done){
+
+                log.info("dev(): develop contract "+contractName+" successfully.");
+            }else{
+                state.delete(contractAccount.getKey());
+                log.info("dev(): develop contract "+contractName+" failed, remove data from state at key="+contractAccount.getKey());
+            }
+        }
 
     }
+
 }

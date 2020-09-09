@@ -34,9 +34,9 @@ public class BaseTest {
                 e.printStackTrace();
             }
             jedis27600.hset("TRANSACTION", ts.getTran_hash(), tsStr);
-            jedis27700.hset("TRANSACTION", ts.getTran_hash(), tsStr);
-            jedis27800.hset("TRANSACTION", ts.getTran_hash(), tsStr);
-            jedis27900.hset("TRANSACTION", ts.getTran_hash(), tsStr);
+            //jedis27700.hset("TRANSACTION", ts.getTran_hash(), tsStr);
+            //jedis27800.hset("TRANSACTION", ts.getTran_hash(), tsStr);
+            //jedis27900.hset("TRANSACTION", ts.getTran_hash(), tsStr);
 
             System.out.println(ts);
             count++;

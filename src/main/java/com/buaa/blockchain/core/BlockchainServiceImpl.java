@@ -71,7 +71,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     /* 状态树 */
     WorldState worldState;
     /* 智能合约管理 */
-    ContractManager contractManager;
+    TxExecuter txExecuter;
     /*********************** 属性字段 ***********************/
 
     /* 是否单节点运行 */
@@ -713,7 +713,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         log.info("transactionExec(): start exec transactions in block="+block.getHash()+", transactions size="+block.getTx_length());
         if(null == stateRoot){
             List<Transaction> transactions = block.getTrans();
-            TxExecuter.baseExecute(transactions,worldState);
+            txExecuter.baseExecute(transactions,worldState);
             return worldState.getRootHash();
         }
         return null;
@@ -912,7 +912,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         // 初始化状态树
         this.worldState = new WorldState(statedbDir,statedbName);
         // 初始化智能合约管理
-        this.contractManager = ContractManager.getInstance();
+        this.txExecuter = TxExecuter.getInstance(this.worldState);
     }
     /**
      * 初始化共识协议
