@@ -25,6 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ContractEntrance extends Account{
     // 入口在statedb中的key
     public static final String CONTRACT_ENTRANCE_KEY = "CONTRACT_ENTRANCE_KEY";
+    // 描述
+    public static final String intro = "This is the entrance of all contract in this system, and will be created or find in the " +
+            "initial process of blockchain project.";
 
     private static ContractEntrance instance = null;
     // 智能合约名字记录 <合约名，合约账户的key>
@@ -33,7 +36,7 @@ public class ContractEntrance extends Account{
     /**
      * 添加合约的<name,key>键值对
      * */
-    public void addContract(ContractAccount contractAccount){
+    public synchronized void addContract(ContractAccount contractAccount){
         contracts.put(contractAccount.name,contractAccount.key);
     }
 
@@ -44,24 +47,29 @@ public class ContractEntrance extends Account{
     /**
      * 单例模式，因为仅仅需要一个入口来访问所有的智能合约
      * */
-    public static synchronized ContractEntrance getInstance(State state){
+    public static synchronized ContractEntrance getInstance(){
         if(null == instance){
-            return new ContractEntrance(state);
-        }else{
+            instance = new ContractEntrance();
+
+        }
+        return instance;
+
+    }
+
+    public static synchronized ContractEntrance getInstance(ContractEntrance c){
+        if(null != c){
+            instance = c;
             return instance;
+        } else {
+            return null;
         }
     }
 
 
-    private ContractEntrance(State state){
-        super(CONTRACT_ENTRANCE_KEY);
+    private ContractEntrance(){
+        this.key = CONTRACT_ENTRANCE_KEY;
         this.contracts = new ConcurrentHashMap<>();
-        // 查看当前statedb中是否已经存在
-        if(hasConflict(state)){
-            // 已存在载入
-            this.loadFromState(state);
-        }
-        log.info("ContractEntrance(): init, this="+this.toString());
+        this.data = intro;
     }
 
     /**
@@ -85,7 +93,7 @@ public class ContractEntrance extends Account{
      * 从state中读取自身
      * */
     @Override
-    public void loadFromState(State state) {
+    void loadFromState(State state) {
         byte[] res = state.getAsBytes(this.key);
         try {
             ContractEntrance contractEntrance = (ContractEntrance) JsonUtil.objectMapper.readValue(res,ContractEntrance.class);

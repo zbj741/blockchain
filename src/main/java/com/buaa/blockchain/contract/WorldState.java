@@ -1,12 +1,15 @@
 package com.buaa.blockchain.contract;
 
 import com.buaa.blockchain.contract.State;
+import com.buaa.blockchain.contract.account.ContractEntrance;
 import com.buaa.blockchain.contract.trie.datasource.KeyValueDataSource;
 import com.buaa.blockchain.contract.trie.Trie;
 import com.buaa.blockchain.contract.trie.TrieImpl;
 import com.buaa.blockchain.contract.trie.Values;
 import com.buaa.blockchain.contract.trie.datasource.LevelDbDataSource;
+import com.buaa.blockchain.utils.JsonUtil;
 import com.buaa.blockchain.utils.Utils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.UnsupportedEncodingException;
@@ -42,17 +45,8 @@ public class WorldState implements State {
         levelDb = new LevelDbDataSource(dir,name);
         levelDb.init();
         trie = new TrieImpl(levelDb);
-        init();
-        log.info("WorldState(): init, getRootHash="+getRootHash());
-    }
-    /**
-     * worldState的自定义初始化行为
-     * */
-    private void init(){
-        // 向初始化的worldState中插入既定数据，硬编码统一
         this.update("init",init);
-
-        this.sync();
+        log.info("WorldState(): init, getRootHash="+getRootHash());
     }
 
     /**

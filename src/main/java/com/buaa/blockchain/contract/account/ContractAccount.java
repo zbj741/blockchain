@@ -32,31 +32,37 @@ public class ContractAccount extends Account{
     // 全限定类名
     String fullName;
 
+    public ContractAccount(){}
     /**
      * 参数中存在classData，则直接生成Class
      * */
     public ContractAccount(String key,String id,String name,byte[] classData){
-        super(key,id,name);
+        this.key = key;
+        this.id = id;
+        this.name = name;
         this.classData = classData;
     }
 
     public ContractAccount(State state, String key){
-        super(key);
+        this.key = key;
         loadFromState(state);
     }
 
     /**
      * 将byte[]生成Class
      * */
-    private void load(){
-        this.fullName = IContractManager.classPrefix + this.name;
-        try {
-            this.clazz = ByteClassLoader.getClass(this.classData, IContractManager.classPrefix+this.name);
-        } catch (ClassNotFoundException e) {
-            // TODO 处理读入异常
-            e.printStackTrace();
-            clazz = null;
+    public void load(){
+        if(this.clazz == null){
+            this.fullName = IContractManager.classPrefix + this.name;
+            try {
+                this.clazz = ByteClassLoader.getClass(this.classData, fullName);
+            } catch (ClassNotFoundException e) {
+                // TODO 处理读入异常
+                e.printStackTrace();
+                clazz = null;
+            }
         }
+
     }
 
     @Override

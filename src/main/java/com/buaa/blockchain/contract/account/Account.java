@@ -90,7 +90,7 @@ public abstract class Account {
      * 从state中还原自身
      * 交由子类实现
      * */
-    public abstract void loadFromState(State state);
+    abstract void loadFromState(State state);
 
     /**
      * 复制属性

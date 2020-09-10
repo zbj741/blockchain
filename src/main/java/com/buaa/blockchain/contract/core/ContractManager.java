@@ -11,6 +11,7 @@ import com.buaa.blockchain.contract.util.classloader.FileClassLoader;
 import com.buaa.blockchain.utils.JsonUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -18,7 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.C;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -53,7 +56,8 @@ public class ContractManager implements IContractManager{
      * 初始化方法
      * */
     private ContractManager(State state){
-        this.contractEntrance = ContractEntrance.getInstance(state);
+        // 初始化合约入口，入口已经被初始化完毕
+        this.contractEntrance = ContractEntrance.getInstance();
         // 初始化原生合约表
         this.oriContracts = OriginContract.getAllOriMethods();
         this.contractMap = new HashMap<>();
@@ -94,22 +98,35 @@ public class ContractManager implements IContractManager{
             OriginContract.invoke(state,contractName,args);
             return true;
         }
-        // 尝试添加
+        // 查看当前是否缓存了对应的ContractAccount
+        ContractAccount cac = null;
         if(!this.contractMap.containsKey(contractName)){
             // 通过ContractEntrance，从statedb中同步合约到contractMap
             if(contractEntrance.getContracts().keySet().contains(contractName)){
                 String key = contractEntrance.getContracts().get(contractName);
-                ContractAccount account = new ContractAccount(state,key);
-                this.contractMap.put(account.getName(),account);
+                cac = new ContractAccount(state,key);
+                this.contractMap.put(cac.getName(), cac);
             }else{
                 // 没有该智能合约
                 return false;
             }
+        }else{
+            // 找到了缓存
+            cac = this.contractMap.get(contractName);
         }
         try {
-            Contract contract = this.getContractInstance(contractName);
-            contract.initParam(args);
-            contract.run(state);
+            cac.load();
+            // 转换为class实例
+            Class clazz = FileClassLoader.getClass(dir+contractName+".class",cac.getFullName());
+//            Contract contract = (Contract) clazz.newInstance();
+//            contract.initParam(args);
+//            contract.run(state);
+            Object o = cac.getClazz().newInstance();
+            Method initParam = cac.getClazz().getDeclaredMethod("initParam",Map.class);
+            initParam.invoke(o,args);
+            Method run = cac.getClazz().getDeclaredMethod("run",State.class);
+            run.invoke(o,state);
+
             res = true;
         } catch (Exception e) {
             res = false;
@@ -138,8 +155,12 @@ public class ContractManager implements IContractManager{
      * */
      private Contract getContractInstance(String name){
         Contract res = null;
+        ContractAccount account = contractMap.get(name);
+        if(null == account.getClazz()){
+            account.load();
+        }
         try {
-            res = (Contract) contractMap.get(name).getClazz().newInstance();
+            res = (Contract) account.getClazz().newInstance();
         } catch (InstantiationException e) {
             // TODO
             res = null;
@@ -148,7 +169,10 @@ public class ContractManager implements IContractManager{
             // TODO
             res = null;
             e.printStackTrace();
-        }finally {
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
             return res;
         }
     }

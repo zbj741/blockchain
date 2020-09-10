@@ -9,7 +9,8 @@ public class WorldStateTest {
     public static void main(String[] args) throws Exception{
         ObjectMapper objectMapper = new ObjectMapper();
         WorldState worldState = new WorldState("D:\\data","triedb");
-        System.out.println(worldState.get("ts"));
+        String str = worldState.get("ts");
+        System.out.println(str);
 
 
         System.out.println(worldState.getRootHash());

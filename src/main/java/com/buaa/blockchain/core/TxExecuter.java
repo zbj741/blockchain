@@ -5,7 +5,9 @@ import com.buaa.blockchain.contract.WorldState;
 import com.buaa.blockchain.contract.core.ContractManager;
 import com.buaa.blockchain.contract.core.DataUnit;
 import com.buaa.blockchain.contract.core.IContractManager;
+import com.buaa.blockchain.entity.ContractCaller;
 import com.buaa.blockchain.entity.Transaction;
+import com.buaa.blockchain.utils.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -46,10 +48,15 @@ public class TxExecuter {
      * 交易的执行，需要修改worldState，也许需要写数据库
      * */
     private void baseSingleExecute(Transaction transaction,WorldState worldState){
-        // 交易拆包
-        Map<String,DataUnit> args = new HashMap<>();
-        args.put("KEY",new DataUnit("testKey"));
-        args.put("VALUE", new DataUnit(transaction.getTran_hash()));
-        contractManager.invokeContract(worldState,"update",args);
+        if(transaction.getType().equals("CALL")){
+            try {
+                ContractCaller contractCaller = JsonUtil.objectMapper.readValue(transaction.getData(), ContractCaller.class);
+                contractManager.invokeContract(worldState,contractCaller.getContractName(),contractCaller.getArg());
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+            }
+        }
+
     }
 }

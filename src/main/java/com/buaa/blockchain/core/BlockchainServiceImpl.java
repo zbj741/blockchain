@@ -7,6 +7,7 @@ import com.buaa.blockchain.consensus.BaseConsensus;
 import com.buaa.blockchain.consensus.PBFTConsensusImpl;
 import com.buaa.blockchain.consensus.SBFTConsensusImpl;
 import com.buaa.blockchain.contract.WorldState;
+import com.buaa.blockchain.contract.account.ContractEntrance;
 import com.buaa.blockchain.contract.core.ContractManager;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.entity.Block;
@@ -26,6 +27,7 @@ import com.buaa.blockchain.txpool.TxPool;
 import com.buaa.blockchain.utils.JsonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -180,17 +182,30 @@ public class BlockchainServiceImpl implements BlockchainService {
         this.daeThread = new Thread();
         this.daeThread.setDaemon(true);
         this.daeThread.start();
-        // 初始化智能合约功能
-        initContract();
+        // 初始化StateDB
+        initState();
         // 初始化共识
         initConsensus();
         // 初始化消息服务
         initMessageService();
         // 初始化数据摘要工具
         testMessageDigest(this.hashAlgorithm);
-        log.info("firstTimeSetup(): init complete. buaa-blockchain version:"+this.version);
         // 判断是否为第一次启动
         if(blockMapper.findBlockNum(HashUtil.sha256("0")) == 0){
+            // 建立入口
+            ContractEntrance contractEntrance = ContractEntrance.getInstance();
+            String ceStr = null;
+            try {
+                ceStr = JsonUtil.objectMapper.writeValueAsString(contractEntrance);
+            } catch (JsonProcessingException e) {
+                // 写入失败，关闭程序
+                log.error("firstTimeSetup(): error in creating contractEntrance, shut down!");
+                e.printStackTrace();
+                shutDownManager.shutDown();
+            }
+            worldState.update(contractEntrance.getKey(),ceStr);
+            worldState.sync();
+            // 建立新区块
             Block block = generateFirstBlock();
             blockMapper.insertBlock(block);
             log.info("firstTimeSetup(): Generate first block complete.");
@@ -202,9 +217,25 @@ public class BlockchainServiceImpl implements BlockchainService {
                 log.error("firstTimeSetup(): cannot sync data between block and state! Shut down!\nAdvise: clear the mysql and leveldb, restart node.");
                 shutDownManager.shutDown();
             }
+            // 寻找ContractEntrance
+            String ceStr = worldState.get(ContractEntrance.CONTRACT_ENTRANCE_KEY);
+            ContractEntrance contractEntrance = null;
+            try {
+                contractEntrance = JsonUtil.objectMapper.readValue(ceStr,ContractEntrance.class);
+            } catch (JsonProcessingException e) {
+                // 载入失败，关闭程序
+                log.error("firstTimeSetup(): error in finding contractEntrance, shut down!");
+                e.printStackTrace();
+                shutDownManager.shutDown();
+            }
+            ContractEntrance.getInstance(contractEntrance);
+            log.info("firstTimeSetup(): find ContractEntrance, contracts="+ContractEntrance.getInstance().getContracts().toString());
         }
+        // 初始化智能合约
+        initContract();
+        // 初始化轮数
         this.round.set(0);
-
+        // 单节点
         if(!singleMode){
             // 等待连接建立，此时不能触发开始
             while(messageService.getClusterAddressList().size() < minConnect){
@@ -216,8 +247,6 @@ public class BlockchainServiceImpl implements BlockchainService {
                     // TODO 处理异常
                 }
             }
-
-
         }
         // 连接数达到要求，可以开始做块
         isSetup = true;
@@ -906,11 +935,20 @@ public class BlockchainServiceImpl implements BlockchainService {
         log.info("initMessageService(): "+messageServiceType+" init complete.");
     }
     /**
-     * 初始化智能合约模块
+     * 初始化State
      * */
-    private void initContract(){
+    private void initState(){
         // 初始化状态树
         this.worldState = new WorldState(statedbDir,statedbName);
+    }
+    /**
+     * 初始化智能合约相关
+     * */
+    private void initContract(){
+        if(ContractEntrance.getInstance() == null){
+            log.error("initContract(): contractEntrance in null, shut down!");
+            shutDownManager.shutDown();
+        }
         // 初始化智能合约管理
         this.txExecuter = TxExecuter.getInstance(this.worldState);
     }
