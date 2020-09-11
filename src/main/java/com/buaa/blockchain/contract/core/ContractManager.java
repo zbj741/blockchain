@@ -8,6 +8,7 @@ import com.buaa.blockchain.contract.account.ContractEntrance;
 import com.buaa.blockchain.contract.util.classloader.ByteClassLoader;
 import com.buaa.blockchain.contract.util.classloader.FileClassLoader;
 
+import com.buaa.blockchain.test.LoadClassTest;
 import com.buaa.blockchain.utils.JsonUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -117,15 +118,17 @@ public class ContractManager implements IContractManager{
         try {
             cac.load();
             // 转换为class实例
-            Class clazz = FileClassLoader.getClass(dir+contractName+".class",cac.getFullName());
+//            Class clazz = FileClassLoader.getClass(dir+contractName+".class",cac.getFullName());
 //            Contract contract = (Contract) clazz.newInstance();
 //            contract.initParam(args);
 //            contract.run(state);
-            Object o = cac.getClazz().newInstance();
-            Method initParam = cac.getClazz().getDeclaredMethod("initParam",Map.class);
-            initParam.invoke(o,args);
-            Method run = cac.getClazz().getDeclaredMethod("run",State.class);
-            run.invoke(o,state);
+            LoadClassTest.LoadTest(state);
+
+//            Object o = cac.getClazz().newInstance();
+//            Method initParam = cac.getClazz().getDeclaredMethod("initParam",Map.class);
+//            initParam.invoke(o,args);
+//            Method run = cac.getClazz().getDeclaredMethod("run",State.class);
+//            run.invoke(o,state);
 
             res = true;
         } catch (Exception e) {

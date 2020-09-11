@@ -16,9 +16,16 @@ public class ByteClassLoader extends ClassLoader{
      * @param className class代码的全限定类名
      * @return 对应class文件生成的Class对象
      * */
-    public static synchronized Class getClass(byte[] input,String className) throws ClassNotFoundException{
+    public static synchronized Class getClass(byte[] input,String className) {
         ByteClassLoader byteClassLoader = new ByteClassLoader(input);
-        Class clazz = byteClassLoader.loadClass(className);
+        System.out.println(byteClassLoader.getParent().toString());
+        Class clazz = null;
+        try {
+            clazz = byteClassLoader.loadClass(className);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            clazz = null;
+        }
         return clazz;
     }
 

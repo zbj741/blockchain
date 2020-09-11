@@ -54,15 +54,11 @@ public class ContractAccount extends Account{
     public void load(){
         if(this.clazz == null){
             this.fullName = IContractManager.classPrefix + this.name;
-            try {
-                this.clazz = ByteClassLoader.getClass(this.classData, fullName);
-            } catch (ClassNotFoundException e) {
-                // TODO 处理读入异常
-                e.printStackTrace();
-                clazz = null;
-            }
+            this.clazz = ByteClassLoader.getClass(this.classData, fullName);
         }
-
+        if(clazz == null){
+            log.error("load(): load class failed, fullname="+fullName);
+        }
     }
 
     @Override

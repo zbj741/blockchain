@@ -21,6 +21,8 @@ import com.buaa.blockchain.message.JGroupsMessageImpl;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.buaa.blockchain.message.MessageService;
 import com.buaa.blockchain.message.nettyimpl.NettyMessageImpl;
+import com.buaa.blockchain.test.DevTest;
+import com.buaa.blockchain.test.LoadClassTest;
 import com.buaa.blockchain.txpool.RedisTxPool;
 import com.buaa.blockchain.txpool.TxPool;
 
@@ -250,6 +252,8 @@ public class BlockchainServiceImpl implements BlockchainService {
         }
         // 连接数达到要求，可以开始做块
         isSetup = true;
+
+        LoadClassTest.LoadTest(worldState);
         // 以本地的区块信息，开始新一轮的做块
         startNewRound(BLOCKCHAIN_SERVICE_STATE_SUCCESS);
     }
