@@ -34,8 +34,6 @@ public class LoadClassTest {
 //            //worldState.update("ID","0");
 //            //写入 key数据是自我编写，后期可能需要调整
             worldState.update("C20200901000001",origindata);
-
-
             byte[] data = origindata;
             Class clazz = ByteClassLoader.getClass(data,contractName);
             // Class clazz = FileClassLoader.getClass(contractDir+"Add.class",contractName);
