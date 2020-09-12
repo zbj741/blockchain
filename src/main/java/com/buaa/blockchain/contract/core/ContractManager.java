@@ -31,9 +31,8 @@ import java.util.Map;
 /**
  * 合约管理器，用于将class文件形式的智能合约动态加载并且维护引用
  * 每一个合约的Class在ContractManager中注册后，就不用再次加载了，仅仅单例存在于系统中
- * 在生成contract实例时，使用Class，但是生成的contract可以多例存在于Vm中
  *
- * 暂时的设计中，合约不以账户的形式存在，仅仅作为一个可被调用的代码段
+ * 暂时的设计中，合约以账户的形式存在
  * @author hitty
  * */
 
@@ -118,21 +117,15 @@ public class ContractManager implements IContractManager{
         try {
             cac.load();
             // 转换为class实例
-//            Class clazz = FileClassLoader.getClass(dir+contractName+".class",cac.getFullName());
-//            Contract contract = (Contract) clazz.newInstance();
-//            contract.initParam(args);
-//            contract.run(state);
-            LoadClassTest.LoadTest(state);
-
-//            Object o = cac.getClazz().newInstance();
-//            Method initParam = cac.getClazz().getDeclaredMethod("initParam",Map.class);
-//            initParam.invoke(o,args);
-//            Method run = cac.getClazz().getDeclaredMethod("run",State.class);
-//            run.invoke(o,state);
-
+            Class clazz = cac.getClazz();
+            // 反射调用，执行
+            Contract contract = (Contract) clazz.newInstance();
+            contract.initParam(args);
+            contract.run(state);
             res = true;
         } catch (Exception e) {
             res = false;
+            // TODO 处理调用异常
             e.printStackTrace();
         } finally {
             return  res;

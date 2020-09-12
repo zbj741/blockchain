@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -25,14 +27,13 @@ public class VoteHandler {
     // 投票信息
     private ConcurrentHashMap<String,VoteRecord> voteResList= new ConcurrentHashMap<>();
     // 投票超时时限
-    private Long defaultTimeout = 10000L;
+    private static Long defaultTimeout = 10000L;
     // 已被删除的key
-    private ArrayList<String> removeKeys = new ArrayList<>();
-    // 清空删除的key的时间间隔
-
+    private Queue<String> removeKeys ;
 
     public VoteHandler() {
-
+        this.voteResList = new ConcurrentHashMap<>();
+        this.removeKeys = new LinkedList<>();
     }
 
     /**
@@ -106,8 +107,11 @@ public class VoteHandler {
                 // 删除
                 voteResList.remove(key);
                 // 加入删除列表
-                removeKeys.add(key);
+                if(!removeKeys.offer(key)){
+                    removeKeys.poll();
+                }
             }
+
         }
     }
 
@@ -128,11 +132,11 @@ class VoteRecord{
     // 该条记录的初始化时间
     private Long startTime;
     // 超时
-    Long timeout = 0L;
+    Long timeout;
     // 赞成票数
-    private volatile int agree = 0;
+    private volatile int agree;
     // 反对票数
-    private volatile int against = 0;
+    private volatile int against;
 
     VoteRecord(String tag,String blockHash,int height,int round){
         this.blockHash = blockHash;
@@ -140,6 +144,8 @@ class VoteRecord{
         this.round = round;
         this.key = VoteHandler.createKey(tag,height,round,blockHash);
         this.startTime = System.currentTimeMillis();
+        this.against = 0;
+        this.agree = 0 ;
     }
 
 
@@ -147,7 +153,7 @@ class VoteRecord{
      * 接收来自节点的投票
      * */
     public boolean vote(boolean voteValue, String nodeName){
-        // 检查超时
+        // TODO 检查超时
 
         // 是否在已投票节点列表中
         if(this.voters.contains(nodeName)){

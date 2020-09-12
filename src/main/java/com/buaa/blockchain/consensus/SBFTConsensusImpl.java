@@ -12,10 +12,19 @@ import java.util.Set;
 @Slf4j
 public class SBFTConsensusImpl implements SBFTConsensus<Message>{
     private BlockchainService blockchainService = null;
+    private float agreeGate;
     // TODO 超时检查器，即当前轮数中某一个阶段到达超时条件
 
     public SBFTConsensusImpl(BlockchainService blockchainService){
         this.blockchainService = blockchainService;
+        this.agreeGate = 0.67f;
+        log.info("SBFTConsensusImpl(): init, agreeGate="+this.agreeGate);
+    }
+
+    public SBFTConsensusImpl(BlockchainService blockchainService ,float agreeGate){
+        this.blockchainService = blockchainService;
+        this.agreeGate = agreeGate;
+        log.info("SBFTConsensusImpl(): init, agreeGate="+this.agreeGate);
     }
 
     @Override
@@ -108,7 +117,7 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
         if(blockchainService.voteForBlock(SBFT_VOTETAG_VOTE,height,round,blockHash,msgNodeName,voteValue)){
             log.info("sbftVoteBroadcastReceived():node="+msgNodeName+", vote="+voteValue+" to block="+blockHash+", height="+height+", round="+round);
             // 查看是否收到sbft中大于集群节点个数2/3的同意票
-            if(blockchainService.getAgreeVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)*1.0f > blockchainService.getClusterNodeSize() * (2/3.0f)){
+            if(blockchainService.getAgreeVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)*1.0f > blockchainService.getClusterNodeSize() * this.agreeGate){
                 log.info("sbftVoteBroadcastReceived(): execute, block="+blockHash+", height="+height+", round="+round+
                         " received vote "+blockchainService.getAgreeVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)+
                         "/"+blockchainService.getClusterNodeSize());
@@ -121,7 +130,7 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
                 blockchainService.storeBlock(stage2_received.getBlock());
                 blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
                 return ;
-            }else if(blockchainService.getAgainstVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)*1.0f > blockchainService.getClusterNodeSize() * (1/3.0f)){
+            }else if(blockchainService.getAgainstVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)*1.0f > blockchainService.getClusterNodeSize() * (1.0f - this.agreeGate)){
                 // 反对票超过1/3，直接开始下一轮
                 log.info("sbftVoteBroadcastReceived(): start next round. Block="+blockHash+", height="+height+", round="+round+
                         " received vote against "+blockchainService.getAgainstVoteCount(SBFT_VOTETAG_VOTE,height,round,blockHash)+
@@ -133,6 +142,8 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
                 // 开始下一轮
                 blockchainService.startNewRound(BlockchainService.BLOCKCHAIN_SERVICE_STATE_FAIL);
                 return ;
+            }else{
+                // TODO 本轮投票没有操作？
             }
         }else{
             log.info("sbftVoteBroadcastReceived(): removed item tag="+SBFT_VOTETAG_VOTE+", height="+height+", round="+round+", blockhash="+blockHash+"!");

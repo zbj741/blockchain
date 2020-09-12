@@ -17,6 +17,9 @@ import lombok.Data;
 @Data
 public class Transaction implements Serializable,Comparable<Transaction> {
 
+    public static final String TYPE_CALL = "CALL";
+    public static final String TYPE_TEST = "TEST";
+
     private static final long serialVersionUID = 4695627546411078836L;
     // 区块hash
     private String block_hash;

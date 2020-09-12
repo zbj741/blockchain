@@ -80,7 +80,15 @@ CREATE TABLE `times` (
   `endTime` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+CREATE TABLE `contractAccount` (
+  `id` varchar(64) DEFAULT NULL,
+  `key` varchar(64) NOT NULL,
+  `name` varchar(64) DEFAULT NULL,
+  `fullName` varchar(255) DEFAULT NULL,
+  `classData` longblob DEFAULT NULL,
+  `intro` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
   
 CREATE TABLE `purchase` (
   `block_hash` varchar(100) NOT NULL,

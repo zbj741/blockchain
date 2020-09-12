@@ -48,15 +48,29 @@ public class TxExecuter {
      * 交易的执行，需要修改worldState，也许需要写数据库
      * */
     private void baseSingleExecute(Transaction transaction,WorldState worldState){
-        if(transaction.getType().equals("CALL")){
-            try {
-                ContractCaller contractCaller = JsonUtil.objectMapper.readValue(transaction.getData(), ContractCaller.class);
-                contractManager.invokeContract(worldState,contractCaller.getContractName(),contractCaller.getArg());
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
+        switch (transaction.getType()){
+            case Transaction.TYPE_CALL:{
+                // 调用智能合约
+                try {
+                    ContractCaller contractCaller = JsonUtil.objectMapper.readValue(transaction.getData(), ContractCaller.class);
+                    contractManager.invokeContract(worldState,contractCaller.getContractName(),contractCaller.getArg());
+                } catch (Exception e) {
+                    // TODO 处理调用智能合约异常
+                    e.printStackTrace();
+                } finally {
+
+                }
+                break;
             }
+            case Transaction.TYPE_TEST:{
+                // 测试用，插入一条数据
+                worldState.update(transaction.getTran_hash(),transaction.getTran_hash());
+                break;
+            }
+
         }
+
+
 
     }
 }

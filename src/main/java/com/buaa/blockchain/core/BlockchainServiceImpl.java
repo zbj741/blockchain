@@ -8,7 +8,6 @@ import com.buaa.blockchain.consensus.PBFTConsensusImpl;
 import com.buaa.blockchain.consensus.SBFTConsensusImpl;
 import com.buaa.blockchain.contract.WorldState;
 import com.buaa.blockchain.contract.account.ContractEntrance;
-import com.buaa.blockchain.contract.core.ContractManager;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.message.Message;
@@ -21,15 +20,12 @@ import com.buaa.blockchain.message.JGroupsMessageImpl;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.buaa.blockchain.message.MessageService;
 import com.buaa.blockchain.message.nettyimpl.NettyMessageImpl;
-import com.buaa.blockchain.test.DevTest;
-import com.buaa.blockchain.test.LoadClassTest;
 import com.buaa.blockchain.txpool.RedisTxPool;
 import com.buaa.blockchain.txpool.TxPool;
 
 import com.buaa.blockchain.utils.JsonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -99,8 +95,11 @@ public class BlockchainServiceImpl implements BlockchainService {
     /* 共识协议名称 */
     @Value("${buaa.blockchain.consensus}")
     private String consensusType;
+    /* 共识协议通过占比 */
+    @Value("${buaa.blockchain.consensus.agree-gate}")
+    private float agreeGate;
     /* 共识协议 */
-    private BaseConsensus consensus = null;
+    private BaseConsensus consensus;
     /* leveldb数据库路径 */
     @Value("${buaa.blockchain.leveldb.dir}")
     String statedbDir;
@@ -253,7 +252,6 @@ public class BlockchainServiceImpl implements BlockchainService {
         // 连接数达到要求，可以开始做块
         isSetup = true;
 
-        LoadClassTest.LoadTest(worldState);
         // 以本地的区块信息，开始新一轮的做块
         startNewRound(BLOCKCHAIN_SERVICE_STATE_SUCCESS);
     }
@@ -321,12 +319,21 @@ public class BlockchainServiceImpl implements BlockchainService {
                             this.consensus.setup(message);
                             return;
                         }else{
-                            log.info("startNewRound(): leader node="+nodeName+" fail to create new block at height="+height+", round="+round+".");
+                            log.info("startNewRound(): leader node="+nodeName+" fail to create new block at height="
+                                    +height+", round="+round+".");
                             continue;
                         }
                     } else{
                         try{
-                            log.info("startNewRound(): not enough transactions found, wait for "+this.sleepTime+"ms."+this.txGate+"  "+redisTxpool.size(TxPool.TXPOOL_LABEL_TRANSACTION));
+                            log.info("startNewRound(): not enough transactions found, wait for "+this.sleepTime+"ms, txs/txgate="
+                                          +redisTxpool.size(TxPool.TXPOOL_LABEL_TRANSACTION)+"/"+this.txGate);
+//                            if(waitCount % 10 == 0){
+//                                log.info("startNewRound(): not enough transactions found, wait for "+this.sleepTime+"ms, txs/txgate="
+//                                        +redisTxpool.size(TxPool.TXPOOL_LABEL_TRANSACTION)+"/"+this.txGate);
+//                            }else{
+//                                log.debug("startNewRound(): not enough transactions found, wait for "+this.sleepTime+"ms, txs/txgate="
+//                                        +redisTxpool.size(TxPool.TXPOOL_LABEL_TRANSACTION)+"/"+this.txGate);
+//                            }
                             Thread.sleep(this.sleepTime);
                             waitCount++;
                             continue;
@@ -460,6 +467,7 @@ public class BlockchainServiceImpl implements BlockchainService {
 
             // 检查交易merkleRoot
             List<Transaction> transactionList = rawBlock.getTrans();
+            // 对交易进行排序
             Collections.sort(transactionList);
             String merkleRoot = getMerkleRoot(transactionList);
             if(null == merkleRoot || null == rawBlock.getMerkle_root()){
@@ -961,12 +969,13 @@ public class BlockchainServiceImpl implements BlockchainService {
      * */
     private void initConsensus(){
         BlockchainServiceImpl bs = this;
+        this.agreeGate = (this.agreeGate > 0.8f) ? 0.8f : this.agreeGate;
         try {
             //TODO 暂时这么写 需要修改
             if(this.consensusType.equals(BaseConsensus.SBFT)){
-                this.consensus = new SBFTConsensusImpl(bs);
+                this.consensus = new SBFTConsensusImpl(bs ,this.agreeGate);
             }else if(this.consensusType.equals(BaseConsensus.PBFT)){
-                this.consensus = new PBFTConsensusImpl(bs);
+                this.consensus = new PBFTConsensusImpl(bs, this.agreeGate);
             }else{
                 log.error("initConsensus(): "+this.consensusType+" not found! Shut down.");
                 shutDownManager.shutDown();
