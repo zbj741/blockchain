@@ -1,11 +1,11 @@
 package com.buaa.blockchain.core;
 
 
+import com.buaa.blockchain.entity.ContractAccount;
+import com.buaa.blockchain.entity.UserAccount;
 import com.buaa.blockchain.entity.Block;
-import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.message.MessageCallBack;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -138,6 +138,20 @@ public interface BlockchainService {
      * 在区块链网络同步智能合约
      * */
     void syncContract(String contractId);
+
+    /**
+     * 新建用户
+     * */
+    void insertUserAccount(UserAccount userAccount);
+    /**
+     * 修改用户余额
+     * */
+    void updateUserAccountBalance(String userName, int newBalance);
+    /**
+     * 新建智能合约用户
+     * */
+    void insertContractAccount(ContractAccount contractAccount);
+
 
     /*************  节点通信相关   *************/
     /**

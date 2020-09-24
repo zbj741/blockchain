@@ -8,7 +8,7 @@ public class WorldStateTest {
 
     public static void main(String[] args) throws Exception{
         ObjectMapper objectMapper = new ObjectMapper();
-        WorldState worldState = new WorldState("D:\\data","triedb");
+        WorldState worldState = new WorldState("D:\\data","triedb",null);
         String str = worldState.get("ts");
         System.out.println(str);
 

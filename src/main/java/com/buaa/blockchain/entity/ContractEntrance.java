@@ -1,16 +1,11 @@
-package com.buaa.blockchain.contract.account;
+package com.buaa.blockchain.entity;
 
 
 import com.buaa.blockchain.contract.State;
-import com.buaa.blockchain.contract.core.Contract;
 import com.buaa.blockchain.utils.JsonUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * */
 
 @Slf4j
-public class ContractEntrance extends Account{
+public class ContractEntrance{
     // 入口在statedb中的key
     public static final String CONTRACT_ENTRANCE_KEY = "CONTRACT_ENTRANCE_KEY";
     // 描述
@@ -33,11 +28,21 @@ public class ContractEntrance extends Account{
     // 智能合约名字记录 <合约名，合约账户的key>
     private ConcurrentHashMap<String,String> contracts;
 
+    String key;
+    // 用户id
+    String id;
+    // 用户自己定义名字
+    String name;
+    // 余额
+    int balance;
+    // 数据
+    String data;
+
     /**
      * 添加合约的<name,key>键值对
      * */
     public synchronized void addContract(ContractAccount contractAccount){
-        contracts.put(contractAccount.name,contractAccount.key);
+        contracts.put(contractAccount.cName,contractAccount.cKey);
     }
 
     public Map<String,String> getContracts(){
@@ -72,10 +77,10 @@ public class ContractEntrance extends Account{
         this.data = intro;
     }
 
+
     /**
      * 拷贝属性字段
      * */
-    @Override
     public void copy(Object o) {
         ContractEntrance c = (ContractEntrance) o;
         this.key = c.key;
@@ -92,7 +97,6 @@ public class ContractEntrance extends Account{
     /**
      * 从state中读取自身
      * */
-    @Override
     void loadFromState(State state) {
         byte[] res = state.getAsBytes(this.key);
         try {
@@ -103,6 +107,46 @@ public class ContractEntrance extends Account{
             e.printStackTrace();
         }
 
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     @Override

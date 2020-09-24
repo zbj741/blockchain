@@ -2,12 +2,10 @@ package com.buaa.blockchain.test;
 
 import com.buaa.blockchain.contract.State;
 import com.buaa.blockchain.contract.WorldState;
-import com.buaa.blockchain.contract.account.ContractAccount;
+import com.buaa.blockchain.entity.ContractAccount;
 import com.buaa.blockchain.contract.core.Contract;
 import com.buaa.blockchain.contract.core.DataUnit;
 import com.buaa.blockchain.contract.util.classloader.ByteClassLoader;
-import com.buaa.blockchain.contract.util.classloader.FileClassLoader;
-import org.checkerframework.checker.units.qual.C;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +14,7 @@ import java.util.Map;
 
 public class LoadClassTest {
     public static void main(String[] args) {
-        WorldState worldState = new WorldState("D:\\data","triedb");
+        WorldState worldState = new WorldState("D:\\data","triedb",null);
         LoadTest(worldState);
     }
 
@@ -49,7 +47,7 @@ public class LoadClassTest {
             System.out.println(worldState.get("key"));
 
 
-            ContractAccount contractAccount = new ContractAccount("Add","Add","Add",data);
+            ContractAccount contractAccount = new ContractAccount("Add","Add",data);
             contractAccount.load();
             Contract cobj1 = (Contract) contractAccount.getClazz().newInstance();
             cobj1.initParam(arg);

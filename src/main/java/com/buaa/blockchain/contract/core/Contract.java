@@ -3,6 +3,7 @@ package com.buaa.blockchain.contract.core;
 import com.buaa.blockchain.contract.State;
 
 import java.util.Map;
+import java.util.List;
 
 /**
  * 智能合约接口
@@ -16,7 +17,7 @@ public interface Contract {
      * */
     String getName();
     /**
-     * 返回智能合约信息，Json字符串形式给出
+     * 返回智能合约信息
      * */
     String getIntro();
     /**
@@ -29,4 +30,5 @@ public interface Contract {
      * 执行
      * */
     void run(State state);
+
 }

@@ -7,9 +7,13 @@ import com.buaa.blockchain.consensus.BaseConsensus;
 import com.buaa.blockchain.consensus.PBFTConsensusImpl;
 import com.buaa.blockchain.consensus.SBFTConsensusImpl;
 import com.buaa.blockchain.contract.WorldState;
-import com.buaa.blockchain.contract.account.ContractEntrance;
+import com.buaa.blockchain.entity.ContractAccount;
+import com.buaa.blockchain.entity.ContractEntrance;
+import com.buaa.blockchain.entity.UserAccount;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.entity.Block;
+import com.buaa.blockchain.entity.mapper.ContractAccountMapper;
+import com.buaa.blockchain.entity.mapper.UserAccountMapper;
 import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.entity.Times;
 import com.buaa.blockchain.entity.Transaction;
@@ -61,6 +65,10 @@ public class BlockchainServiceImpl implements BlockchainService {
     final BlockMapper blockMapper;
     /* Transaction的持久化 */
     final TransactionMapper transactionMapper;
+    /* UserAccount的持久化 */
+    final UserAccountMapper userAccountMapper;
+    /* ContractAccount的持久化 */
+    final ContractAccountMapper contractAccountMapper;
     /* 投票处理 */
     final VoteHandler voteHandler;
     /* 超时管理 */
@@ -158,13 +166,13 @@ public class BlockchainServiceImpl implements BlockchainService {
     private String nowPreHash = "";
     private String nowStateRoot = "";
 
-
-
     @Autowired
-    public BlockchainServiceImpl(RedisTxPool redisTxpool, BlockMapper blockMapper,
+    public BlockchainServiceImpl(RedisTxPool redisTxpool, BlockMapper blockMapper,UserAccountMapper userAccountMapper, ContractAccountMapper contractAccountMapper,
                                  TransactionMapper transactionMapper, VoteHandler voteHandler, TimeoutHelper timeoutHelper, ShutDownManager shutDownManager) {
         this.redisTxpool = redisTxpool;
         this.blockMapper = blockMapper;
+        this.userAccountMapper = userAccountMapper;
+        this.contractAccountMapper = contractAccountMapper;
         this.transactionMapper = transactionMapper;
         this.voteHandler = voteHandler;
         this.timeoutHelper = timeoutHelper;
@@ -321,6 +329,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                         }else{
                             log.info("startNewRound(): leader node="+nodeName+" fail to create new block at height="
                                     +height+", round="+round+".");
+                            Thread.sleep(sleepTime);
                             continue;
                         }
                     } else{
@@ -468,7 +477,19 @@ public class BlockchainServiceImpl implements BlockchainService {
             // 检查交易merkleRoot
             List<Transaction> transactionList = rawBlock.getTrans();
             // 对交易进行排序
-            Collections.sort(transactionList);
+            Collections.sort(transactionList, new Comparator<Transaction>() {
+                @Override
+                public int compare(Transaction o1, Transaction o2) {
+                    if(o1.getSequence() > o2.getSequence()){
+                        return 1;
+                    }else if(o1.getSequence() < o2.getSequence()){
+                        return -1;
+                    }else{
+                        return 0;
+                    }
+
+                }
+            });
             String merkleRoot = getMerkleRoot(transactionList);
             if(null == merkleRoot || null == rawBlock.getMerkle_root()){
                 log.info("verifyBlock(): Block merkle-root is null!");
@@ -543,6 +564,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Override
     public Block createNewBlock(int height, int round){
         List<Transaction> rawTransList = redisTxpool.getList(TxPool.TXPOOL_LABEL_TRANSACTION,txMaxAmount);
+
         // 做块计时开始
         Date createStart = new Date();
         int tranSeq = 0;
@@ -567,7 +589,20 @@ public class BlockchainServiceImpl implements BlockchainService {
             Times times = new Times();
             times.setStartCompute(new Date().getTime());
             // 交易排序
-            Collections.sort(validTransList);
+            // 对交易进行排序
+            Collections.sort(validTransList, new Comparator<Transaction>() {
+                @Override
+                public int compare(Transaction o1, Transaction o2) {
+                    if(o1.getSequence() > o2.getSequence()){
+                        return 1;
+                    }else if(o1.getSequence() < o2.getSequence()){
+                        return -1;
+                    }else{
+                        return 0;
+                    }
+
+                }
+            });
             // 填写block字段
             String preHash = blockMapper.findHashByHeight(height - 1);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -642,6 +677,20 @@ public class BlockchainServiceImpl implements BlockchainService {
                 log.info("createNewCacheBlock(): no trans valid for create new cache block.");
                 return ;
             }else{
+                // 对交易进行排序
+                Collections.sort(validTransList, new Comparator<Transaction>() {
+                    @Override
+                    public int compare(Transaction o1, Transaction o2) {
+                        if(o1.getSequence() > o2.getSequence()){
+                            return 1;
+                        }else if(o1.getSequence() < o2.getSequence()){
+                            return -1;
+                        }else{
+                            return 0;
+                        }
+
+                    }
+                });
                 // 生成新的区块
                 Block block = new Block();
                 Times times = new Times();
@@ -951,7 +1000,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * */
     private void initState(){
         // 初始化状态树
-        this.worldState = new WorldState(statedbDir,statedbName);
+        this.worldState = new WorldState(statedbDir,statedbName,this);
     }
     /**
      * 初始化智能合约相关
@@ -962,7 +1011,7 @@ public class BlockchainServiceImpl implements BlockchainService {
             shutDownManager.shutDown();
         }
         // 初始化智能合约管理
-        this.txExecuter = TxExecuter.getInstance(this.worldState);
+        this.txExecuter = TxExecuter.getInstance(this,this.worldState);
     }
     /**
      * 初始化共识协议
@@ -1145,4 +1194,20 @@ public class BlockchainServiceImpl implements BlockchainService {
         transactionMapper.insertAllTrans(block.getTrans());
     }
 
+    /********************************* Mapper功能暴露 ***********************************/
+
+    @Override
+    public void insertUserAccount(UserAccount userAccount) {
+        this.userAccountMapper.insertUserAccount(userAccount);
+    }
+
+    @Override
+    public void updateUserAccountBalance(String userName, int newBalance) {
+        this.userAccountMapper.updateBalance(newBalance, userName);
+    }
+
+    @Override
+    public void insertContractAccount(ContractAccount contractAccount) {
+        this.contractAccountMapper.insertUserAccount(contractAccount);
+    }
 }

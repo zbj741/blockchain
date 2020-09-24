@@ -10,6 +10,7 @@ import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.utils.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,25 +24,28 @@ import java.util.Map;
 @Slf4j
 public class TxExecuter {
     private static TxExecuter instance = null;
+    private BlockchainService bs = null;
     private IContractManager contractManager;
     /**
      * 全局单例
      * */
-    public synchronized static TxExecuter getInstance(State state){
+    public synchronized static TxExecuter getInstance(BlockchainService bs,State state){
         if(null == instance){
-            instance = new TxExecuter(state);
+            instance = new TxExecuter(bs, state);
         }
         return instance;
     }
-    private TxExecuter(State state){
+    private TxExecuter(BlockchainService bs, State state){
         // 初始化ContractManager
-        this.contractManager = ContractManager.getInstance(state);
+        this.contractManager = ContractManager.getInstance(bs,state);
     }
 
     public void baseExecute(List<Transaction> transactionList, WorldState worldState){
-        for(Transaction transaction : transactionList){
-            baseSingleExecute(transaction,worldState);
+
+        for(int i = 0;i < transactionList.size();i++){
+            baseSingleExecute(transactionList.get(i),worldState);
         }
+
     }
     /**
      * 执行单个交易

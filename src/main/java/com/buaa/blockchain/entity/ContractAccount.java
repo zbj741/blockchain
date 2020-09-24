@@ -1,17 +1,12 @@
-package com.buaa.blockchain.contract.account;
+package com.buaa.blockchain.entity;
 
 import com.buaa.blockchain.contract.State;
-import com.buaa.blockchain.contract.core.Contract;
-import com.buaa.blockchain.contract.core.DataUnit;
 import com.buaa.blockchain.contract.core.IContractManager;
 import com.buaa.blockchain.contract.util.classloader.ByteClassLoader;
 import com.buaa.blockchain.utils.JsonUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.util.Contracts;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * 智能合约的合约账户实体类
@@ -24,27 +19,37 @@ import java.util.Map;
  * @author hitty
  * */
 @Slf4j
-public class ContractAccount extends Account{
+public class ContractAccount{
+    // state中的key
+    String cKey;
+    // 合约名
+    String cName;
+    // 余额
+    int balance;
+    // 数据
+    String data;
     // 合约Class
     Class clazz;
     // 类class文件字节码
     byte[] classData;
     // 全限定类名
     String fullName;
+    // 介绍
+    String intro = "";
 
     public ContractAccount(){}
     /**
      * 参数中存在classData，则直接生成Class
      * */
-    public ContractAccount(String key,String id,String name,byte[] classData){
-        this.key = key;
-        this.id = id;
-        this.name = name;
+    public ContractAccount(String key,String name,byte[] classData){
+        this.cKey = key;
+        this.cName = name;
+        this.fullName = IContractManager.classPrefix + this.cName;
         this.classData = classData;
     }
 
     public ContractAccount(State state, String key){
-        this.key = key;
+        this.cKey = key;
         loadFromState(state);
     }
 
@@ -53,7 +58,7 @@ public class ContractAccount extends Account{
      * */
     public void load(){
         if(this.clazz == null){
-            this.fullName = IContractManager.classPrefix + this.name;
+            this.fullName = IContractManager.classPrefix + this.cName;
             this.clazz = ByteClassLoader.getClass(this.classData, fullName);
         }
         if(clazz == null){
@@ -61,9 +66,9 @@ public class ContractAccount extends Account{
         }
     }
 
-    @Override
+
     public void loadFromState(State state) {
-        byte[] res = state.getAsBytes(this.key);
+        byte[] res = state.getAsBytes(this.cKey);
         try {
             ContractAccount contractAccount = (ContractAccount) JsonUtil.objectMapper.readValue(res,ContractAccount.class);
             this.copy(contractAccount);
@@ -73,17 +78,49 @@ public class ContractAccount extends Account{
         }
     }
 
-    @Override
+
     void copy(Object o) {
         ContractAccount c = (ContractAccount) o;
-        this.key = c.key;
-        this.id = c.id;
-        this.name = c.name;
+        this.cKey = c.cKey;
+
+        this.cName = c.cName;
         this.balance = c.balance;
         this.data = c.data;
         // 不需要深拷贝，将引用传递即可
         this.classData = c.classData;
 
+    }
+
+    public String getcKey() {
+        return cKey;
+    }
+
+    public void setcKey(String cKey) {
+        this.cKey = cKey;
+    }
+
+    public String getcName() {
+        return cName;
+    }
+
+    public void setcName(String cName) {
+        this.cName = cName;
+    }
+
+    public float getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     public Class getClazz() {

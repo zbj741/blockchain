@@ -2,29 +2,17 @@ package com.buaa.blockchain.contract.core;
 
 
 import com.buaa.blockchain.contract.State;
-import com.buaa.blockchain.contract.account.Account;
-import com.buaa.blockchain.contract.account.ContractAccount;
-import com.buaa.blockchain.contract.account.ContractEntrance;
-import com.buaa.blockchain.contract.util.classloader.ByteClassLoader;
+import com.buaa.blockchain.entity.ContractAccount;
+import com.buaa.blockchain.entity.ContractEntrance;
 import com.buaa.blockchain.contract.util.classloader.FileClassLoader;
 
-import com.buaa.blockchain.test.LoadClassTest;
+import com.buaa.blockchain.core.BlockchainService;
 import com.buaa.blockchain.utils.JsonUtil;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 
@@ -41,6 +29,8 @@ public class ContractManager implements IContractManager{
 
     private static ContractManager instance = null;
     private ContractEntrance contractEntrance = null;
+    // BlockchainService 的引用
+    BlockchainService bs = null;
     // 指定的合约class文件存放目录
     public static final String dir = System.getProperty("user.dir")+ File.separator + "contract" + File.separator;
     // 合约表 <合约名，合约账户实例>
@@ -50,33 +40,40 @@ public class ContractManager implements IContractManager{
     public static final String DELETE = "DELETE";
     public static final String DEV = "DEV";
     // 原生合约方法表
-    public HashSet<String> oriContracts;
+    public OriginContract oriContract;
 
     /**
      * 初始化方法
      * */
-    private ContractManager(State state){
+    private ContractManager(BlockchainService bs,State state){
+        this.bs = bs;
         // 初始化合约入口，入口已经被初始化完毕
         this.contractEntrance = ContractEntrance.getInstance();
         // 初始化原生合约表
-        this.oriContracts = OriginContract.getAllOriMethods();
+        this.oriContract = new OriginContract(bs);
         this.contractMap = new HashMap<>();
         // 通过ContractEntrance维护的智能合约<name,key>映射表，从statedb中生成寻找智能合约账户实体类
         Map<String,String> map = this.contractEntrance.getContracts();
-        for(Map.Entry<String,String> entry : map.entrySet()){
-            ContractAccount contractAccount = loadContractAccountFromState(entry.getKey(), entry.getValue(),state);
-            if(contractAccount != null){
-                this.contractMap.put(contractAccount.getName(),contractAccount);
+        try{
+            for(Map.Entry<String,String> entry : map.entrySet()){
+                ContractAccount contractAccount = loadContractAccountFromState(entry.getKey(), entry.getValue(),state);
+                if(contractAccount != null){
+                    this.contractMap.put(contractAccount.getcName(),contractAccount);
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        log.info("ContractManager(): init done! origin="+oriContracts.toString()+" ,contractMap="+contractMap.toString());
+        // TODO 将contractEntrance作为一个ContractAccount 存入mysql
+
+        log.info("ContractManager(): init done! origin="+oriContract.getAllOriMethods().toString()+" ,contractMap="+contractMap.toString());
     }
     /**
      * 单例
      * */
-    public static synchronized ContractManager getInstance(State state){
+    public static synchronized ContractManager getInstance(BlockchainService bs,State state){
         if(null == instance){
-            instance = new ContractManager(state);
+            instance = new ContractManager(bs,state);
         }
         return instance;
     }
@@ -93,9 +90,9 @@ public class ContractManager implements IContractManager{
     public boolean invokeContract(State state, String contractName, Map<String, DataUnit> args){
         boolean res = true;
         // 先查看是否为原生合约
-        if(this.oriContracts.contains(contractName)){
+        if(this.oriContract.getAllOriMethods().contains(contractName)){
             // 是原生合约，调用原生合约
-            OriginContract.invoke(state,contractName,args);
+            this.oriContract.invoke(state,contractName,args);
             return true;
         }
         // 查看当前是否缓存了对应的ContractAccount
@@ -105,7 +102,7 @@ public class ContractManager implements IContractManager{
             if(contractEntrance.getContracts().keySet().contains(contractName)){
                 String key = contractEntrance.getContracts().get(contractName);
                 cac = new ContractAccount(state,key);
-                this.contractMap.put(cac.getName(), cac);
+                this.contractMap.put(cac.getcName(), cac);
             }else{
                 // 没有该智能合约
                 return false;
@@ -135,7 +132,7 @@ public class ContractManager implements IContractManager{
 
     @Override
     public boolean addContract(State state, String key, String contractName, byte[] classData) {
-        ContractAccount contractAccount = new ContractAccount(contractName,contractName,contractName,classData);
+        ContractAccount contractAccount = new ContractAccount(contractName,contractName,classData);
         // 同步ContractEntrance
         contractEntrance.addContract(contractAccount);
         contractMap.put(contractName,contractAccount);
@@ -200,7 +197,7 @@ public class ContractManager implements IContractManager{
         byte[] res = state.getAsBytes(key);
         try {
             ContractAccount contractAccount = (ContractAccount) JsonUtil.objectMapper.readValue(res,ContractAccount.class);
-            if(name.equals(contractAccount.getName())){
+            if(name.equals(contractAccount.getcName())){
                 return contractAccount;
             }
         } catch (IOException e) {

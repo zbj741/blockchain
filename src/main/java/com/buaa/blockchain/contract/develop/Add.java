@@ -5,6 +5,7 @@ import com.buaa.blockchain.contract.core.Contract;
 import com.buaa.blockchain.contract.core.DataUnit;
 
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -33,6 +34,7 @@ public class Add implements Contract {
     public String getIntro() {
         return null;
     }
+
 
     @Override
     public int initParam(Map<String, DataUnit> args) {

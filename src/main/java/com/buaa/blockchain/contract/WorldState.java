@@ -1,18 +1,16 @@
 package com.buaa.blockchain.contract;
 
-import com.buaa.blockchain.contract.State;
-import com.buaa.blockchain.contract.account.ContractEntrance;
 import com.buaa.blockchain.contract.trie.datasource.KeyValueDataSource;
 import com.buaa.blockchain.contract.trie.Trie;
 import com.buaa.blockchain.contract.trie.TrieImpl;
 import com.buaa.blockchain.contract.trie.Values;
 import com.buaa.blockchain.contract.trie.datasource.LevelDbDataSource;
+import com.buaa.blockchain.core.BlockchainService;
+import com.buaa.blockchain.entity.UserAccount;
 import com.buaa.blockchain.utils.JsonUtil;
 import com.buaa.blockchain.utils.Utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.UnsupportedEncodingException;
 
 /**
  * 区块链中的全局状态树，用于记录交易的执行情况。
@@ -29,7 +27,7 @@ import java.io.UnsupportedEncodingException;
  * */
 @Slf4j
 public class WorldState implements State {
-
+    BlockchainService bs = null;
     /* 字符树 */
     private Trie trie;
     /* levelDb存储接口 */
@@ -41,7 +39,12 @@ public class WorldState implements State {
 
 
 
-    public WorldState(String dir,String name) {
+    /**
+     * 需要执行一个本地目录，leveldb的文件名
+     * 可以支持对blockchainService的引用，用于同步mysql，不用的话填null
+     * */
+    public WorldState(String dir, String name, BlockchainService bs) {
+        this.bs = bs;
         levelDb = new LevelDbDataSource(dir,name);
         levelDb.init();
         trie = new TrieImpl(levelDb);
@@ -165,5 +168,50 @@ public class WorldState implements State {
      * */
     public void close(){
         this.levelDb.close();
+    }
+
+
+    /**************** 支持账户相关 *****************/
+
+    @Override
+    public int getUserAccountBalance(String userKey) {
+        return getUser(userKey).getBalance();
+    }
+
+    @Override
+    public void updateUserAccountBalance(String userKey, int updateVal) {
+        UserAccount u = getUser(userKey);
+        u.setBalance(updateVal);
+        // 写回state
+        try {
+            this.update(userKey, JsonUtil.objectMapper.writeValueAsBytes(u));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        // 写回mysql
+        if(null != bs){
+            bs.updateUserAccountBalance(userKey,u.getBalance());
+        }
+    }
+
+    @Override
+    public String getUserJsonString(String userKey) {
+        String res = this.get(userKey);
+        return res;
+    }
+
+    @Override
+    public UserAccount getUser(String userKey) {
+        String str = getUserJsonString(userKey);
+        UserAccount res = null;
+        try {
+            res = JsonUtil.objectMapper.readValue(str,UserAccount.class);
+
+        } catch (JsonProcessingException e) {
+            // TODO 无法读取
+            e.printStackTrace();
+        }
+
+        return res;
     }
 }
