@@ -33,7 +33,8 @@ public class OriginContract {
     // 原生合约提供的方法名
     public static final String UPDATE = "update";
     public static final String DELETE = "delete";
-    public static final String DEV = "dev";
+    public static final String DEVCLASS = "devClass";
+    public static final String DEVJAR = "devJar";
     public static final String ADDUSER = "addUser";
     public static final String TRANSFER = "transfer";
     private HashSet<String> functions;
@@ -44,7 +45,8 @@ public class OriginContract {
         functions = new HashSet<>();
         functions.add(UPDATE);
         functions.add(DELETE);
-        functions.add(DEV);
+        functions.add(DEVCLASS);
+        functions.add(DEVJAR);
         functions.add(ADDUSER);
         functions.add(TRANSFER);
     }
@@ -62,7 +64,7 @@ public class OriginContract {
      * @param function 方法名
      * @param args 参数
      * */
-    public void invoke(State state,String function,Map<String, DataUnit> args){
+    public void invoke(State state,String function,Map<String, DataUnit> args,byte[] largeData){
         log.info("invoke(): "+function+", args="+args.toString());
         // 分发函数的调用
         switch (function){
@@ -74,8 +76,12 @@ public class OriginContract {
                 delete(state,args);
                 break;
             }
-            case DEV:{
-                dev(state,args);
+            case DEVCLASS:{
+                devClass(state,args);
+                break;
+            }
+            case DEVJAR:{
+                devJar(state,args,largeData);
                 break;
             }
             case ADDUSER:{
@@ -170,12 +176,13 @@ public class OriginContract {
     /**
      * 智能合约部署
      * */
-    private void dev(State state, Map<String, DataUnit> args){
+    private void devClass(State state, Map<String, DataUnit> args){
         String contractName = args.get("CONTRACT_NAME").getString();
         byte[] classData = args.get("CONTRACT_BYTES").getByteArray();
         // 建立ContractAccount实例
         // TODO 暂时将智能合约用户的 key，id，name设为一样的，过后修改
         ContractAccount contractAccount = new ContractAccount(contractName,contractName,classData);
+        contractAccount.setData("Class File");
         boolean done = false;
         // 将自己写入state
         try {
@@ -184,12 +191,18 @@ public class OriginContract {
             ContractEntrance.getInstance().addContract(contractAccount);
             state.update(CONTRACT_ENTRANCE_KEY,JsonUtil.objectMapper.writeValueAsBytes(ContractEntrance.getInstance()));
             done = true;
-            // 写入contract文件夹
-            FileOutputStream fileRes = new FileOutputStream (new File(contractDir+contractName+".class"));
-            fileRes.write(classData);
-            fileRes.close();
             // 写入mysql
             bs.insertContractAccount(contractAccount);
+
+            // 写入contract文件夹
+            File file = new File(contractDir+contractName+".class");
+            FileOutputStream fileRes = new FileOutputStream (file);
+            fileRes.write(classData);
+            fileRes.close();
+            file.setExecutable(true);
+            file.setReadable(true);
+            file.setWritable(true);
+
 
         } catch (JsonProcessingException e) {
             // 写入错误则删除
@@ -197,16 +210,68 @@ public class OriginContract {
             done = false;
         }catch (IOException e){
             // 写入文件错误 非主要问题 暂时不处理
-            log.warn("dev(): write class file failed!");
+            log.warn("devClass(): write class file failed!");
             e.printStackTrace();
         } finally {
             if(done){
-                log.info("dev(): develop contract "+contractName+" successfully.");
+                log.info("devClass(): develop contract "+contractName+" successfully.");
                 // 写入contract文件夹
 
             }else{
                 state.delete(contractAccount.getcKey());
-                log.info("dev(): develop contract "+contractName+" failed, remove data from state at key="+contractAccount.getcKey());
+                log.info("devClass(): develop contract "+contractName+" failed, remove data from state at key="+contractAccount.getcKey());
+            }
+        }
+
+    }
+    /**
+     * 智能合约部署
+     * */
+    private void devJar(State state, Map<String, DataUnit> args,byte[] classData){
+        String contractName = args.get("CONTRACT_NAME").getString();
+        String type = args.get("CONTRACT_TYPE").getString();
+
+        // 建立ContractAccount实例
+        // TODO 暂时将智能合约用户的 key，id，name设为一样的，过后修改
+        ContractAccount contractAccount = new ContractAccount(contractName,contractName,classData);
+        contractAccount.setData(type);
+        boolean done = false;
+        // 将自己写入state
+        try {
+            state.update(contractAccount.getcKey(), JsonUtil.objectMapper.writeValueAsBytes(contractAccount));
+            // 更新ContractEntrance
+            ContractEntrance.getInstance().addContract(contractAccount);
+            state.update(CONTRACT_ENTRANCE_KEY,JsonUtil.objectMapper.writeValueAsBytes(ContractEntrance.getInstance()));
+            done = true;
+            // 写入mysql
+            bs.insertContractAccount(contractAccount);
+
+            // 写入contract文件夹
+            File file = new File(contractDir+contractName+".jar");
+            FileOutputStream fileRes = new FileOutputStream (file);
+            fileRes.write(classData);
+            fileRes.close();
+            file.setExecutable(true);
+            file.setReadable(true);
+            file.setWritable(true);
+
+
+        } catch (JsonProcessingException e) {
+            // 写入错误则删除
+            e.printStackTrace();
+            done = false;
+        }catch (IOException e){
+            // 写入文件错误 非主要问题 暂时不处理
+            log.warn("devJar(): write class file failed!");
+            e.printStackTrace();
+        } finally {
+            if(done){
+                log.info("devJar(): develop contract "+contractName+" successfully.");
+                // 写入contract文件夹
+
+            }else{
+                state.delete(contractAccount.getcKey());
+                log.info("devJar(): develop contract "+contractName+" failed, remove data from state at key="+contractAccount.getcKey());
             }
         }
 

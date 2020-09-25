@@ -84,35 +84,44 @@ public class ContractManager implements IContractManager{
      * @param state 状态树
      * @param contractName  智能合约名
      * @param args  智能合约参数
+     * @param largeData 字节流
      * @return 是否调用成功
      * */
     @Override
-    public boolean invokeContract(State state, String contractName, Map<String, DataUnit> args){
+    public boolean invokeContract(State state, String contractName, Map<String, DataUnit> args, byte[] largeData){
+        log.warn("invokeContract(): enter.... contractName = "+contractName);
         boolean res = true;
         // 先查看是否为原生合约
         if(this.oriContract.getAllOriMethods().contains(contractName)){
             // 是原生合约，调用原生合约
-            this.oriContract.invoke(state,contractName,args);
+            this.oriContract.invoke(state,contractName,args,largeData);
             return true;
         }
         // 查看当前是否缓存了对应的ContractAccount
         ContractAccount cac = null;
+        log.info("invokeContract(): show "+contractEntrance.getContracts().toString());
         if(!this.contractMap.containsKey(contractName)){
             // 通过ContractEntrance，从statedb中同步合约到contractMap
             if(contractEntrance.getContracts().keySet().contains(contractName)){
+                log.warn("invokeContract():"+contractName+" is in contractEntrance.");
                 String key = contractEntrance.getContracts().get(contractName);
                 cac = new ContractAccount(state,key);
                 this.contractMap.put(cac.getcName(), cac);
             }else{
                 // 没有该智能合约
+                log.warn("invokeContract(): "+contractName+" not found!!");
                 return false;
             }
         }else{
             // 找到了缓存
+            log.warn("invokeContract(): "+contractName+" in the cache.");
             cac = this.contractMap.get(contractName);
         }
+        log.info("invokeContract(): invoke cache "+cac.getcName()+" start load...");
         try {
-            cac.load();
+            //cac.load();
+            cac.loadJar();
+            log.info("invokeContract(): invoke cache "+cac.getcName()+" load done.");
             // 转换为class实例
             Class clazz = cac.getClazz();
             // 反射调用，执行
@@ -141,35 +150,6 @@ public class ContractManager implements IContractManager{
 
 
     /***************** Private Functions *****************/
-
-    /**
-     * 获取智能合约实例
-     * 从contractMap中获取
-     * */
-     private Contract getContractInstance(String name){
-        Contract res = null;
-        ContractAccount account = contractMap.get(name);
-        if(null == account.getClazz()){
-            account.load();
-        }
-        try {
-            res = (Contract) account.getClazz().newInstance();
-        } catch (InstantiationException e) {
-            // TODO
-            res = null;
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO
-            res = null;
-            e.printStackTrace();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        finally {
-            return res;
-        }
-    }
-
 
     /**
      * 从文件系统中获取智能合约到contractMap中

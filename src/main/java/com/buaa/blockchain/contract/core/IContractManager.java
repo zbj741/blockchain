@@ -17,7 +17,7 @@ public interface IContractManager {
     /**
      * 智能合约调用
      * */
-    boolean invokeContract(State state, String contractName, Map<String, DataUnit> args);
+    boolean invokeContract(State state, String contractName, Map<String, DataUnit> args, byte[] largeData);
     /**
      * 智能合约添加
      * */

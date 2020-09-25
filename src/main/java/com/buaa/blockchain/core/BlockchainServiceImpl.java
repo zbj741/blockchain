@@ -24,6 +24,8 @@ import com.buaa.blockchain.message.JGroupsMessageImpl;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.buaa.blockchain.message.MessageService;
 import com.buaa.blockchain.message.nettyimpl.NettyMessageImpl;
+import com.buaa.blockchain.test.LoadClassTest;
+import com.buaa.blockchain.test.LoadJarTest;
 import com.buaa.blockchain.txpool.RedisTxPool;
 import com.buaa.blockchain.txpool.TxPool;
 
@@ -1191,7 +1193,10 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 存储交易
      * */
     public void insertTransactionList(Block block){
-        transactionMapper.insertAllTrans(block.getTrans());
+        for(Transaction t : block.getTrans()){
+            transactionMapper.insertTransaction(t);
+        }
+        //transactionMapper.insertAllTrans(block.getTrans());
     }
 
     /********************************* Mapper功能暴露 ***********************************/

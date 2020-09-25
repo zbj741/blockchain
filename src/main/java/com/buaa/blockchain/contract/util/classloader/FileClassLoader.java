@@ -1,6 +1,9 @@
 package com.buaa.blockchain.contract.util.classloader;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -61,7 +64,15 @@ public class FileClassLoader extends ClassLoader {
 
     private byte[] getClass(String name) {
         try {
-            return Files.readAllBytes(Paths.get(path));
+            System.out.println(path);
+            File file = new File(path);
+            FileInputStream streamln = new FileInputStream (file); //根据源文件构建输入流
+            byte[] origindata = null;
+            origindata = new byte[streamln.available()];
+            streamln.read(origindata);
+            streamln.close();
+            return origindata;
+            //return Files.readAllBytes(Paths.get(path));
         } catch (Exception e) {
             e.printStackTrace();
         }

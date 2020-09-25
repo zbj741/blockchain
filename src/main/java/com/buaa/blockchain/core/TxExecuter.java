@@ -57,7 +57,7 @@ public class TxExecuter {
                 // 调用智能合约
                 try {
                     ContractCaller contractCaller = JsonUtil.objectMapper.readValue(transaction.getData(), ContractCaller.class);
-                    contractManager.invokeContract(worldState,contractCaller.getContractName(),contractCaller.getArg());
+                    contractManager.invokeContract(worldState,contractCaller.getContractName(),contractCaller.getArg(),transaction.getLargeData());
                 } catch (Exception e) {
                     // TODO 处理调用智能合约异常
                     e.printStackTrace();

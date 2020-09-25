@@ -9,16 +9,45 @@ import com.buaa.blockchain.contract.util.classloader.ByteClassLoader;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
 public class LoadClassTest {
+
     public static void main(String[] args) {
+
+
         WorldState worldState = new WorldState("D:\\data","triedb",null);
-        LoadTest(worldState);
+        LoadTest2(worldState);
     }
 
+    public static void LoadTest2(State state){
+        String contractDir = System.getProperty("user.dir")+ File.separator + "contract" + File.separator;
+        String contractName = "com.buaa.blockchain.contract.develop.Add";
+        String softPath = "file:"+contractDir+"Add.class";
+        try {
+            URLClassLoader classLoader = new URLClassLoader(new URL[]{new URL(softPath)},Thread.currentThread().getContextClassLoader());
+            Class demo = classLoader.loadClass(contractName);
+            Contract object = (Contract) demo.newInstance();
+            Map<String, DataUnit> arg = new HashMap<>();
+            arg.put("KEY",new DataUnit("key"));
+            arg.put("VALUE_1",new DataUnit(654));
+            arg.put("VALUE_2",new DataUnit(234));
+            object.initParam(arg);
+            object.run(state);
+            System.out.println(state.get("key"));
+            System.out.println("EXECUTE");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+
     public static void LoadTest(State state){
+
         String contractDir = System.getProperty("user.dir")+ File.separator + "contract" + File.separator;
         String contractName = "com.buaa.blockchain.contract.develop.Add";
         File fileln = new File (contractDir+"Add.class"); //打开源文件

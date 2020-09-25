@@ -1,11 +1,7 @@
 package com.buaa.blockchain.contract.util.classloader;
 
 
-import com.buaa.blockchain.contract.WorldState;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.File;
-import java.io.FileInputStream;
 
 @Slf4j
 public class ByteClassLoader extends ClassLoader{
@@ -18,14 +14,22 @@ public class ByteClassLoader extends ClassLoader{
      * */
     public static synchronized Class getClass(byte[] input,String className) {
         ByteClassLoader byteClassLoader = new ByteClassLoader(input);
+        System.out.println(ByteClassLoader.class.getCanonicalName());
         System.out.println(byteClassLoader.getParent().toString());
+
         Class clazz = null;
         try {
+            System.out.println("before loadClass...");
             clazz = byteClassLoader.loadClass(className);
+            System.out.println("after loadClass...");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             clazz = null;
+        } catch (Exception e){
+            System.out.println("return: "+clazz);
+            e.printStackTrace();
         }
+
         return clazz;
     }
 
@@ -41,6 +45,7 @@ public class ByteClassLoader extends ClassLoader{
         }
         return super.findClass(name);
     }
+
 
 
 

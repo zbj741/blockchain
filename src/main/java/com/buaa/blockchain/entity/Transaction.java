@@ -45,6 +45,8 @@ public class Transaction implements Serializable,Comparable<Transaction> {
     private String extra;
     // 交易内容
     private String data;
+    // 大量数据
+    private byte[] largeData;
 
     private Integer tranSeq;
 
@@ -59,6 +61,7 @@ public class Transaction implements Serializable,Comparable<Transaction> {
         version = _version;
         extra = _extra;
         data = _data;
+        largeData = new byte[]{};
     }
 
     public Transaction() {
