@@ -41,7 +41,7 @@ public class TxExecuter {
     }
 
     public void baseExecute(List<Transaction> transactionList, WorldState worldState){
-
+        log.info("baseExecute(): start to execute transaction list, size="+transactionList.size());
         for(int i = 0;i < transactionList.size();i++){
             baseSingleExecute(transactionList.get(i),worldState);
         }
@@ -62,7 +62,7 @@ public class TxExecuter {
                     // TODO 处理调用智能合约异常
                     e.printStackTrace();
                 } finally {
-
+                    // 合约执行失败了也无法处理XD
                 }
                 break;
             }

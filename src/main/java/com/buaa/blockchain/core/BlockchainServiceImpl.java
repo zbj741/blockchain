@@ -981,6 +981,10 @@ public class BlockchainServiceImpl implements BlockchainService {
                 @Override
                 public void onClusterChanged(Set<String> pre, Set<String> now) {
                     log.warn("OnClusterChanged(): cluster changed pre="+pre+" now="+now);
+                    // 检测是否可以开始
+                    if(!singleMode){
+                        isSetup = (bs.getClusterNodeSize() < minConnect) ? false : true;
+                    }
                     // 轮数归零
                     bs.startNewRound(bs.BLOCKCHAIN_SERVICE_STATE_SUCCESS);
                 }

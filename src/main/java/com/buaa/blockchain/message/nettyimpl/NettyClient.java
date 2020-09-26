@@ -107,6 +107,13 @@ public class NettyClient {
                                     now.add(s);
                                 }
                                 nl.clusterAddressList = now;
+                                // 添加关闭后删除的逻辑
+                                channelFuture.channel().closeFuture().addListener(new ChannelFutureListener() {
+                                    @Override
+                                    public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                                        removeChannel(channelFuture.channel());
+                                    }
+                                });
                                 if(null != nl.messageCallBack){
                                     nl.messageCallBack.onClusterChanged(pre,now);
                                 }
@@ -117,6 +124,7 @@ public class NettyClient {
                     }
 
                 }
+
             });
         }catch (Exception e){
             e.printStackTrace();

@@ -119,6 +119,7 @@ public class ContractManager implements IContractManager{
         }
         log.info("invokeContract(): invoke cache "+cac.getcName()+" start load...");
         try {
+            // TODO load()无法在jar形式的执行中执行对应的class文件，可能是jar形式的classpath相关问题， 暂时无法解决，使用loadJar()代替
             //cac.load();
             cac.loadJar();
             log.info("invokeContract(): invoke cache "+cac.getcName()+" load done.");

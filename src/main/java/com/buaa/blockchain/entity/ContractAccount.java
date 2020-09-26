@@ -64,8 +64,6 @@ public class ContractAccount{
     }
 
     public void loadJar(){
-        System.out.println("load():  -----------------start--------------");
-        log.warn("load():  -----------------start--------------");
         if(this.clazz == null){
             String contractName = IContractManager.classPrefix + cName;
             String softPath = "file:"+contractDir+"ChangeBalance.jar";
