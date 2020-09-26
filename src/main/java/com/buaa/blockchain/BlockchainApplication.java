@@ -26,7 +26,6 @@ public class BlockchainApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args){
-        LoadJarTest.LoadJar(null);
 
         try {
             blockchainService.firstTimeSetup();
