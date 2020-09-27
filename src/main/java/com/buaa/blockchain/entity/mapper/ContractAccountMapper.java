@@ -8,10 +8,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ContractAccountMapper {
 
-    @Select("SELECT cKey,cName,fullName,classData,balance,intro,data from contractAccount where cName = #{cName}")
+    @Select("SELECT cKey,cName,fullName,classData,balance,intro,classType,params,data from contractAccount where cName = #{cName}")
     public ContractAccount findContractAccountByName(String cName);
 
-    @Insert("INSERT INTO contractAccount(cKey,cName,fullName,classData,balance,intro,data) VALUES ( #{cKey},#{cName},#{fullName},#{classData},#{balance},#{intro},#{data})")
+    @Insert("INSERT INTO contractAccount(cKey,cName,fullName,classData,balance,intro,classType,params,data) " +
+            "VALUES" +
+            " ( #{cKey},#{cName},#{fullName},#{classData},#{balance},#{intro},#{classType},#{params},#{data})")
     public int insertUserAccount(ContractAccount contractAccount);
 
 }

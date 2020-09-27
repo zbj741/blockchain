@@ -58,6 +58,7 @@ CREATE TABLE `transaction` (
   `sign` tinytext,
   `version` varchar(32) DEFAULT NULL,
   `extra` varchar(32) DEFAULT NULL,
+  `largeData` longblob DEFAULT NULL,
   `data` varchar(20000) DEFAULT NULL,
   PRIMARY KEY (`tran_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -89,6 +90,8 @@ CREATE TABLE `contractAccount` (
   `classData` longblob DEFAULT NULL,
   `balance` int(11) DEFAULT NULL,
   `intro` varchar(1024) DEFAULT NULL,
+  `classType` varchar(32) DEFAULT NULL,
+  `params` varchar(32) DEFAULT NULL,
   `data` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`cName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

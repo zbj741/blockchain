@@ -230,14 +230,17 @@ public class OriginContract {
     private void devJar(State state, Map<String, DataUnit> args,byte[] classData){
         String contractName = args.get("CONTRACT_NAME").getString();
         String type = args.get("CONTRACT_TYPE").getString();
-
         // 建立ContractAccount实例
         // TODO 暂时将智能合约用户的 key，id，name设为一样的，过后修改
         ContractAccount contractAccount = new ContractAccount(contractName,contractName,classData);
         contractAccount.setData(type);
         boolean done = false;
-        // 将自己写入state
         try {
+            // 写入contract文件夹
+            contractAccount.saveAsJarFile();
+            // loadJar
+            contractAccount.loadJar();
+            // 写入state
             state.update(contractAccount.getcKey(), JsonUtil.objectMapper.writeValueAsBytes(contractAccount));
             // 更新ContractEntrance
             ContractEntrance.getInstance().addContract(contractAccount);
@@ -245,17 +248,6 @@ public class OriginContract {
             done = true;
             // 写入mysql
             bs.insertContractAccount(contractAccount);
-
-            // 写入contract文件夹
-            File file = new File(contractDir+contractName+".jar");
-            FileOutputStream fileRes = new FileOutputStream (file);
-            fileRes.write(classData);
-            fileRes.close();
-            file.setExecutable(true);
-            file.setReadable(true);
-            file.setWritable(true);
-
-
         } catch (JsonProcessingException e) {
             // 写入错误则删除
             e.printStackTrace();
@@ -267,8 +259,7 @@ public class OriginContract {
         } finally {
             if(done){
                 log.info("devJar(): develop contract "+contractName+" successfully.");
-                // 写入contract文件夹
-
+                return ;
             }else{
                 state.delete(contractAccount.getcKey());
                 log.info("devJar(): develop contract "+contractName+" failed, remove data from state at key="+contractAccount.getcKey());

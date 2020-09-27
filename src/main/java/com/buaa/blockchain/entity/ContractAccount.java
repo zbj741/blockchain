@@ -7,9 +7,11 @@ import com.buaa.blockchain.contract.core.IContractManager;
 import com.buaa.blockchain.contract.util.classloader.ByteClassLoader;
 import com.buaa.blockchain.contract.util.classloader.FileClassLoader;
 import com.buaa.blockchain.utils.JsonUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,7 +31,7 @@ import java.util.Map;
  * */
 @Slf4j
 public class ContractAccount{
-    static String contractDir = System.getProperty("user.dir")+ File.separator + "contract" + File.separator;
+
     // state中的key
     String cKey;
     // 合约名
@@ -39,13 +41,18 @@ public class ContractAccount{
     // 数据
     String data;
     // 合约Class
+    @JsonIgnore
     Class clazz;
     // 类class文件字节码
     byte[] classData;
     // 全限定类名
     String fullName;
     // 介绍
-    String intro = "";
+    String intro;
+    // 类文件的type
+    String classType;
+    // 参数介绍
+    String params;
 
     public ContractAccount(){}
     /**
@@ -62,17 +69,35 @@ public class ContractAccount{
         this.cKey = key;
         loadFromState(state);
     }
+    /**
+     * 存到本地文件中
+     * */
+    public void saveAsJarFile() throws IOException{
+        // 写入contract文件夹
+        File file = new File(IContractManager.contractDir + cName + ".jar");
+        FileOutputStream fileRes = new FileOutputStream (file);
+        fileRes.write(classData);
+        fileRes.close();
+        file.setExecutable(true);
+        file.setReadable(true);
+        file.setWritable(true);
+        return;
+    }
 
     public void loadJar(){
         if(this.clazz == null){
             String contractName = IContractManager.classPrefix + cName;
-            String softPath = "file:"+contractDir+"ChangeBalance.jar";
+            String softPath = "file:"+IContractManager.contractDir+"ChangeBalance.jar";
             try {
                 URLClassLoader classLoader = new URLClassLoader(new URL[]{new URL(softPath)},Thread.currentThread().getContextClassLoader());
                 Class demo = classLoader.loadClass(contractName);
                 Contract object = (Contract) demo.newInstance();
-                System.out.println(object.getName());
-                System.out.println("EXECUTE JAR");
+                // 从jar中获取一些信息
+                this.setIntro(object.getIntro());
+                this.setParams(object.getParams().toString());
+                this.setClassType(IContractManager.TYPE_JAR);
+                log.info("loadJar(): get some message in contract "+cName+": type="+classType+", params="+params.toString());
+                // 引用
                 this.clazz = demo;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -129,6 +154,10 @@ public class ContractAccount{
         } catch (IOException e) {
             // TODO 处理读入异常
             e.printStackTrace();
+        }
+        if(null == this.classData || this.classData.length <= 0){
+            log.warn("loadFromState(): fail to load contract account from state, cName="+cName);
+            // TODO 处理loadFromState失败
         }
     }
 
@@ -199,5 +228,29 @@ public class ContractAccount{
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+    public String getClassType() {
+        return classType;
+    }
+
+    public void setClassType(String classType) {
+        this.classType = classType;
+    }
+
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params;
     }
 }

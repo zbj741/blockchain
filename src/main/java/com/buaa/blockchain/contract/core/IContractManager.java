@@ -2,6 +2,7 @@ package com.buaa.blockchain.contract.core;
 
 import com.buaa.blockchain.contract.State;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -14,6 +15,8 @@ import java.util.Map;
 public interface IContractManager {
     // 指定的合约前缀，用于生成载入时的全限定类名
     String classPrefix = "com.buaa.blockchain.contract.develop.";
+    String contractDir = System.getProperty("user.dir")+ File.separator + "contract" + File.separator;
+    String TYPE_JAR = "jar";
     /**
      * 智能合约调用
      * */

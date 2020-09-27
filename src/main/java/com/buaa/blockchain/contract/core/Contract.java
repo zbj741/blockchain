@@ -21,6 +21,11 @@ public interface Contract {
      * */
     String getIntro();
     /**
+     * 返回智能合约参数表
+     * <参数名，参数类型>
+     * */
+    Map<String,String> getParams();
+    /**
      * 初始化参数
      * @param args 参数，以<标识名,值>的形式放入Map中
      * */
