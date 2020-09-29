@@ -69,7 +69,7 @@ public class BaseTest {
         ts.setVersion("1.0");
         ts.setExtra("");
         ts.setData("test data");
-
+        ts.setLargeData(new byte[0]);
         return ts;
     }
 }

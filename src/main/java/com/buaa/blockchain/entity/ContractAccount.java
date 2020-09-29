@@ -87,7 +87,8 @@ public class ContractAccount{
     public void loadJar(){
         if(this.clazz == null){
             String contractName = IContractManager.classPrefix + cName;
-            String softPath = "file:"+IContractManager.contractDir+"ChangeBalance.jar";
+            String softPath = "file:"+IContractManager.contractDir+cName+".jar";
+            log.info("loadJar(): find jar in "+softPath);
             try {
                 URLClassLoader classLoader = new URLClassLoader(new URL[]{new URL(softPath)},Thread.currentThread().getContextClassLoader());
                 Class demo = classLoader.loadClass(contractName);
