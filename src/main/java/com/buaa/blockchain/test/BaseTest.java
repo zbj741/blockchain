@@ -31,26 +31,29 @@ public class BaseTest {
 
         //Jedis jedis = new Jedis("39.105.129.47",27601);
         int count = 0;
-        while(count < 200){
+        while(count < 20000){
             Transaction ts = createRandom();
             ts.setSequence(count);
             ts.setSign("0");
-            ts.setTran_hash("hashYNVersion2"+count);
+            ts.setTran_hash("hash"+count);
             String tsStr = "";
             try {
                 tsStr = objectMapper.writeValueAsString(ts);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
+            /*
             jedisYN1.hset("TRANSACTION", ts.getTran_hash(), tsStr);
             jedisYN2.hset("TRANSACTION", ts.getTran_hash(), tsStr);
             jedisYN3.hset("TRANSACTION", ts.getTran_hash(), tsStr);
             jedisYN4.hset("TRANSACTION", ts.getTran_hash(), tsStr);
+            */
+
             //jedis27600remote.hset("TRANSACTION", ts.getTran_hash(), tsStr);
-            //jedis27600.hset("TRANSACTION", ts.getTran_hash(), tsStr);
-            //jedis27700.hset("TRANSACTION", ts.getTran_hash(), tsStr);
-            //jedis27800.hset("TRANSACTION", ts.getTran_hash(), tsStr);
-            //jedis27900.hset("TRANSACTION", ts.getTran_hash(), tsStr);
+            jedis27600.hset("TRANSACTION", ts.getTran_hash(), tsStr);
+            jedis27700.hset("TRANSACTION", ts.getTran_hash(), tsStr);
+            jedis27800.hset("TRANSACTION", ts.getTran_hash(), tsStr);
+            jedis27900.hset("TRANSACTION", ts.getTran_hash(), tsStr);
 
             System.out.println(ts);
             count++;
