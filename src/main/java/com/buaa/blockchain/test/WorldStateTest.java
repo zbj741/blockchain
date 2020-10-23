@@ -34,6 +34,10 @@ public class WorldStateTest {
         System.out.println(worldState.getRootHash());
         System.out.println(worldState.get("ts"));
 
+        String preRoot = worldState.getRootHash();
+        worldState.close();
+
+
 
     }
 }

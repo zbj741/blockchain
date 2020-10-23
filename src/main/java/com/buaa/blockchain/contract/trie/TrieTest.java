@@ -2,6 +2,7 @@ package com.buaa.blockchain.contract.trie;
 
 import com.buaa.blockchain.contract.trie.datasource.KeyValueDataSource;
 import com.buaa.blockchain.contract.trie.datasource.LevelDbDataSource;
+import com.buaa.blockchain.utils.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
  * 测试Trie和levelDb
  *
  * 测试结论：trie模块用于k-v形式的存储，不要直接操作leveldb，因为不知道leveldb里面key是什么样子的，只知道trie里面key是什么样子的
+ * 建立一个trie，除了新建（构造时需要提供参数：levelDB实例）
  *
  * @author hitty
  *
@@ -19,7 +21,7 @@ public class TrieTest {
     private static final Logger logger = LoggerFactory.getLogger("transaction");
 
     //public static HashMapDB mockDb = new HashMapDB();
-    private static KeyValueDataSource levelDb = new LevelDbDataSource("D:\\data","triedb");
+    private static KeyValueDataSource levelDb = new LevelDbDataSource("D:\\test\\data","triedb");
 
     public static void main(String[] args) {
         // TODO Auto-generated method stub
@@ -32,18 +34,17 @@ public class TrieTest {
 
         // 当存入的数据不足时，就算执行sync也不会flush到leveldb里面，具体参考源码
         TrieImpl trie = new TrieImpl(levelDb);
-        System.out.println("trie.getRootHash()"+trie.getRootHash());
-        for(byte b : trie.getRootHash()){
-            System.out.print(b);
-        }
+
+        System.out.println("trie.getRootHash()"+getRootHash(trie));
+        String root1 = getRootHash(trie);
+        //System.out.println("trie1.getRootHash()"+getRootHash(trie1));
         System.out.println("\nlevelDb:"+levelDb.get(trie.getRootHash()));
 
         // 新加入一个数据，这个trie变动，root变动
         trie.update("cat", "dog");
-        System.out.println("trie.getRootHash()"+trie.getRootHash());
-        for(byte b : trie.getRootHash()){
-            System.out.print(b);
-        }
+        System.out.println("trie.getRootHash()"+getRootHash(trie));
+
+
         System.out.println("\nlevelDb:"+levelDb.get(trie.getRootHash()));
         // undo
         trie.undo();
@@ -102,5 +103,7 @@ public class TrieTest {
         System.out.println("cat:"+new String(trie2.get("cat")));
 
     }
-
+    public static String getRootHash(Trie trie){
+        return Utils.bytesToHexString(trie.getRootHash());
+    }
 }

@@ -566,7 +566,6 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Override
     public Block createNewBlock(int height, int round){
         List<Transaction> rawTransList = redisTxpool.getList(TxPool.TXPOOL_LABEL_TRANSACTION,txMaxAmount);
-
         // 做块计时开始
         Date createStart = new Date();
         int tranSeq = 0;

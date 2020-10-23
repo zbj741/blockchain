@@ -35,7 +35,9 @@ public class MysqlDB implements DB{
     /* ContractAccount的持久化 */
     final ContractAccountMapper contractAccountMapper;
 
-    @Autowired
+    /**
+     * 初始化的时候需要添加 @Autowired
+     * */
     public MysqlDB(BlockMapper blockMapper, TransactionMapper transactionMapper, UserAccountMapper userAccountMapper,
                    ContractAccountMapper contractAccountMapper){
         this.blockMapper = blockMapper;
