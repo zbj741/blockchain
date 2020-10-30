@@ -429,7 +429,7 @@ public class BlockchainServiceImpl implements BlockchainService {
             // 持久化交易和区块
             worldState.sync();
             insertTransactionList(block);
-            blockMapper.insertTimes(block.getTimes());
+            // blockMapper.insertTimes(block.getTimes());
             blockMapper.insertBlock(block);
             log.info("storeBlock(): Done! block="+block.toString());
             // 删除缓存
