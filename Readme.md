@@ -5,25 +5,44 @@
 ## 1.源码目录
 ```
 com.buaa.blockchain
-    annation(TODO):                     自定义注解 
-    async(TODO):                        springboot的异步配置
+    annation:                           自定义注解，暂时没有其他功能 
     consensus:                          共识协议接口，区块链服务的实现类需要实现至少一个共识协议。
                                         具体的解耦方式中，core中的BlockChainServiceImpl会初始化对应的智能合约
-        PBFTConsensus.java:             PBFT协议的北航链版本
+        BaseConsensus.java              共识协议的基类，定义了一次共识的开始和消息回调
+        PBFTConsensus.java:             PBFT协议的北航链版本，但是由于和MySQL交互所以无法回滚，暂时无法使用。如果仅仅使用statedb或许可以
         SBFTConsensus.java:             简化PBFT协议，删除了pre-pre阶段，详情见文档
-    contract(TODO):                     智能合约模块
+        PBFTConsensusImpl.java          PBFT协议的具体实现类
+        SBFTConsensusImpl.java          简化PBFT协议的具体实现类
+    contract:                           智能合约模块
+        core:
+            Contract.java               智能合约代码的接口，自定义的智能合约都需要完成这个接口
+            ContractManager.java        智能合约管理器
+            DataUnit.java               智能合约中的数据单元
+            IContractManager.java       智能合约管理器接口
+            OriginContract.java         原生智能合约
+        trie:                           MPT实现【勿动】
+        util:                           工具类 
+        State.java                      StateDB接口
+        WorldState.java                 世界状态，State的实现类
     core:
+        db:                             数据库抽象（未使用）
         BlockchainService.java:         区块链服务接口，定义了至少区块链至少应该实现的服务。由于交易池/持久化/逻辑处理等异构，不将其写成抽象类的形式。
         BlockchainServiceImpl.java:     对BlockchainService的实现类，并且实现了SBFTConsensus的接口。是整个程序的主要部分。   
-        TimeoutHelper.java(TODO):       超时提醒
-        TxExecuter.java(TODO):          交易执行器，对接智能合约
+        TimeoutHelper.java:             超时提醒（未使用）
+        TxExecuter.java:                交易执行器，对接智能合约模块
         VoteHandler.java:               投票管理器，用于各种流程的投票记录
-        WorldState.java:                世界状态，参考以太坊，用于对接智能合约进行记录
     crypto:                             区块链加密、摘要算法的相关依赖。【建议勿动】
     entity:                             实体类，封装了包括block、transaction等实体对象，包括对MYSQL的交互。
         mapper:                         mybatis的mapper，用于和MYSQl交互
         dao:                            SQL辅助
-    exception(TODO):                    自定义异常
+        Block.java                      区块类
+        ContractAccount.java            合约账户
+        ContractCaller.java             合约调用信息
+        ContractEntrance.java           合约查询入口
+        Times.java                      计时类
+        Transaction.java                交易类
+        UserAccount.java                用户类
+    exception:                          自定义异常（未使用）
     message:                            区块链的p2p网络通信模块。实现类需要完成接口。
         MessageService.java:            网络通信模块接口。定义了广播、单点、集群管理等方法接口。
         MessageCallBack.java:           接收回调接口，用于将收到的数据交付给core模块
@@ -39,8 +58,6 @@ com.buaa.blockchain
         Message:                        向上对core模块调用的Message数据结构。core模块使用Message封装需要广播的数据              
     redis:                              redis在springboot框架下的使用配置，辅助实现了基于redis的功能，如交易池等。
     test:                               不需要springboot的测试代码。
-    trie:                               MPT底层实现，配合datasource和utils使用，实现参考以太坊。【勿动】
-        datasource:                     用于规范MPT持久化的接口。暂时的实现参考了以太坊的LevelDb实现。
     txpool:                             交易池模块。
         Txpool:                         交易池的接口。实现类需要完成该接口。
         RedisTxPool:                    基于Redis的交易池接口。
@@ -112,8 +129,9 @@ buaa.blockchain.consensus=SBFT
              port_range="6"
              num_initial_members="10"/>
 ```
+基于JGroups的通信发现了较多bug，暂不使用
 
-源代码推荐使用IDEA作为ide来调试运行。当前实现需要同时开启Redis和MYSQL。
+源代码推荐使用IDEA作为ide来调试运行。当前实现需要同时开启Redis和MYSQL。详细配置见config
 
 ## 3.共识模块与区块链模块
 共识模块功能和区块链基础功能的分离，是设计的出发点之一。本项目通过将区块链模块和共识模块以接口的形式定义，并各自完成其实现类，从而解耦。
