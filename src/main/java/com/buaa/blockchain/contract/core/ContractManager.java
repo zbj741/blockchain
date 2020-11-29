@@ -94,8 +94,7 @@ public class ContractManager implements IContractManager{
         // 先查看是否为原生合约
         if(this.oriContract.getAllOriMethods().contains(contractName)){
             // 是原生合约，调用原生合约
-            this.oriContract.invoke(state,contractName,args,largeData);
-            return true;
+            return this.oriContract.invoke(state,contractName,args,largeData);
         }
         // 查看当前是否缓存了对应的ContractAccount
         ContractAccount cac = null;

@@ -64,32 +64,33 @@ public class OriginContract {
      * @param function 方法名
      * @param args 参数
      * */
-    public void invoke(State state,String function,Map<String, DataUnit> args,byte[] largeData){
+    public boolean invoke(State state,String function,Map<String, DataUnit> args,byte[] largeData){
         log.info("invoke(): "+function+", args="+args.toString());
         // 分发函数的调用
+        boolean res = true;
         switch (function){
             case UPDATE:{
-                update(state,args);
+                res = update(state,args);
                 break;
             }
             case DELETE:{
-                delete(state,args);
+                res = delete(state,args);
                 break;
             }
-            case DEVCLASS:{
+            /*case DEVCLASS:{
                 devClass(state,args);
                 break;
-            }
+            }*/
             case DEVJAR:{
-                devJar(state,args,largeData);
+                res = devJar(state,args,largeData);
                 break;
             }
             case ADDUSER:{
-                addUser(state,args);
+                res = addUser(state,args);
                 break;
             }
             case TRANSFER:{
-                transfer(state,args);
+                res = transfer(state,args);
                 break;
             }
             default:{
@@ -97,81 +98,107 @@ public class OriginContract {
                 break;
             }
         }
-        return ;
+        return res;
     }
     /**
      * 简单插入
      * */
-    private void update(State state, Map<String, DataUnit> args){
+    private boolean update(State state, Map<String, DataUnit> args){
         String key = args.get("KEY").toString();
         String value = args.get("VALUE").getValue();
         state.update(key,value);
+        return true;
     }
     /**
      * 简单删除
      * */
-    private void delete(State state, Map<String, DataUnit> args){
+    private boolean delete(State state, Map<String, DataUnit> args){
         String key = args.get("KEY").toString();
         state.delete(key);
+        return true;
     }
     /**
      * 建立普通用户账户
      * */
-    private void addUser(State state, Map<String, DataUnit> args){
-        // 获取参数
-        String key = args.get("KEY").getString();
-        String name = args.get("NAME").getString();
-        String password = args.get("PASSWORD").getString();
-        String intro = args.get("INTRO").getString();
-        String data = args.get("DATA").getString();
-        int balance = args.get("BALANCE").getInteger();
-        // 生成实体类
-        UserAccount userAccount = new UserAccount(key,name,password,intro,balance,data);
-        // 存入state
+    private boolean addUser(State state, Map<String, DataUnit> args){
+        boolean res = true;
         try {
+            // 获取参数
+            String key = args.get("KEY").getString();
+            String name = args.get("NAME").getString();
+            String password = args.get("PASSWORD").getString();
+            String intro = args.get("INTRO").getString();
+            String data = args.get("DATA").getString();
+            int balance = args.get("BALANCE").getInteger();
+            // 生成实体类
+            UserAccount userAccount = new UserAccount(key,name,password,intro,balance,data);
+            // 存入state
             state.update(userAccount.getUserName(), JsonUtil.objectMapper.writeValueAsBytes(userAccount));
-        } catch (JsonProcessingException e) {
+            // 存入mysql
+            bs.insertUserAccount(userAccount);
+            // 执行成功
+            res = true;
+        } catch (Exception e) {
             // TODO 生成userAccount错误
             e.printStackTrace();
+            res = false;
+        }finally {
+            return res;
         }
-        // 存入mysql
-        bs.insertUserAccount(userAccount);
     }
     /**
      * 简单转账（用户）
      * */
-    private void transfer(State state, Map<String, DataUnit> args){
+    private boolean transfer(State state, Map<String, DataUnit> args){
         String ua1 = args.get("USERACCOUNT1").getString();
         String ua2 = args.get("USERACCOUNT2").getString();
         int t = args.get("AMOUNT").getInteger();
+        if(t <= 0){
+            // TODO 转账金额小于等于0异常
+            return false;
+        }
         UserAccount userAccount1 = null;
         UserAccount userAccount2 = null;
         try {
             userAccount1 = JsonUtil.objectMapper.readValue(state.get(ua1),UserAccount.class);
+        } catch (JsonProcessingException e) {
+            // TODO 读取账户失败
+            log.warn("transfer(): cannot read userAccount="+ua1);
+            e.printStackTrace();
+            return false;
+        }
+        try {
             userAccount2 = JsonUtil.objectMapper.readValue(state.get(ua2),UserAccount.class);
         } catch (JsonProcessingException e) {
-            // TODO 读取失败,转账停止
+            // TODO 读取账户失败
+            log.warn("transfer(): cannot read userAccount="+ua2);
             e.printStackTrace();
+            return false;
         }
+
         int pre1 = userAccount1.getBalance();
         int pre2 = userAccount2.getBalance();
+        if(pre1 < t){
+            // TODO 转账余额不够
+            return false;
+        }
         userAccount1.setBalance(pre1 - t);
         userAccount2.setBalance(pre2 + t);
         log.info("transfer(): "+userAccount1.getUserName()+" transfer t="+t+" to "+userAccount2.getUserName()+"; "
                 +" [balance]:"+userAccount1.getUserName()+":"+pre1+"->"+userAccount1.getBalance()+", "+
                 userAccount2.getUserName()+":"+pre2+"->"+userAccount2.getBalance());
-        // 写回state
+        // 写回
         try{
             state.update(userAccount1.getUserName(), JsonUtil.objectMapper.writeValueAsBytes(userAccount1));
             state.update(userAccount2.getUserName(), JsonUtil.objectMapper.writeValueAsBytes(userAccount2));
-        }catch (JsonProcessingException e) {
+            bs.updateUserAccountBalance(userAccount1.getUserName(),userAccount1.getBalance());
+            bs.updateUserAccountBalance(userAccount2.getUserName(),userAccount2.getBalance());
+        }catch (Exception e) {
             // TODO 写回失败,转账停止
             e.printStackTrace();
+            return false;
         }
-        // 写回mysql
-        bs.updateUserAccountBalance(userAccount1.getUserName(),userAccount1.getBalance());
-        bs.updateUserAccountBalance(userAccount2.getUserName(),userAccount2.getBalance());
-
+        return true;
     }
     /**
      * 智能合约部署
@@ -227,14 +254,14 @@ public class OriginContract {
     /**
      * 智能合约部署
      * */
-    private void devJar(State state, Map<String, DataUnit> args,byte[] classData){
+    private boolean devJar(State state, Map<String, DataUnit> args,byte[] classData){
         String contractName = args.get("CONTRACT_NAME").getString();
         String type = args.get("CONTRACT_TYPE").getString();
         // 建立ContractAccount实例
         // TODO 暂时将智能合约用户的 key，id，name设为一样的，过后修改
         ContractAccount contractAccount = new ContractAccount(contractName,contractName,classData);
         contractAccount.setData(type);
-        boolean done = false;
+        boolean res = true;
         try {
             // 写入contract文件夹
             contractAccount.saveAsJarFile();
@@ -245,24 +272,24 @@ public class OriginContract {
             // 更新ContractEntrance
             ContractEntrance.getInstance().addContract(contractAccount);
             state.update(CONTRACT_ENTRANCE_KEY,JsonUtil.objectMapper.writeValueAsBytes(ContractEntrance.getInstance()));
-            done = true;
             // 写入mysql
             bs.insertContractAccount(contractAccount);
         } catch (JsonProcessingException e) {
             // 写入错误则删除
             e.printStackTrace();
-            done = false;
+            res = false;
         }catch (IOException e){
             // 写入文件错误 非主要问题 暂时不处理
             log.warn("devJar(): write class file failed!");
             e.printStackTrace();
         } finally {
-            if(done){
+            if(res){
                 log.info("devJar(): develop contract "+contractName+" successfully.");
-                return ;
+                return res;
             }else{
                 state.delete(contractAccount.getcKey());
                 log.info("devJar(): develop contract "+contractName+" failed, remove data from state at key="+contractAccount.getcKey());
+                return res;
             }
         }
 

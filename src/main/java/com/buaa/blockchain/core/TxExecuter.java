@@ -52,23 +52,26 @@ public class TxExecuter {
      * 交易的执行，需要修改worldState，也许需要写数据库
      * */
     private void baseSingleExecute(Transaction transaction,WorldState worldState){
+        boolean res = true;
         switch (transaction.getType()){
             case Transaction.TYPE_CALL:{
                 // 调用智能合约
                 try {
                     ContractCaller contractCaller = JsonUtil.objectMapper.readValue(transaction.getData(), ContractCaller.class);
-                    contractManager.invokeContract(worldState,contractCaller.getContractName(),contractCaller.getArg(),transaction.getLargeData());
+                    res = contractManager.invokeContract(worldState,contractCaller.getContractName(),contractCaller.getArg(),transaction.getLargeData());
                 } catch (Exception e) {
                     // TODO 处理调用智能合约异常
                     e.printStackTrace();
                 } finally {
-                    // 合约执行失败了也无法处理XD
+                    // 合约执行失败了也无法处理XD，记录一下
+                    transaction.setExtra(res+"");
                 }
                 break;
             }
             case Transaction.TYPE_TEST:{
                 // 测试用，插入一条数据
                 worldState.update(transaction.getTran_hash(),transaction.getTran_hash());
+                transaction.setExtra("true");
                 break;
             }
 
