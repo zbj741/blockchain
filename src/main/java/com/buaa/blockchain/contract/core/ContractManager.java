@@ -35,10 +35,6 @@ public class ContractManager implements IContractManager{
     public static final String dir = System.getProperty("user.dir")+ File.separator + "contract" + File.separator;
     // 合约表 <合约名，合约账户实例>
     private HashMap<String,ContractAccount> contractMap;
-    // 原生合约的硬编码表
-    public static final String UPDATE = "UPDATE";
-    public static final String DELETE = "DELETE";
-    public static final String DEV = "DEV";
     // 原生合约方法表
     public OriginContract oriContract;
 

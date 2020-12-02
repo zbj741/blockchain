@@ -24,8 +24,6 @@ import com.buaa.blockchain.message.JGroupsMessageImpl;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.buaa.blockchain.message.MessageService;
 import com.buaa.blockchain.message.nettyimpl.NettyMessageImpl;
-import com.buaa.blockchain.test.LoadClassTest;
-import com.buaa.blockchain.test.LoadJarTest;
 import com.buaa.blockchain.txpool.RedisTxPool;
 import com.buaa.blockchain.txpool.TxPool;
 
@@ -81,7 +79,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     /* 状态树 */
     WorldState worldState;
     /* 智能合约管理 */
-    TxExecuter txExecuter;
+    TxExecutor txExecutor;
     /*********************** 属性字段 ***********************/
 
     /* 是否单节点运行 */
@@ -804,7 +802,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         log.info("transactionExec(): start exec transactions in block="+block.getHash()+", transactions size="+block.getTx_length());
         if(null == stateRoot){
             List<Transaction> transactions = block.getTrans();
-            txExecuter.baseExecute(transactions,worldState);
+            txExecutor.baseExecute(transactions,worldState);
             return worldState.getRootHash();
         }
         return null;
@@ -1016,7 +1014,7 @@ public class BlockchainServiceImpl implements BlockchainService {
             shutDownManager.shutDown();
         }
         // 初始化智能合约管理
-        this.txExecuter = TxExecuter.getInstance(this,this.worldState);
+        this.txExecutor = TxExecutor.getInstance(this,this.worldState);
     }
     /**
      * 初始化共识协议

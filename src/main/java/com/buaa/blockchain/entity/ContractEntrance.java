@@ -14,6 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * 该数据存储在Account的data字段中，以List<String>的形式存在
  * 只负责记录，不负责载入等工作，载入的工作交给ContractManager
  * 全局单例
+ *
+ * 在链初始化时，若是第一次启动，则此对象应该为空；若是继续启动的，则从state中同步
+ *
  * */
 
 @Slf4j

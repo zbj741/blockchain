@@ -3,17 +3,13 @@ package com.buaa.blockchain.core;
 import com.buaa.blockchain.contract.State;
 import com.buaa.blockchain.contract.WorldState;
 import com.buaa.blockchain.contract.core.ContractManager;
-import com.buaa.blockchain.contract.core.DataUnit;
 import com.buaa.blockchain.contract.core.IContractManager;
 import com.buaa.blockchain.entity.ContractCaller;
 import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.utils.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 交易执行器
@@ -22,20 +18,20 @@ import java.util.Map;
  * @author hitty
  * */
 @Slf4j
-public class TxExecuter {
-    private static TxExecuter instance = null;
+public class TxExecutor {
+    private static TxExecutor instance = null;
     private BlockchainService bs = null;
     private IContractManager contractManager;
     /**
      * 全局单例
      * */
-    public synchronized static TxExecuter getInstance(BlockchainService bs,State state){
+    public synchronized static TxExecutor getInstance(BlockchainService bs, State state){
         if(null == instance){
-            instance = new TxExecuter(bs, state);
+            instance = new TxExecutor(bs, state);
         }
         return instance;
     }
-    private TxExecuter(BlockchainService bs, State state){
+    private TxExecutor(BlockchainService bs, State state){
         // 初始化ContractManager
         this.contractManager = ContractManager.getInstance(bs,state);
     }
