@@ -5,9 +5,11 @@ import com.buaa.blockchain.entity.ContractAccount;
 import com.buaa.blockchain.entity.ContractEntrance;
 import com.buaa.blockchain.entity.UserAccount;
 import com.buaa.blockchain.core.BlockchainService;
+import com.buaa.blockchain.entity.business.CompanyInfo;
 import com.buaa.blockchain.utils.JsonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 
 
 import java.io.File;
@@ -37,6 +39,9 @@ public class OriginContract {
     public static final String DEVJAR = "devJar";
     public static final String ADDUSER = "addUser";
     public static final String TRANSFER = "transfer";
+    // 业务逻辑相关
+    public static final String COMPANYREG = "ComReg";
+
     private HashSet<String> functions;
 
     public OriginContract(BlockchainService bs){
@@ -49,6 +54,8 @@ public class OriginContract {
         functions.add(DEVJAR);
         functions.add(ADDUSER);
         functions.add(TRANSFER);
+
+        functions.add(COMPANYREG);
     }
 
     /**
@@ -93,6 +100,13 @@ public class OriginContract {
                 res = transfer(state,args);
                 break;
             }
+            /* 业务逻辑合约 */
+            // 注册公司
+            case COMPANYREG:{
+                res = comReg(state ,args);
+                break;
+            }
+
             default:{
                 log.warn("invoke(): contract "+function+" not found in OriginContract!");
                 break;
@@ -295,4 +309,51 @@ public class OriginContract {
 
     }
 
+    /*************************************************************************/
+    /****************************** 业务逻辑相关 ******************************/
+    /*************************************************************************/
+
+    /**
+     * 公司注册
+     * */
+    private boolean comReg(State state, Map<String, DataUnit> args){
+        boolean res = true;
+        try {
+            // 获取参数
+            int id = args.get("id").getInteger();
+            String company_code = args.get("company_code").getString();
+            String company_name = args.get("company_name").getString();
+            String social_credit_code = args.get("social_credit_code").getString();
+            float change_balance = args.get("change_balance").getFloat();
+            String corporation_name = args.get("corporation_name").getString();
+            String corporation_id_num = args.get("corporation_id_num").getString();
+            String license_thumb = args.get("license_thumb").getString();
+            String audit_status = args.get("audit_status").getString();
+
+            // 生成实体类
+            CompanyInfo companyInfo = new CompanyInfo();
+            companyInfo.setId(id);
+            companyInfo.setCompany_code(company_code);
+            companyInfo.setCompany_name(company_name);
+            companyInfo.setSocial_credit_code(social_credit_code);
+            companyInfo.setChange_balance(change_balance);
+            companyInfo.setCorporation_name(corporation_name);
+            companyInfo.setCorporation_id_num(corporation_id_num);
+            companyInfo.setLicense_thumb(license_thumb);
+            companyInfo.setAudit_status(audit_status);
+
+            // 存入state
+            state.update(companyInfo.getId()+"", JsonUtil.objectMapper.writeValueAsBytes(companyInfo));
+            // 存入mysql
+            bs.insertCompanyInfo(companyInfo);
+            // 执行成功
+            res = true;
+        } catch (Exception e) {
+            // TODO 生成userAccount错误
+            e.printStackTrace();
+            res = false;
+        }finally {
+            return res;
+        }
+    }
 }

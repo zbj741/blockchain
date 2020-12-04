@@ -12,6 +12,7 @@ import com.buaa.blockchain.entity.ContractEntrance;
 import com.buaa.blockchain.entity.UserAccount;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.entity.Block;
+import com.buaa.blockchain.entity.business.CompanyInfo;
 import com.buaa.blockchain.entity.mapper.ContractAccountMapper;
 import com.buaa.blockchain.entity.mapper.UserAccountMapper;
 import com.buaa.blockchain.message.Message;
@@ -69,6 +70,8 @@ public class BlockchainServiceImpl implements BlockchainService {
     final UserAccountMapper userAccountMapper;
     /* ContractAccount的持久化 */
     final ContractAccountMapper contractAccountMapper;
+    /* 业务逻辑的持久化 */
+    final BusinessMappers businessMappers;
     /* 投票处理 */
     final VoteHandler voteHandler;
     /* 超时管理 */
@@ -168,7 +171,8 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     @Autowired
     public BlockchainServiceImpl(RedisTxPool redisTxpool, BlockMapper blockMapper,UserAccountMapper userAccountMapper, ContractAccountMapper contractAccountMapper,
-                                 TransactionMapper transactionMapper, VoteHandler voteHandler, TimeoutHelper timeoutHelper, ShutDownManager shutDownManager) {
+                                 TransactionMapper transactionMapper, VoteHandler voteHandler, TimeoutHelper timeoutHelper, ShutDownManager shutDownManager,
+                                 BusinessMappers businessMappers) {
         this.redisTxpool = redisTxpool;
         this.blockMapper = blockMapper;
         this.userAccountMapper = userAccountMapper;
@@ -177,6 +181,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         this.voteHandler = voteHandler;
         this.timeoutHelper = timeoutHelper;
         this.shutDownManager = shutDownManager;
+        this.businessMappers = businessMappers;
     }
 
 
@@ -1215,5 +1220,13 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Override
     public void insertContractAccount(ContractAccount contractAccount) {
         this.contractAccountMapper.insertUserAccount(contractAccount);
+    }
+
+
+    /********************************* 业务逻辑功能 ***********************************/
+    @Override
+    public int insertCompanyInfo(CompanyInfo companyInfo) {
+        this.businessMappers.companyInfoMapper.insertCompanyInfo(companyInfo);
+        return 0;
     }
 }

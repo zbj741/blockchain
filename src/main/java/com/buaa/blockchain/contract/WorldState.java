@@ -7,10 +7,12 @@ import com.buaa.blockchain.contract.trie.Values;
 import com.buaa.blockchain.contract.trie.datasource.LevelDbDataSource;
 import com.buaa.blockchain.core.BlockchainService;
 import com.buaa.blockchain.entity.UserAccount;
+import com.buaa.blockchain.entity.business.CompanyInfo;
 import com.buaa.blockchain.utils.JsonUtil;
 import com.buaa.blockchain.utils.Utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 
 /**
  * 区块链中的全局状态树，用于记录交易的执行情况。
@@ -213,5 +215,23 @@ public class WorldState implements State {
         }
 
         return res;
+    }
+
+    /******* 业务逻辑 *******/
+    @Override
+    public int insertCompanyInfo(CompanyInfo companyInfo) {
+        String cs = null;
+        int res = 1;
+        try {
+            cs = JsonUtil.objectMapper.writeValueAsString(companyInfo);
+            this.update(companyInfo.getId()+"",cs);
+            // TODO 写入mysql
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            res = 0;
+        } finally {
+            return res;
+        }
     }
 }

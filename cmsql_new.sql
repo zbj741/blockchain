@@ -107,3 +107,42 @@ CREATE TABLE `userAccount` (
   `data` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`userName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `company_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `company_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_code` varchar(45) DEFAULT NULL,
+  `company_name` varchar(45) DEFAULT NULL,
+  `social_credit_code` varchar(45) DEFAULT NULL,
+  `change_balance` float DEFAULT NULL,
+  `corporation_name` varchar(45) DEFAULT NULL,
+  `corporation_id_num` varchar(45) DEFAULT NULL,
+  `license_thumb` varchar(200) DEFAULT NULL,
+  `audit_status` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `person_info`
+--
+
+DROP TABLE IF EXISTS `person_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `person_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_num` varchar(45) DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `sex` varchar(45) DEFAULT NULL,
+  `change_balance` float DEFAULT NULL,
+  `individual_balance` float DEFAULT NULL,
+  `company_code` varchar(45) DEFAULT NULL,
+  `work_status` varchar(45) DEFAULT NULL,
+  `claim_status` varchar(45) DEFAULT NULL,
+  `audit_status` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

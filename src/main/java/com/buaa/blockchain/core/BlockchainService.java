@@ -4,6 +4,8 @@ package com.buaa.blockchain.core;
 import com.buaa.blockchain.entity.ContractAccount;
 import com.buaa.blockchain.entity.UserAccount;
 import com.buaa.blockchain.entity.Block;
+import com.buaa.blockchain.entity.mapper.BlockMapper;
+import com.buaa.blockchain.entity.mapper.ContractAccountMapper;
 import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.message.MessageCallBack;
 
@@ -19,7 +21,7 @@ import java.util.List;
  *
  * @author hitty
  * */
-public interface BlockchainService {
+public interface BlockchainService extends BusinessOps{
 
     /*************  区块生成相关  *************/
     /**
