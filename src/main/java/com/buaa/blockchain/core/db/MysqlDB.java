@@ -7,9 +7,7 @@ import com.buaa.blockchain.entity.mapper.TransactionMapper;
 import com.buaa.blockchain.entity.mapper.UserAccountMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -77,22 +75,22 @@ public class MysqlDB implements DB{
     }
 
     @Override
-    public Block findBlockByHeight(int height) {
+    public Block findBlockByHeight(long height) {
         return blockMapper.findBlockByHeight(height);
     }
 
     @Override
-    public int findBlockNum(String hash) {
+    public long findBlockNum(String hash) {
         return blockMapper.findBlockNum(hash);
     }
 
     @Override
-    public String findHashByHeight(int height) {
+    public String findHashByHeight(long height) {
         return blockMapper.findHashByHeight(height);
     }
 
     @Override
-    public int findMaxHeight() {
+    public long findMaxHeight() {
         return blockMapper.findMaxHeight();
     }
 

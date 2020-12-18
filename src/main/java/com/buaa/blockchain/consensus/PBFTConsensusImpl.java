@@ -123,8 +123,8 @@ public class PBFTConsensusImpl implements PBFTConsensus<Message> {
     @Override
     public synchronized void prepareReceived(Message message) {
         // 赋值
-        int height = message.getHeight();
-        int round = message.getRound();
+        long height = message.getHeight();
+        long round = message.getRound();
         String msgNodeName = message.getNodeName();
         Block block = message.getBlock();
         String blockHash = block.getHash();

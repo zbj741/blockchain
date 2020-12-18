@@ -70,12 +70,12 @@ public class JsonUtil {
             transactions.add(transaction2);
             transactions.add(transaction3);
             Block block = new Block();
-            block.setArgs("preHash","hash","merkleRoot","preMerkleRoot",1,"sign","timestamp","version",transactions, transactions.size());
+            block.setArgs("preHash","hash","merkleRoot","preMerkleRoot",1,"sign",1l,"version",transactions, transactions.size());
             String bstr = objectMapper.writeValueAsString(block);
             Block block1 = (Block) objectMapper.readValue(bstr,Block.class);
             System.out.println(block1);
 
-            Message message = new Message("233","testNode",1,0,true,block);
+            Message message = new Message("233","testNode",1l,0l,true,block);
             String messagestr = objectMapper.writeValueAsString(message);
             System.out.println(messagestr);
             Message message1 = objectMapper.readValue(messagestr,Message.class);
@@ -85,8 +85,5 @@ public class JsonUtil {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
-
-
     }
 }

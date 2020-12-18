@@ -9,9 +9,7 @@ import com.buaa.blockchain.entity.*;
 import com.buaa.blockchain.utils.JsonUtil;
 import com.buaa.blockchain.utils.Utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 
 import java.util.HashSet;
 import java.util.List;
@@ -329,10 +327,10 @@ public class StateDB implements DB {
     }
 
     @Override
-    public Block findBlockByHeight(int height) {
+    public Block findBlockByHeight(long height) {
         // 此处使用常见的索引模式
         String nowHash = this.stateData.currentBlock.getHash();
-        int max = this.stateData.currentBlock.getHeight();
+        long max = this.stateData.currentBlock.getHeight();
         while(max > 0){
             try {
                 Block block = JsonUtil.objectMapper.readValue(get(nowHash), Block.class);
@@ -351,7 +349,7 @@ public class StateDB implements DB {
     }
 
     @Override
-    public int findBlockNum(String hash) {
+    public long findBlockNum(String hash) {
         if(this.stateData.blockKeySet.size() == 0){
             // 没有区块
             return 0;
@@ -361,7 +359,7 @@ public class StateDB implements DB {
     }
 
     @Override
-    public String findHashByHeight(int height) {
+    public String findHashByHeight(long height) {
         Block b = findBlockByHeight(height);
         if(null == b){
             return null;
@@ -371,7 +369,7 @@ public class StateDB implements DB {
     }
 
     @Override
-    public int findMaxHeight() {
+    public long findMaxHeight() {
         return this.stateData.blockKeySet.size();
     }
 
@@ -415,7 +413,7 @@ public class StateDB implements DB {
     @Override
     public Transaction findTransByHash(String tranHash) {
         String nowHash = this.stateData.currentBlock.getHash();
-        int max = this.stateData.currentBlock.getHeight();
+        long max = this.stateData.currentBlock.getHeight();
         while(max > 0){
             Block b = findBlockByHash(nowHash);
             for(Transaction ts : b.getTrans()){

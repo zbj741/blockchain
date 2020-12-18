@@ -37,19 +37,19 @@ public interface DB {
     /**
      * 以高度查询区块
      * */
-    Block findBlockByHeight(int height);
+    Block findBlockByHeight(long height);
     /**
      * 查询当前区块的数量
      * */
-    int findBlockNum(String hash);
+    long findBlockNum(String hash);
     /**
      * 以高度查询区块的hash
      * */
-    String findHashByHeight(int height);
+    String findHashByHeight(long height);
     /**
      * 查询当前最高块的高度
      * */
-    int findMaxHeight();
+    long findMaxHeight();
     /**
      * 以高度查询区块的stateRoot
      * */

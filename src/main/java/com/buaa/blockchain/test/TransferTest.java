@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import redis.clients.jedis.Jedis;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class TransferTest {
@@ -63,6 +64,8 @@ public class TransferTest {
             ContractCaller c = objectMapper.readValue(dt1.getData(), ContractCaller.class);
             System.out.println(c.getArg());
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -39,7 +38,7 @@ public class VoteHandler {
     /**
      * 生成VoteRecord的key
      * */
-    public static String createKey(String tag,int height,int round,String blockHash){
+    public static String createKey(String tag,long height,long round,String blockHash){
         return tag+"_"+blockHash+"_"+height+"_"+round;
     }
 
@@ -53,7 +52,7 @@ public class VoteHandler {
      * @param nodeName  投票者名字
      * @param voteValue 投票意见
      * */
-    public synchronized Boolean vote(String tag,int height,int round,String blockHash,String nodeName,Boolean voteValue){
+    public synchronized Boolean vote(String tag,long height,long round,String blockHash,String nodeName,Boolean voteValue){
         String key = createKey(tag,height,round,blockHash);
         // 是否已经是被删除过的key
         if(removeKeys.contains(key)){
@@ -73,7 +72,7 @@ public class VoteHandler {
     /**
      * 获取当前record的赞成数量
      * */
-    public int getVoteRecordAgree(String tag,int height,int round,String blockHash){
+    public int getVoteRecordAgree(String tag,long height,long round,String blockHash){
         synchronized (this){
             String key = createKey(tag,height,round,blockHash);
             if(!voteResList.keySet().contains(key)){
@@ -86,7 +85,7 @@ public class VoteHandler {
     /**
      * 获取当前record的反对数量
      * */
-    public int getVoteRecordAgainst(String tag,int height,int round,String blockHash){
+    public int getVoteRecordAgainst(String tag,long height,long round,String blockHash){
         synchronized (this){
             String key = createKey(tag,height,round,blockHash);
             if(!voteResList.keySet().contains(key)){
@@ -100,7 +99,7 @@ public class VoteHandler {
     /**
      * 删除一条记录
      * */
-    public void remove(String tag,int height,int round,String blockHash){
+    public void remove(String tag,long height,long round,String blockHash){
         synchronized (this){
             String key = createKey(tag,height,round,blockHash);
             if(voteResList.keySet().contains(key)){
@@ -123,8 +122,8 @@ public class VoteHandler {
 @Data
 class VoteRecord{
     private String blockHash;
-    private int height;
-    private int round;
+    private Long height;
+    private Long round;
     // 记录投票节点名，防止一个节点对同一个区块多次投票
     private HashSet<String> voters = new HashSet<>();
     // 使用blockHash、height、round三个参数生成一个唯一标识
@@ -138,7 +137,7 @@ class VoteRecord{
     // 反对票数
     private volatile int against;
 
-    VoteRecord(String tag,String blockHash,int height,int round){
+    VoteRecord(String tag,String blockHash,Long height,Long round){
         this.blockHash = blockHash;
         this.height = height;
         this.round = round;

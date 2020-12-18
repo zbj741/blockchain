@@ -16,6 +16,4 @@ public interface State {
     void updateUserAccountBalance(String userKey, int updateVal);
     String getUserJsonString(String userKey);
     UserAccount getUser(String userKey);
-
-
 }

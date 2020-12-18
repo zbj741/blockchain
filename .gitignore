@@ -1,10 +1,23 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**
-!**/src/test/**
+# IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+.mvn
+*.iml
 
-### STS ###
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+# VS Code
+.vscode/
+
+# STS
 .apt_generated
 .classpath
 .factorypath
@@ -13,25 +26,13 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
+# project
+data
+logs
 
-.idea
-*.iws
-*.iml
-*.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-
-### VS Code ###
-.vscode/
-
-### some in project ###
-testEnv/
-logs/
-levelDb/
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**

@@ -100,7 +100,7 @@ public class DevTest {
             byte[] a = map.get("CONTRACT_BYTES").getByteArray();
             ContractCaller contractCaller = new ContractCaller(name,map);
             String jsonstr = objectMapper.writeValueAsString(contractCaller);
-            ts.setData(jsonstr);
+            ts.setData(jsonstr.getBytes());
 
 
         }catch (Exception e){
@@ -138,7 +138,7 @@ public class DevTest {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        ts.setData(jsonstr);
+        ts.setData(jsonstr.getBytes());
 
         return ts;
     }
