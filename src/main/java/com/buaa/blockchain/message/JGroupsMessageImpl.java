@@ -42,7 +42,7 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
      * */
     public JGroupsMessageImpl(){
         try {
-            InputStream is = new BufferedInputStream(new FileInputStream("jgroups-tcp.xml"));
+            InputStream is = new BufferedInputStream(new FileInputStream("msp-tcp.xml"));
             // 从msg-tcp.xml中获取配置参数
             ProtocolStackConfigurator config = ConfiguratorFactory.getStackConfigurator(is);
             // 配置channel

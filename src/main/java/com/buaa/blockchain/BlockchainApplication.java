@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.env.Environment;
 
 
 @SpringBootApplication
@@ -17,6 +18,8 @@ import org.springframework.context.annotation.ComponentScan;
 public class BlockchainApplication implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(BlockchainApplication.class);
     private final BlockchainService blockchainService;
+    @Autowired
+    private Environment environment;
     @Autowired
     private ApplicationContext appContext;
     @Autowired
