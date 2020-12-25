@@ -10,5 +10,5 @@ o888bood8P'     `YbodP'    o88o     o8888o o88o     o8888o          `Y8bood8P'  
 Application Name:    ${application.title}
 Application Version: ${AnsiColor.RED} ${application.version} ${AnsiColor.DEFAULT}
 
-env: ${spring.profiles.active}
+Currently active profile : ${spring.profiles.active}
 =================================================================================================================================
