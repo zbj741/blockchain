@@ -29,7 +29,7 @@ public interface TransactionMapper {
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     @Insert("INSERT INTO transaction ( block_hash,tran_hash, type, timestamp, sequence, sign,version,extra,data,largeData)"
             + " VALUES"
-            + " (#{block_hash}, #{tran_hash}, #{type}, #{timestamp}, #{sequence},#{sign},#{version},#{extra},#{data},#{largeData})")
+            + " (#{block_hash}, #{tran_hash}, #{type}, #{timestamp}, #{sequence},#{sign},#{version},#{extra},#{data, typeHandler=org.apache.ibatis.type.ByteArrayTypeHandler},#{largeData})")
     public int insertTransaction(Transaction transaction);
 
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)

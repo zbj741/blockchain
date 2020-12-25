@@ -3,8 +3,6 @@ package com.buaa.blockchain.entity;
 
 import com.buaa.blockchain.contract.core.DataUnit;
 import com.buaa.blockchain.contract.core.OriginContract;
-import com.buaa.blockchain.crypto.HashUtil;
-import com.buaa.blockchain.crypto.utils.Hex;
 import com.buaa.blockchain.vm.DataWord;
 import com.buaa.blockchain.vm.utils.HexUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -32,7 +30,7 @@ public class Transaction implements Serializable,Comparable<Transaction> {
     private static final long serialVersionUID = 4695627546411078836L;
 
     private String block_hash;      // 区块hash
-    private String tran_hash;       //交易内容生成后算出的字段，在交易池中作为本交易的key
+    private String tran_hash;       // 交易内容生成后算出的字段，在交易池中作为本交易的key
     private String type;            // 交易种类
     private Timestamp timestamp;    // 时间戳
     private Integer sequence;       // 序列号
@@ -205,10 +203,6 @@ public class Transaction implements Serializable,Comparable<Transaction> {
                 "extra",
                 "data".getBytes()
         );
-    }
-
-    public String getTran_hash() {
-        return HashUtil.sha256(Hex.toHexString(this.toString().getBytes()));
     }
 
     @Override

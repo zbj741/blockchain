@@ -52,7 +52,7 @@ public class TxExecuter {
 
             // 2. try to load the contract code and instance the contract
             Map storage = new HashMap();
-            Class classZ = ReflectUtil.getInstance().loadClass(contractName, transaction.getData());
+            Class classZ = ReflectUtil.getInstance().loadClass(contractName, codeBytes);
             ReflectUtil.getInstance().newInstance(classZ, Map.class,  storage);
 
             // 3. create the contract account and linked data(code/storage)

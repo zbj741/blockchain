@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,7 +42,7 @@ public class Block implements Serializable, Comparable<Block> {
     /* 时间戳 */
     private long timestamp;
     /* 交易列表 */
-    private ArrayList<Transaction> trans;
+    private List<Transaction> trans;
     /* 计算区块的耗时相关记录 */
     private Times times;
 
@@ -106,7 +107,7 @@ public class Block implements Serializable, Comparable<Block> {
         return 0;
     }
 
-    public void setArgs(String preHash, String hash, String merkleRoot, String PreStateRoot, long height, String sign, long timestamp, String version, ArrayList<Transaction> transList, int txLength){
+    public void setArgs(String preHash, String hash, String merkleRoot, String PreStateRoot, long height, String sign, long timestamp, String version, List<Transaction> transList, int txLength){
         this.setPre_hash(preHash);
         this.setHash(hash);
         this.setMerkle_root(merkleRoot);

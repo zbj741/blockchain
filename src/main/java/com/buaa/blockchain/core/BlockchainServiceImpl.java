@@ -11,7 +11,10 @@ import com.buaa.blockchain.contract.WorldState;
 import com.buaa.blockchain.crypto.CryptoSuite;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.crypto.keypair.CryptoKeyPair;
-import com.buaa.blockchain.entity.*;
+import com.buaa.blockchain.entity.Block;
+import com.buaa.blockchain.entity.Times;
+import com.buaa.blockchain.entity.Transaction;
+import com.buaa.blockchain.entity.UserAccount;
 import com.buaa.blockchain.entity.mapper.BlockMapper;
 import com.buaa.blockchain.entity.mapper.ContractAccountMapper;
 import com.buaa.blockchain.entity.mapper.TransactionMapper;
@@ -238,19 +241,6 @@ public class BlockchainServiceImpl implements BlockchainService {
                 log.error("firstTimeSetup(): cannot sync data between block and state! Shut down!\nAdvise: clear the mysql and leveldb, restart node.");
                 shutDownManager.shutDown();
             }
-//            // 寻找ContractEntrance
-//            String ceStr = worldState.get(ContractEntrance.CONTRACT_ENTRANCE_KEY);
-//            ContractEntrance contractEntrance = null;
-//            try {
-//                contractEntrance = JsonUtil.objectMapper.readValue(ceStr,ContractEntrance.class);
-//            } catch (JsonProcessingException e) {
-//                // 载入失败，关闭程序
-//                log.error("firstTimeSetup(): error in finding contractEntrance, shut down!");
-//                e.printStackTrace();
-//                shutDownManager.shutDown();
-//            }
-//            ContractEntrance.getInstance(contractEntrance);
-            log.info("firstTimeSetup(): find ContractEntrance, contracts="+ContractEntrance.getInstance().getContracts().toString());
         }
         // 初始化轮数
         this.round.set(0);
@@ -505,6 +495,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                 log.info("verifyBlock(): Block merkle-root is null!");
                 return false;
             }
+
             if(!merkleRoot.equals(rawBlock.getMerkle_root())){
                     log.info("verifyBlock(): wrong merkle-root! Block merkle-root="+rawBlock.getMerkle_root() + ", local compute merkle-root="+merkleRoot);
                     return false;
@@ -589,6 +580,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                 validTransList.add(transaction);
             }
         }
+
         log.info("createNewBlock(): Get valid transaction list, size="+validTransList.size());
         if(validTransList.size() < 1){
             // 未出现可做块的交易，此时交易池应该为空
@@ -622,7 +614,7 @@ public class BlockchainServiceImpl implements BlockchainService {
             // 生成头部，参数需要按照顺序，header作为区块的hash值
             String hash = getBlockHeaderHash(preHash,merkleRoot,preStateRoot,String.valueOf(height),this.nodeSign,timestamp,this.version);
             block.setArgs(preHash,hash,merkleRoot,preStateRoot,height,this.nodeSign,timestamp,this.version,
-                    (ArrayList<Transaction>) validTransList,validTransList.size());
+                    validTransList,validTransList.size());
             // 做块计时结束
             Date createEnd = new Date();
             log.info("createNewBlock(): new block created, hash="+block.getHash()+", time cost="+(createEnd.getTime()-createStart.getTime())+"ms.");
@@ -680,6 +672,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                 if(isValidTransaction(transaction) && !treeSet.contains(transaction.getTran_hash())){
                     // 交易合法
                     transaction.setTranSeq(tranSeq++);
+                    transaction.setSequence(transaction.getTranSeq());
                     validTransList.add(transaction);
                 }
             }
@@ -698,7 +691,6 @@ public class BlockchainServiceImpl implements BlockchainService {
                         }else{
                             return 0;
                         }
-
                     }
                 });
                 // 生成新的区块
@@ -711,7 +703,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                 block.setHeight(height);
                 block.setMerkle_root(merkleRoot);
                 block.setTimestamp(new Date().getTime());
-                block.setTrans((ArrayList<Transaction>) validTransList);
+                block.setTrans( validTransList);
                 block.setTx_length(validTransList.size());
                 block.setVersion(version);
                 block.setSign(nodeSign);
