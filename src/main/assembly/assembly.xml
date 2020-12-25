@@ -22,17 +22,13 @@
             <includes>
                 <include>*.sh</include>
             </includes>
+            <fileMode>755</fileMode>
         </fileSet>
-
         <fileSet>
             <directory>${project.basedir}/src/main/resources</directory>
             <outputDirectory>config</outputDirectory>
             <includes>
-                <include>**/*</include>
-                <include>*.xml</include>
-                <include>*.properties</include>
-                <include>*.yml</include>
-                <include>*.key</include>
+                <include>application.properties</include>
             </includes>
         </fileSet>
     </fileSets>
