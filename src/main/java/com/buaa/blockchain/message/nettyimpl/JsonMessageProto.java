@@ -54,7 +54,7 @@ public final class JsonMessageProto {
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:JsonMessage)
       JsonMessageOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
     // Use JsonMessage.newBuilder() to construct.
     private JsonMessage(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);

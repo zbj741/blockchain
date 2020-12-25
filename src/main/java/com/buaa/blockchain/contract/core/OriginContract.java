@@ -1,19 +1,24 @@
 package com.buaa.blockchain.contract.core;
 
 import com.buaa.blockchain.contract.State;
+import com.buaa.blockchain.core.BlockchainService;
 import com.buaa.blockchain.entity.ContractAccount;
 import com.buaa.blockchain.entity.ContractEntrance;
 import com.buaa.blockchain.entity.UserAccount;
-import com.buaa.blockchain.core.BlockchainService;
+import com.buaa.blockchain.entity.mapper.BlockMapper;
+import com.buaa.blockchain.entity.mapper.ContractAccountMapper;
+import com.buaa.blockchain.entity.mapper.TransactionMapper;
+import com.buaa.blockchain.entity.mapper.UserAccountMapper;
 import com.buaa.blockchain.utils.JsonUtil;
+import com.buaa.blockchain.utils.SpringContextUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
-
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
 
 import static com.buaa.blockchain.entity.ContractEntrance.CONTRACT_ENTRANCE_KEY;
 
@@ -39,6 +44,16 @@ public class OriginContract {
     public static final String TRANSFER = "transfer";
     private HashSet<String> functions;
 
+    /* Block的持久化 */
+    final BlockMapper blockMapper;
+    /* Transaction的持久化 */
+    final TransactionMapper transactionMapper;
+    /* UserAccount的持久化 */
+    final UserAccountMapper userAccountMapper;
+    /* ContractAccount的持久化 */
+    final ContractAccountMapper contractAccountMapper;
+
+
     public OriginContract(BlockchainService bs){
         this.bs = bs;
         this.functions = new HashSet<>();
@@ -49,6 +64,11 @@ public class OriginContract {
         functions.add(DEVJAR);
         functions.add(ADDUSER);
         functions.add(TRANSFER);
+
+        blockMapper = (BlockMapper) SpringContextUtil.getBean(BlockMapper.class);
+        transactionMapper = (TransactionMapper) SpringContextUtil.getBean(TransactionMapper.class);
+        userAccountMapper = (UserAccountMapper) SpringContextUtil.getBean(UserAccountMapper.class);
+        contractAccountMapper = (ContractAccountMapper) SpringContextUtil.getBean(ContractAccountMapper.class);
     }
 
     /**
@@ -118,60 +138,50 @@ public class OriginContract {
      * 建立普通用户账户
      * */
     private void addUser(State state, Map<String, DataUnit> args){
-        // 获取参数
-        String key = args.get("KEY").getString();
-        String name = args.get("NAME").getString();
-        String password = args.get("PASSWORD").getString();
-        String intro = args.get("INTRO").getString();
-        String data = args.get("DATA").getString();
-        int balance = args.get("BALANCE").getInteger();
-        // 生成实体类
-        UserAccount userAccount = new UserAccount(key,name,password,intro,balance,data);
-        // 存入state
+        String address = args.get("ADDRESS").getString();
         try {
-            state.update(userAccount.getUserName(), JsonUtil.objectMapper.writeValueAsBytes(userAccount));
+            UserAccount userAccount = new UserAccount();
+            state.update(address, JsonUtil.objectMapper.writeValueAsBytes(userAccount));
+            userAccountMapper.insertUserAccount(userAccount);
         } catch (JsonProcessingException e) {
             // TODO 生成userAccount错误
             e.printStackTrace();
         }
-        // 存入mysql
-        bs.insertUserAccount(userAccount);
     }
     /**
      * 简单转账（用户）
      * */
     private void transfer(State state, Map<String, DataUnit> args){
-        String ua1 = args.get("USERACCOUNT1").getString();
-        String ua2 = args.get("USERACCOUNT2").getString();
-        int t = args.get("AMOUNT").getInteger();
-        UserAccount userAccount1 = null;
-        UserAccount userAccount2 = null;
-        try {
-            userAccount1 = JsonUtil.objectMapper.readValue(state.get(ua1),UserAccount.class);
-            userAccount2 = JsonUtil.objectMapper.readValue(state.get(ua2),UserAccount.class);
-        } catch (JsonProcessingException e) {
-            // TODO 读取失败,转账停止
-            e.printStackTrace();
-        }
-        int pre1 = userAccount1.getBalance();
-        int pre2 = userAccount2.getBalance();
-        userAccount1.setBalance(pre1 - t);
-        userAccount2.setBalance(pre2 + t);
-        log.info("transfer(): "+userAccount1.getUserName()+" transfer t="+t+" to "+userAccount2.getUserName()+"; "
-                +" [balance]:"+userAccount1.getUserName()+":"+pre1+"->"+userAccount1.getBalance()+", "+
-                userAccount2.getUserName()+":"+pre2+"->"+userAccount2.getBalance());
-        // 写回state
-        try{
-            state.update(userAccount1.getUserName(), JsonUtil.objectMapper.writeValueAsBytes(userAccount1));
-            state.update(userAccount2.getUserName(), JsonUtil.objectMapper.writeValueAsBytes(userAccount2));
-        }catch (JsonProcessingException e) {
-            // TODO 写回失败,转账停止
-            e.printStackTrace();
-        }
-        // 写回mysql
-        bs.updateUserAccountBalance(userAccount1.getUserName(),userAccount1.getBalance());
-        bs.updateUserAccountBalance(userAccount2.getUserName(),userAccount2.getBalance());
-
+//        String ua1 = args.get("USERACCOUNT1").getString();
+//        String ua2 = args.get("USERACCOUNT2").getString();
+//        BigInteger t = args.get("AMOUNT").getBigInteger();
+//        UserAccount userAccount1 = null;
+//        UserAccount userAccount2 = null;
+//        try {
+//            userAccount1 = JsonUtil.objectMapper.readValue(state.get(ua1),UserAccount.class);
+//            userAccount2 = JsonUtil.objectMapper.readValue(state.get(ua2),UserAccount.class);
+//        } catch (JsonProcessingException e) {
+//            // TODO 读取失败,转账停止
+//            e.printStackTrace();
+//        }
+//        BigInteger pre1 = userAccount1.getBalance();
+//        BigInteger pre2 = userAccount2.getBalance();
+//        userAccount1.addBalance(t.negate());
+//        userAccount2.addBalance(t);
+//        log.info("transfer(): "+userAccount1.getUserName()+" transfer t="+t+" to "+userAccount2.getUserName()+"; "
+//                +" [balance]:"+userAccount1.getUserName()+":"+pre1+"->"+userAccount1.getBalance()+", "+
+//                userAccount2.getUserName()+":"+pre2+"->"+userAccount2.getBalance());
+//        // 写回state
+//        try{
+//            state.update(userAccount1.getUserName(), JsonUtil.objectMapper.writeValueAsBytes(userAccount1));
+//            state.update(userAccount2.getUserName(), JsonUtil.objectMapper.writeValueAsBytes(userAccount2));
+//        }catch (JsonProcessingException e) {
+//            // TODO 写回失败,转账停止
+//            e.printStackTrace();
+//        }
+//        // 写回mysql
+//        this.userAccountMapper.updateBalance(userAccount1.getUserName(),userAccount1.getBalance());
+//        this.userAccountMapper.updateBalance(userAccount2.getUserName(),userAccount2.getBalance());
     }
     /**
      * 智能合约部署
@@ -192,7 +202,7 @@ public class OriginContract {
             state.update(CONTRACT_ENTRANCE_KEY,JsonUtil.objectMapper.writeValueAsBytes(ContractEntrance.getInstance()));
             done = true;
             // 写入mysql
-            bs.insertContractAccount(contractAccount);
+           // bs.insertContractAccount(contractAccount);
 
             // 写入contract文件夹
             File file = new File(contractDir+contractName+".class");
@@ -247,7 +257,7 @@ public class OriginContract {
             state.update(CONTRACT_ENTRANCE_KEY,JsonUtil.objectMapper.writeValueAsBytes(ContractEntrance.getInstance()));
             done = true;
             // 写入mysql
-            bs.insertContractAccount(contractAccount);
+            //bs.insertContractAccount(contractAccount);
         } catch (JsonProcessingException e) {
             // 写入错误则删除
             e.printStackTrace();

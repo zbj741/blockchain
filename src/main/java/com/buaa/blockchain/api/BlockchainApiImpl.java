@@ -26,7 +26,6 @@ public class BlockchainApiImpl implements BlockchainApi{
 
     @Override
     public Boolean syncBlocks(List<Block> blockList, String address) {
-
         return null;
     }
 
@@ -36,42 +35,17 @@ public class BlockchainApiImpl implements BlockchainApi{
     }
 
     @Override
-    public Block findBlockByHeight(int height) {
+    public Block findBlockByHeight(long height) {
         return blockMapper.findBlockByHeight(height);
     }
 
     @Override
-    public List<Block> listBlock() {
-        return null;
+    public Transaction findTxByTxHash(String tx_hash) {
+        return transactionMapper.findTransByHash(tx_hash);
     }
 
     @Override
-    public List<Block> listBlockByHeight(int min, int max) {
-        return null;
-    }
-
-    @Override
-    public Transaction findTxByHash(String hash) {
-        return null;
-    }
-
-    @Override
-    public Transaction findTxByBlockHeight(int height) {
-        return null;
-    }
-
-    @Override
-    public Transaction findTxByBlockHash(String bhash) {
-        return null;
-    }
-
-    @Override
-    public List<Transaction> listTx() {
-        return null;
-    }
-
-    @Override
-    public List<Transaction> listTxByStartTime() {
-        return null;
+    public List<Transaction> findTxByBlockHash(String bhash) {
+        return transactionMapper.findTransByBlockHash(bhash);
     }
 }

@@ -1,25 +1,26 @@
 package com.buaa.blockchain.entity;
 
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.HashMap;
-
 import com.buaa.blockchain.contract.core.DataUnit;
 import com.buaa.blockchain.contract.core.OriginContract;
+import com.buaa.blockchain.vm.DataWord;
+import com.buaa.blockchain.vm.utils.HexUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
-import org.checkerframework.checker.units.qual.C;
+
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * 交易实体类
  * 交易作为Java类生成后，如果需要放到交易池中，需要转成json字符串，表现形式为<xxx,tran_hash,tran_json>
  *
  * @author hitty
- *
- * */
-
+ */
 @Data
 public class Transaction implements Serializable,Comparable<Transaction> {
 
@@ -27,31 +28,41 @@ public class Transaction implements Serializable,Comparable<Transaction> {
     public static final String TYPE_TEST = "TEST";
 
     private static final long serialVersionUID = 4695627546411078836L;
-    // 区块hash
-    private String block_hash;
-    //交易内容生成后算出的字段，在交易池中作为本交易的key
-    private String tran_hash;
-    // 交易种类
-    private String type;
-    // 时间戳
-    private Timestamp timestamp;
-    // 序列号
-    private Integer sequence;
-    // 签名
-    private String sign;
-    // 版本号
-    private String version;
-    // 其他
-    private String extra;
-    // 交易内容
-    private String data;
-    // 大量数据
-    private byte[] largeData;
 
+    private String block_hash;      // 区块hash
+    private String tran_hash;       // 交易内容生成后算出的字段，在交易池中作为本交易的key
+    private String type;            // 交易种类
+    private Timestamp timestamp;    // 时间戳
+    private Integer sequence;       // 序列号
+    private String sign;            // 签名
+    private String version;         // 版本号
+    private String extra;           // 其他
+    private byte[] data;            // 交易内容
+    private byte[] largeData;       // 大量数据
     private Integer tranSeq;
 
+    private int depth;
+    private int index;
+    private byte[] from;            // 交易发起人
+    private byte[] to;              // 交易接收人
+    private BigInteger value;       // 转帐金额
+    private long nonce;             // 帐户交易次数
+    private long gas;               // 执行合约调用所消耗的Gas值
+    private BigInteger gasPrice;    // Gas单价信息
+    private boolean rejected = false;
+    private boolean create = false;
+
+    public Transaction(){}
+
+    public Transaction(byte[] from, byte[] to, BigInteger value, byte[] data) {
+        this.from = from;
+        this.to = to;
+        this.value = value;
+        this.data = data;
+    }
+
     public Transaction(String _block_hash, String _tran_hash, String _type, Timestamp _timestamp,
-                       Integer _sequence, String _sign, String _version, String _extra, String _data) {
+                       Integer _sequence, String _sign, String _version, String _extra, byte[] _data) {
         block_hash = _block_hash;
         tran_hash = _tran_hash;
         type = _type;
@@ -64,24 +75,21 @@ public class Transaction implements Serializable,Comparable<Transaction> {
         largeData = new byte[]{};
     }
 
-    public Transaction() {
 
+    public Transaction(int depth, int index, String type, byte[] from, byte[] to, long nonce, BigInteger value, byte[] data, long gas, BigInteger gasPrice){
+        this.depth = depth;
+        this.index = index;
+        this.type = type;
+
+        this.from = from;
+        this.to = to;
+        this.nonce = nonce;
+        this.value = value;
+        this.data = data;
+        this.gas = gas;
+        this.gasPrice = gasPrice;
     }
 
-    public static Transaction createDefaultTransaction(){
-        return new Transaction(
-                "block_hash",
-                Long.toString(System.currentTimeMillis()),
-                "type",
-                new Timestamp(System.currentTimeMillis()),
-                new Integer(0),
-                "sign",
-                "version",
-                "extra",
-                "data"
-        );
-
-    }
 
     @Override
     public int compareTo(Transaction tran) {
@@ -138,7 +146,7 @@ public class Transaction implements Serializable,Comparable<Transaction> {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        ts.setData(jsonstr);
+        ts.setData(jsonstr.getBytes());
         return ts;
     }
 
@@ -172,7 +180,56 @@ public class Transaction implements Serializable,Comparable<Transaction> {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        ts.setData(jsonstr);
+        ts.setData(jsonstr.getBytes());
         return ts;
+    }
+
+    public boolean isCreate() {
+        return create;
+    }
+    public void reject() {
+        this.rejected = true;
+    }
+
+    public static Transaction createDefaultTransaction(){
+        return new Transaction(
+                HexUtil.toHexString(DataWord.of(System.currentTimeMillis()).getData()),
+                HexUtil.toHexString(DataWord.of(System.currentTimeMillis()).getData()),
+                "type",
+                new Timestamp(System.currentTimeMillis()),
+                new Integer(0),
+                "sign",
+                "version",
+                "extra",
+                "data".getBytes()
+        );
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Transaction{");
+        sb.append("block_hash='").append(block_hash).append('\'');
+        sb.append(", create=").append(create);
+        sb.append(", data=").append(Arrays.toString(data));
+        sb.append(", depth=").append(depth);
+        sb.append(", extra='").append(extra).append('\'');
+        sb.append(", from=").append(Arrays.toString(from));
+        sb.append(", gas=").append(gas);
+        sb.append(", gasPrice=").append(gasPrice);
+        sb.append(", index=").append(index);
+        sb.append(", largeData=").append(Arrays.toString(largeData));
+        sb.append(", nonce=").append(nonce);
+        sb.append(", rejected=").append(rejected);
+        sb.append(", sequence=").append(sequence);
+        sb.append(", sign='").append(sign).append('\'');
+        sb.append(", timestamp=").append(timestamp);
+        sb.append(", to=").append(Arrays.toString(to));
+        sb.append(", tran_hash='").append(tran_hash).append('\'');
+        sb.append(", tranSeq=").append(tranSeq);
+        sb.append(", type='").append(type).append('\'');
+        sb.append(", value=").append(value);
+        sb.append(", version='").append(version).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

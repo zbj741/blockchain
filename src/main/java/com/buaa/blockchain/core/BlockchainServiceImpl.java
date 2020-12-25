@@ -3,32 +3,30 @@ package com.buaa.blockchain.core;
 
 import com.buaa.blockchain.annotation.ReadData;
 import com.buaa.blockchain.annotation.WriteData;
+import com.buaa.blockchain.config.ChainConfig;
 import com.buaa.blockchain.consensus.BaseConsensus;
 import com.buaa.blockchain.consensus.PBFTConsensusImpl;
 import com.buaa.blockchain.consensus.SBFTConsensusImpl;
 import com.buaa.blockchain.contract.WorldState;
-import com.buaa.blockchain.entity.ContractAccount;
-import com.buaa.blockchain.entity.ContractEntrance;
-import com.buaa.blockchain.entity.UserAccount;
+import com.buaa.blockchain.crypto.CryptoSuite;
 import com.buaa.blockchain.crypto.HashUtil;
+import com.buaa.blockchain.crypto.keypair.CryptoKeyPair;
 import com.buaa.blockchain.entity.Block;
-import com.buaa.blockchain.entity.mapper.ContractAccountMapper;
-import com.buaa.blockchain.entity.mapper.UserAccountMapper;
-import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.entity.Times;
 import com.buaa.blockchain.entity.Transaction;
-import com.buaa.blockchain.exception.ShutDownManager;
+import com.buaa.blockchain.entity.UserAccount;
 import com.buaa.blockchain.entity.mapper.BlockMapper;
+import com.buaa.blockchain.entity.mapper.ContractAccountMapper;
 import com.buaa.blockchain.entity.mapper.TransactionMapper;
+import com.buaa.blockchain.entity.mapper.UserAccountMapper;
+import com.buaa.blockchain.exception.ShutDownManager;
 import com.buaa.blockchain.message.JGroupsMessageImpl;
+import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.message.MessageCallBack;
 import com.buaa.blockchain.message.MessageService;
 import com.buaa.blockchain.message.nettyimpl.NettyMessageImpl;
-import com.buaa.blockchain.test.LoadClassTest;
-import com.buaa.blockchain.test.LoadJarTest;
 import com.buaa.blockchain.txpool.RedisTxPool;
 import com.buaa.blockchain.txpool.TxPool;
-
 import com.buaa.blockchain.utils.JsonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +36,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
-
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -154,7 +152,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     // 同步器，用于超时管理
     public CountDownLatch countDownLatch;
     // 提前做块的缓存队列，需要用height和round同时确定一个cache区块 TODO 长度限定
-    private ConcurrentHashMap<Integer,Block> cacheBlockList = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Long,Block> cacheBlockList = new ConcurrentHashMap<>();
     // 守护线程
     private Thread daeThread = null;
     // 标志位，是否初始化完毕
@@ -164,9 +162,17 @@ public class BlockchainServiceImpl implements BlockchainService {
 
 
     // 缓存的数据库变量，在verifyBlock时读，在storeBlock的靠前流程中写
-    private int nowHeight = 0;
+    private long nowHeight = 0;
     private String nowPreHash = "";
     private String nowStateRoot = "";
+
+    @Autowired
+    private ChainConfig chainConfig;
+
+    @Override
+    public ChainConfig getChainConfig() {
+        return chainConfig;
+    }
 
     @Autowired
     public BlockchainServiceImpl(RedisTxPool redisTxpool, BlockMapper blockMapper,UserAccountMapper userAccountMapper, ContractAccountMapper contractAccountMapper,
@@ -179,6 +185,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         this.voteHandler = voteHandler;
         this.timeoutHelper = timeoutHelper;
         this.shutDownManager = shutDownManager;
+
     }
 
 
@@ -193,8 +200,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         this.daeThread = new Thread();
         this.daeThread.setDaemon(true);
         this.daeThread.start();
-        // 初始化StateDB
-        initState();
+        initWorldStateAndTxExecuter();
         // 初始化共识
         initConsensus();
         // 初始化消息服务
@@ -203,18 +209,25 @@ public class BlockchainServiceImpl implements BlockchainService {
         testMessageDigest(this.hashAlgorithm);
         // 判断是否为第一次启动
         if(blockMapper.findBlockNum(HashUtil.sha256("0")) == 0){
-            // 建立入口
-            ContractEntrance contractEntrance = ContractEntrance.getInstance();
-            String ceStr = null;
-            try {
-                ceStr = JsonUtil.objectMapper.writeValueAsString(contractEntrance);
-            } catch (JsonProcessingException e) {
-                // 写入失败，关闭程序
-                log.error("firstTimeSetup(): error in creating contractEntrance, shut down!");
-                e.printStackTrace();
-                shutDownManager.shutDown();
+            CryptoSuite cryptoSuite = new CryptoSuite(chainConfig.getCryptoType());
+            List<String> list = new ArrayList();
+            for (int i = 0; i < 5; i++) {
+                CryptoKeyPair keyPair = cryptoSuite.createKeyPair();
+                String address = keyPair.getAddress();
+                String prikey = keyPair.getHexPrivateKey();
+
+                final BigInteger val = BigInteger.valueOf(10000);
+                UserAccount userAccount = new UserAccount();
+                userAccount.addBalance(val);
+                worldState.createAccount(address, userAccount);
+                list.add(address+","+prikey+","+val);
             }
-            worldState.update(contractEntrance.getKey(),ceStr);
+            log.info("====================================");
+            for(String item : list){
+                String[] val = item.split(",");
+                log.info("addr: {}, pkey: {}, value: {}", val[0], val[1], val[2]);
+            }
+            log.info("====================================");
             worldState.sync();
             // 建立新区块
             Block block = generateFirstBlock();
@@ -222,28 +235,13 @@ public class BlockchainServiceImpl implements BlockchainService {
             log.info("firstTimeSetup(): Generate first block complete.");
         }else{
             // 不是第一次启动
-            int maxHeight = blockMapper.findMaxHeight();
+            long maxHeight = blockMapper.findMaxHeight();
             String maxHeightStateRoot =  blockMapper.findStatRoot(maxHeight);
             if(!worldState.switchRoot(maxHeightStateRoot)){
                 log.error("firstTimeSetup(): cannot sync data between block and state! Shut down!\nAdvise: clear the mysql and leveldb, restart node.");
                 shutDownManager.shutDown();
             }
-            // 寻找ContractEntrance
-            String ceStr = worldState.get(ContractEntrance.CONTRACT_ENTRANCE_KEY);
-            ContractEntrance contractEntrance = null;
-            try {
-                contractEntrance = JsonUtil.objectMapper.readValue(ceStr,ContractEntrance.class);
-            } catch (JsonProcessingException e) {
-                // 载入失败，关闭程序
-                log.error("firstTimeSetup(): error in finding contractEntrance, shut down!");
-                e.printStackTrace();
-                shutDownManager.shutDown();
-            }
-            ContractEntrance.getInstance(contractEntrance);
-            log.info("firstTimeSetup(): find ContractEntrance, contracts="+ContractEntrance.getInstance().getContracts().toString());
         }
-        // 初始化智能合约
-        initContract();
         // 初始化轮数
         this.round.set(0);
         // 单节点
@@ -280,7 +278,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * @param round 轮数
      * */
     @Override
-    public void startNewRound(int height, int round) {
+    public void startNewRound(long height, long round) {
         // 通过threadMap尝试关闭其他的startNewRound线程
         synchronized (isSetup){
             for(Long l : threadMap.keySet()){
@@ -452,12 +450,12 @@ public class BlockchainServiceImpl implements BlockchainService {
      * */
     @ReadData
     @Override
-    public boolean verifyBlock(Block block, int height, int round) {
+    public boolean verifyBlock(Block block, long height, long round) {
         try{
             // 获取读锁
             dbLock.readLock().lock();
             Block rawBlock = block;
-            int maxHeight = blockMapper.findMaxHeight();
+            long maxHeight = blockMapper.findMaxHeight();
             // 检查height
             if(height - 1 != maxHeight){
                 log.info("verifyBlock(): height="+height+" is not the next height! The maxHeight in database is "+maxHeight);
@@ -497,6 +495,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                 log.info("verifyBlock(): Block merkle-root is null!");
                 return false;
             }
+
             if(!merkleRoot.equals(rawBlock.getMerkle_root())){
                     log.info("verifyBlock(): wrong merkle-root! Block merkle-root="+rawBlock.getMerkle_root() + ", local compute merkle-root="+merkleRoot);
                     return false;
@@ -535,7 +534,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     public Block generateFirstBlock() {
         Block block = new Block();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String timestamp = sdf.format(new Date());
+        long timestamp = new Date().getTime();
         String hash = HashUtil.sha256("0");
         String pre_hash = HashUtil.sha256("-1");
         String merkle_root = "";
@@ -564,7 +563,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * @param round
      * */
     @Override
-    public Block createNewBlock(int height, int round){
+    public Block createNewBlock(long height, long round){
         List<Transaction> rawTransList = redisTxpool.getList(TxPool.TXPOOL_LABEL_TRANSACTION,txMaxAmount);
         // 做块计时开始
         Date createStart = new Date();
@@ -577,9 +576,11 @@ public class BlockchainServiceImpl implements BlockchainService {
             if(isValidTransaction(transaction)){
                 // 交易合法
                 transaction.setTranSeq(tranSeq++);
+                transaction.setSequence(transaction.getTranSeq());
                 validTransList.add(transaction);
             }
         }
+
         log.info("createNewBlock(): Get valid transaction list, size="+validTransList.size());
         if(validTransList.size() < 1){
             // 未出现可做块的交易，此时交易池应该为空
@@ -607,13 +608,13 @@ public class BlockchainServiceImpl implements BlockchainService {
             // 填写block字段
             String preHash = blockMapper.findHashByHeight(height - 1);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String timestamp = sdf.format(new Date());
+            long timestamp = new Date().getTime();
             String merkleRoot = getMerkleRoot(validTransList);
             String preStateRoot = blockMapper.findStatRoot(height - 1);
             // 生成头部，参数需要按照顺序，header作为区块的hash值
             String hash = getBlockHeaderHash(preHash,merkleRoot,preStateRoot,String.valueOf(height),this.nodeSign,timestamp,this.version);
             block.setArgs(preHash,hash,merkleRoot,preStateRoot,height,this.nodeSign,timestamp,this.version,
-                    (ArrayList<Transaction>) validTransList,validTransList.size());
+                    validTransList,validTransList.size());
             // 做块计时结束
             Date createEnd = new Date();
             log.info("createNewBlock(): new block created, hash="+block.getHash()+", time cost="+(createEnd.getTime()-createStart.getTime())+"ms.");
@@ -642,7 +643,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * */
     @ReadData
     @Override
-    public void createNewCacheBlock(int height, int round, Block baseBlock) {
+    public void createNewCacheBlock(long height, long round, Block baseBlock) {
         try{
             dbLock.readLock().lock();
             int transLength = baseBlock.getTx_length();
@@ -671,6 +672,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                 if(isValidTransaction(transaction) && !treeSet.contains(transaction.getTran_hash())){
                     // 交易合法
                     transaction.setTranSeq(tranSeq++);
+                    transaction.setSequence(transaction.getTranSeq());
                     validTransList.add(transaction);
                 }
             }
@@ -689,7 +691,6 @@ public class BlockchainServiceImpl implements BlockchainService {
                         }else{
                             return 0;
                         }
-
                     }
                 });
                 // 生成新的区块
@@ -701,8 +702,8 @@ public class BlockchainServiceImpl implements BlockchainService {
                 // 填写属性
                 block.setHeight(height);
                 block.setMerkle_root(merkleRoot);
-                block.setTimestamp((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date()));
-                block.setTrans((ArrayList<Transaction>) validTransList);
+                block.setTimestamp(new Date().getTime());
+                block.setTrans( validTransList);
                 block.setTx_length(validTransList.size());
                 block.setVersion(version);
                 block.setSign(nodeSign);
@@ -744,7 +745,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * @param nowHeight 本地最高块
      * */
     @Override
-    public void requestSyncBlocks(int nowHeight) {
+    public void requestSyncBlocks(long nowHeight) {
         // 生成Message用于请求block
         Message message = new Message(CORE_MESSAGE_TOPIC_SYNC,this.messageService.getLocalAddress(),blockMapper.findMaxHeight(),null);
         // 广播
@@ -757,10 +758,10 @@ public class BlockchainServiceImpl implements BlockchainService {
      * @param address 请求懂不区块的节点的地址
      * */
     @Override
-    public void replySyncBlocks(int height,String address) {
+    public void replySyncBlocks(long height,String address) {
         // 为了减少广播量，主节点来发请求
         if(isSelfLeader()){
-            int maxHeight = blockMapper.findMaxHeight();
+            long maxHeight = blockMapper.findMaxHeight();
             if(height >= maxHeight){
                 // 不需要同步
                 Message message = new Message(CORE_MESSAGE_TOPIC_SYNCREPLY,address,height,null);
@@ -768,7 +769,7 @@ public class BlockchainServiceImpl implements BlockchainService {
             } else{
                 // 将需要的区块信息找到
                 List<Block> blockList = new ArrayList<>();
-                for(int i = height+1;i <= maxHeight;i++){
+                for(long i = height+1;i <= maxHeight;i++){
                     Block block = blockMapper.findBlockByHeight(i);
                     block.setTrans(transactionMapper.findTransByBlockHash(block.getHash()));
                     blockList.add(block);
@@ -804,7 +805,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         log.info("transactionExec(): start exec transactions in block="+block.getHash()+", transactions size="+block.getTx_length());
         if(null == stateRoot){
             List<Transaction> transactions = block.getTrans();
-            txExecuter.baseExecute(transactions,worldState);
+            txExecuter.batchExecute(transactions);
             return worldState.getRootHash();
         }
         return null;
@@ -860,33 +861,23 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 投票相关
      * */
     @Override
-    public Boolean voteForBlock(String tag,int height, int round, String blockHash, String nodeName, Boolean voteValue) {
+    public Boolean voteForBlock(String tag,long height, long round, String blockHash, String nodeName, Boolean voteValue) {
         return this.voteHandler.vote(tag,height,round,blockHash,nodeName,voteValue);
     }
 
     @Override
-    public int getAgreeVoteCount(String tag,int height, int round, String blockHash) {
+    public int getAgreeVoteCount(String tag,long height, long round, String blockHash) {
         return this.voteHandler.getVoteRecordAgree(tag,height,round,blockHash);
     }
 
     @Override
-    public int getAgainstVoteCount(String tag,int height, int round, String blockHash) {
+    public int getAgainstVoteCount(String tag,long height, long round, String blockHash) {
         return this.voteHandler.getVoteRecordAgainst(tag,height,round,blockHash);
     }
 
     @Override
-    public void removeVote(String tag,int height, int round, String blockHash) {
+    public void removeVote(String tag,long height, long round, String blockHash) {
         this.voteHandler.remove(tag,height,round,blockHash);
-    }
-
-    @Override
-    public void deployContract(Object o) {
-
-    }
-
-    @Override
-    public void syncContract(String contractId) {
-
     }
 
     /**
@@ -1000,24 +991,12 @@ public class BlockchainServiceImpl implements BlockchainService {
         }
         log.info("initMessageService(): "+messageServiceType+" init complete.");
     }
-    /**
-     * 初始化State
-     * */
-    private void initState(){
-        // 初始化状态树
-        this.worldState = new WorldState(statedbDir,statedbName,this);
-    }
-    /**
-     * 初始化智能合约相关
-     * */
-    private void initContract(){
-        if(ContractEntrance.getInstance() == null){
-            log.error("initContract(): contractEntrance in null, shut down!");
-            shutDownManager.shutDown();
-        }
-        // 初始化智能合约管理
-        this.txExecuter = TxExecuter.getInstance(this,this.worldState);
-    }
+
+    private void initWorldStateAndTxExecuter(){
+         this.worldState = new WorldState(this.chainConfig.getStatedbDir(), this.chainConfig.getStatedbName());
+         this.txExecuter = new TxExecuter(this.chainConfig, this.worldState);
+     }
+
     /**
      * 初始化共识协议
      * */
@@ -1078,7 +1057,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 若节点的集群信息一致，使用相同的height和round可以算出同一个主节点index
      * */
     private boolean isSelfLeader(){
-        int height = blockMapper.findMaxHeight() + 1;
+        long height = blockMapper.findMaxHeight() + 1;
         int round = this.round.get();
         if(messageService.getClusterAddressList().size() == 0){
             log.warn("isSelfLeader(): no node detected!");
@@ -1116,7 +1095,7 @@ public class BlockchainServiceImpl implements BlockchainService {
      * 生成区块头部hash值。
      * 按顺序将参数String值合并，然后哈希
      * */
-    private String getBlockHeaderHash(String preHash,String merkleRoot,String preStateRoot,String height,String nodeSign,String timestamp,String version){
+    private String getBlockHeaderHash(String preHash,String merkleRoot,String preStateRoot,String height,String nodeSign,Long timestamp,String version){
         StringBuilder sb = new StringBuilder();
         sb.append(preHash);
         sb.append(merkleRoot);
@@ -1200,22 +1179,5 @@ public class BlockchainServiceImpl implements BlockchainService {
             transactionMapper.insertTransaction(t);
         }
         //transactionMapper.insertAllTrans(block.getTrans());
-    }
-
-    /********************************* Mapper功能暴露 ***********************************/
-
-    @Override
-    public void insertUserAccount(UserAccount userAccount) {
-        this.userAccountMapper.insertUserAccount(userAccount);
-    }
-
-    @Override
-    public void updateUserAccountBalance(String userName, int newBalance) {
-        this.userAccountMapper.updateBalance(newBalance, userName);
-    }
-
-    @Override
-    public void insertContractAccount(ContractAccount contractAccount) {
-        this.contractAccountMapper.insertUserAccount(contractAccount);
     }
 }

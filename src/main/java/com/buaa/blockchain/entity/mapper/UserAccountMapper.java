@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigInteger;
+
 
 /**
  * 创建和查看
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserAccountMapper {
     @Select("SELECT userKey, userName,password,intro,balance,data from userAccount where userName = #{userName}")
-    public UserAccount findUserAccountByName(String userName);
+    public UserAccount findUserAccountByName(String address);
 
     @Insert("INSERT INTO userAccount ( userKey, userName, password, intro, balance, data)" +
             " VALUES " +
@@ -23,5 +25,5 @@ public interface UserAccountMapper {
     public void insertUserAccount(UserAccount userAccount);
 
     @Update("UPDATE userAccount SET balance = #{balance} WHERE userName = #{userName}")
-    public void updateBalance(@Param(value = "balance") int balance, @Param(value = "userName") String name);
+    public void updateBalance(@Param(value = "balance") BigInteger balance, @Param(value = "userName") String name);
 }

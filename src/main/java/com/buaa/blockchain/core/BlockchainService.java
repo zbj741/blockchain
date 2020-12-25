@@ -1,8 +1,7 @@
 package com.buaa.blockchain.core;
 
 
-import com.buaa.blockchain.entity.ContractAccount;
-import com.buaa.blockchain.entity.UserAccount;
+import com.buaa.blockchain.config.ChainConfig;
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.message.MessageCallBack;
@@ -21,13 +20,17 @@ import java.util.List;
  * */
 public interface BlockchainService {
 
+    ChainConfig getChainConfig();
+
     /*************  区块生成相关  *************/
+
     /**
      * 新的一轮做块。
      * @param height
      * @param round
      * */
-    void startNewRound(int height,int round);
+    void startNewRound(long height,long round);
+
     /**
      * 状态码
      * 0：做块投票未通过，轮数+1
@@ -36,15 +39,18 @@ public interface BlockchainService {
     int BLOCKCHAIN_SERVICE_STATE_FAIL = 0;
     int BLOCKCHAIN_SERVICE_STATE_SUCCESS = 1;
     void startNewRound(int state);
+
     /**
      * 运行入口
      * */
     void firstTimeSetup();
+
     /**
      * 区块持久化，包括交易的执行、区块和交易的持久化
      * @param block
      * */
     void storeBlock(Block block);
+
     /**
      * 区块确认
      * @param block
@@ -52,24 +58,28 @@ public interface BlockchainService {
      * @param round
      * @return
      * */
-    boolean verifyBlock(Block block, int height, int round);
+    boolean verifyBlock(Block block, long height, long round);
+
     /**
      * 生成创世区块
      * */
     Block generateFirstBlock();
+
     /**
      * 出块
      * @param height
      * @param round
      * */
-    Block createNewBlock(int height, int round);
+    Block createNewBlock(long height, long round);
+
     /**
      * 提前做块
      * @param height
      * @param round
      * @param block
      * */
-    void createNewCacheBlock(int height, int round, Block block);
+    void createNewCacheBlock(long height, long round, Block block);
+
     /**
      * 删除提前做块
      * */
@@ -80,11 +90,13 @@ public interface BlockchainService {
     /**
      * 向其他节点广播请求同步区块
      * */
-    void requestSyncBlocks(int nowHeight);
+    void requestSyncBlocks(long nowHeight);
+
     /**
      * 回复syncBlocks
      * */
-    void replySyncBlocks(int requireHeight,String address);
+    void replySyncBlocks(long requireHeight,String address);
+
     /**
      * 本地同步区块
      * */
@@ -97,11 +109,13 @@ public interface BlockchainService {
      * @return
      * */
     String transactionExec(String stateRoot,Block block);
+
     /**
      * 撤回交易执行，将worldState还原为上一次的形式
      * 在worldState已经sync之后则无效
      * */
     void undoTransactionExec();
+
     /**
      * 默认数据摘要生成
      * @param data
@@ -114,78 +128,58 @@ public interface BlockchainService {
     /**
      * 为某一轮做块的区块投票
      * */
-    Boolean voteForBlock(String tag,int height,int round,String blockHash,String nodeName,Boolean voteValue);
+    Boolean voteForBlock(String tag,long height,long round,String blockHash,String nodeName,Boolean voteValue);
+
     /**
      * 获取同意票数
      * */
-    int getAgreeVoteCount(String tag,int height,int round,String blockHash);
+    int getAgreeVoteCount(String tag,long height,long round,String blockHash);
+
     /**
      * 获取不同意票数
      * */
-    int getAgainstVoteCount(String tag,int height,int round,String blockHash);
+    int getAgainstVoteCount(String tag,long height,long round,String blockHash);
+
     /**
      * 删除投票记录
      * */
-    void removeVote(String tag,int height,int round,String blockHash);
-
-    /*************  智能合约相关   *************/
-    /**
-     * 本地部署智能合约
-     * */
-    void deployContract(Object o);
-
-    /**
-     * 在区块链网络同步智能合约
-     * */
-    void syncContract(String contractId);
-
-    /**
-     * 新建用户
-     * */
-    void insertUserAccount(UserAccount userAccount);
-    /**
-     * 修改用户余额
-     * */
-    void updateUserAccountBalance(String userName, int newBalance);
-    /**
-     * 新建智能合约用户
-     * */
-    void insertContractAccount(ContractAccount contractAccount);
-
+    void removeVote(String tag,long height,long round,String blockHash);
 
     /*************  节点通信相关   *************/
     /**
      * 广播
-     * */
+     */
     void broadcasting(Message message);
+
     /**
      * 单播
-     * */
+     */
     void singleSend(Message message, String address);
+
     /**
      * 获取集群大小
-     * */
+     */
     int getClusterNodeSize();
+
     /**
      * 设置回调函数
-     * */
+     */
     void setMessageCallBack(MessageCallBack messageCallBack);
+
 
     /*************  自身属性相关  *************/
     /**
      * 获取节点名称
-     * */
+     */
     String getName();
+
     /**
      * 获取版本号
-     * */
+     */
     String getVersion();
+
     /**
      * 获取节点的数字签名
-     * */
+     */
     String getSign();
-
-
-
-
 }
