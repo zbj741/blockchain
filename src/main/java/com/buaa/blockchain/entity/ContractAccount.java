@@ -1,11 +1,7 @@
 package com.buaa.blockchain.entity;
 
 import com.buaa.blockchain.contract.State;
-import com.buaa.blockchain.contract.core.Contract;
-import com.buaa.blockchain.contract.core.DataUnit;
 import com.buaa.blockchain.contract.core.IContractManager;
-import com.buaa.blockchain.contract.util.classloader.ByteClassLoader;
-import com.buaa.blockchain.contract.util.classloader.FileClassLoader;
 import com.buaa.blockchain.utils.JsonUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.extern.slf4j.Slf4j;
@@ -13,11 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 智能合约的合约账户实体类
@@ -85,37 +78,38 @@ public class ContractAccount{
     }
 
     public void loadJar(){
-        if(this.clazz == null){
-            String contractName = IContractManager.classPrefix + cName;
-            String softPath = "file:"+IContractManager.contractDir+cName+".jar";
-            log.info("loadJar(): find jar in "+softPath);
-            try {
-                URLClassLoader classLoader = new URLClassLoader(new URL[]{new URL(softPath)},Thread.currentThread().getContextClassLoader());
-                Class demo = classLoader.loadClass(contractName);
-                Contract object = (Contract) demo.newInstance();
-                // 从jar中获取一些信息
-                this.setIntro(object.getIntro());
-                this.setParams(object.getParams().toString());
-                this.setClassType(IContractManager.TYPE_JAR);
-                log.info("loadJar(): get some message in contract "+cName+": type="+classType+", params="+params.toString());
-                // 引用
-                this.clazz = demo;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-        }
-        System.out.println("load(): "+clazz.toString());
-        log.warn("load(): "+clazz.toString());
-        if(clazz == null){
-            log.error("load(): load class failed, fullname="+fullName);
-        }
+//        if(this.clazz == null){
+//            String contractName = IContractManager.classPrefix + cName;
+//            String softPath = "file:"+IContractManager.contractDir+cName+".jar";
+//            log.info("loadJar(): find jar in "+softPath);
+//            try {
+//                URLClassLoader classLoader = new URLClassLoader(new URL[]{new URL(softPath)},Thread.currentThread().getContextClassLoader());
+//                Class demo = classLoader.loadClass(contractName);
+//                Contract object = (Contract) demo.newInstance();
+//                // 从jar中获取一些信息
+//                this.setIntro(object.getIntro());
+//                this.setParams(object.getParams().toString());
+//                this.setClassType(IContractManager.TYPE_JAR);
+//                log.info("loadJar(): get some message in contract "+cName+": type="+classType+", params="+params.toString());
+//                // 引用
+//                this.clazz = demo;
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            } catch (ClassNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (InstantiationException e) {
+//                e.printStackTrace();
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
+//        System.out.println("load(): "+clazz.toString());
+//        log.warn("load(): "+clazz.toString());
+//        if(clazz == null){
+//            log.error("load(): load class failed, fullname="+fullName);
+//        }
+//
     }
 
     /**

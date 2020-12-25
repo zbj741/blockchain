@@ -7,11 +7,8 @@ import java.util.Set;
  * 消息服务只负责消息的收发、网络状态的检查；消息服务将收到的数据通知回调函数，本身不关心消息怎么处理
  * 消息服务的实现类会持有BlockchainService的引用，从而执行其中的MessageCallBack
  *
- *
  * @author hitty
- *
- * */
-
+ */
 public interface MessageService {
     /**
      * 广播消息给集群中所有的节点

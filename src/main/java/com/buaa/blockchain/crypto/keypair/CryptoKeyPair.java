@@ -1,7 +1,6 @@
 package com.buaa.blockchain.crypto.keypair;
 
-import com.webank.wedpr.crypto.CryptoResult;
-import com.buaa.blockchain.config.ConfigOption;
+import com.buaa.blockchain.config.AccountConfig;
 import com.buaa.blockchain.crypto.exceptions.KeyPairException;
 import com.buaa.blockchain.crypto.hash.Hash;
 import com.buaa.blockchain.crypto.keystore.KeyTool;
@@ -11,6 +10,7 @@ import com.buaa.blockchain.crypto.utils.Hex;
 import com.buaa.blockchain.crypto.utils.Numeric;
 import com.buaa.blockchain.crypto.utils.StringUtils;
 import com.buaa.blockchain.crypto.utils.exceptions.DecoderException;
+import com.webank.wedpr.crypto.CryptoResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public abstract class CryptoKeyPair {
     protected String curveName;
     protected String keyStoreSubDir = "";
 
-    protected ConfigOption config;
+    protected AccountConfig config;
     // The path to save the account pem file corresponding to the CryptoKeyPair
     protected String pemKeyStoreFilePath = "";
     // The path to save the account p12 file
@@ -78,7 +78,7 @@ public abstract class CryptoKeyPair {
         this.hexPublicKey = nativeResult.publicKey;
     }
 
-    public void setConfig(ConfigOption config) {
+    public void setConfig(AccountConfig config) {
         this.config = config;
     }
 
@@ -238,7 +238,7 @@ public abstract class CryptoKeyPair {
     protected String getKeyStoreFilePath(String address, String postFix) {
         String keyStoreFileDir = "account";
         if (config != null) {
-            keyStoreFileDir = config.getAccountConfig().getKeyStoreDir();
+            keyStoreFileDir = config.getKeyStoreDir();
         }
         keyStoreFileDir = keyStoreFileDir + File.separator + keyStoreSubDir + File.separator;
         return keyStoreFileDir + address + postFix;

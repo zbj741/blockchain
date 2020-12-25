@@ -1,8 +1,7 @@
 package com.buaa.blockchain.core;
 
 
-import com.buaa.blockchain.entity.ContractAccount;
-import com.buaa.blockchain.entity.UserAccount;
+import com.buaa.blockchain.config.ChainConfig;
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.message.MessageCallBack;
@@ -20,6 +19,8 @@ import java.util.List;
  * @author hitty
  * */
 public interface BlockchainService {
+
+    ChainConfig getChainConfig();
 
     /*************  区块生成相关  *************/
 
@@ -143,33 +144,6 @@ public interface BlockchainService {
      * 删除投票记录
      * */
     void removeVote(String tag,long height,long round,String blockHash);
-
-    /*************  智能合约相关   *************/
-    /**
-     * 本地部署智能合约
-     * */
-    void deployContract(Object o);
-
-    /**
-     * 在区块链网络同步智能合约
-     * */
-    void syncContract(String contractId);
-
-    /**
-     * 新建用户
-     * */
-    void insertUserAccount(UserAccount userAccount);
-
-    /**
-     * 修改用户余额
-     * */
-    void updateUserAccountBalance(String userName, int newBalance);
-
-    /**
-     * 新建智能合约用户
-     * */
-    void insertContractAccount(ContractAccount contractAccount);
-
 
     /*************  节点通信相关   *************/
     /**

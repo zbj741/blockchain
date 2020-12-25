@@ -1,4 +1,4 @@
-package com.buaa.blockchain.config.model;
+package com.buaa.blockchain.config;
 
 public class CryptoType {
     public static final int ECDSA_TYPE = 0;

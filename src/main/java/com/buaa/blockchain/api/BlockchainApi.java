@@ -22,12 +22,10 @@ public interface BlockchainApi {
      * */
     Block findBlockByHash(String hash);
     Block findBlockByHeight(long height);
-    List<Block> listBlockByHeight(int min,int max);
 
     /**
      * 获取交易数据
      * */
     Transaction findTxByTxHash(String tx_hash);
-    List<Transaction> findTxByBlockHeight(long height);
-    List<Transaction> findTxByBlockHash(String hash);
+    List<Transaction> findTxByBlockHash(String blockHash);
 }

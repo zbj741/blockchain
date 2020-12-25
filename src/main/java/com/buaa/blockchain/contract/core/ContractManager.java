@@ -126,9 +126,9 @@ public class ContractManager implements IContractManager{
             // 转换为class实例
             Class clazz = cac.getClazz();
             // 反射调用，执行
-            Contract contract = (Contract) clazz.newInstance();
-            contract.initParam(args);
-            contract.run(state);
+//            Contract contract = (Contract) clazz.newInstance();
+//            contract.initParam(args);
+//            contract.run(state);
             res = true;
         } catch (Exception e) {
             res = false;

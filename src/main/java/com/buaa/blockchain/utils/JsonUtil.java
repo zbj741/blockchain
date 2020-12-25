@@ -27,7 +27,6 @@ public class JsonUtil {
         // 如果json中有新增的字段并且在实体类中不存在，不报错
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-
     }
 
     /**

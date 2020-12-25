@@ -3,6 +3,8 @@ package com.buaa.blockchain.contract.core;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigInteger;
+
 /**
  * 存储单元类型，应用于智能合约及其运行环境中
  * 提供String,Integer,Boolean,Float,ByteArray 5种类型
@@ -20,7 +22,7 @@ public class DataUnit {
 
     String type;
     String aString;
-    Integer aInteger;
+    BigInteger aBigInteger;
     Boolean aBoolean;
     Float aFloat;
     byte[] byteArray;
@@ -29,7 +31,7 @@ public class DataUnit {
         this.type = type;
         // 按照类型解码
         if(type.equals(INT)){
-            this.aInteger = Integer.valueOf(value);
+            this.aBigInteger = new BigInteger(value);
         }else if(type.equals(BOOL)){
             this.aBoolean = Boolean.valueOf(value);
         }else if(type.equals(FLOAT)){
@@ -39,9 +41,13 @@ public class DataUnit {
         }
         addDefault();
     }
-
-    public DataUnit(Integer i){
-        this.aInteger = i;
+    public DataUnit(int i){
+        this.aBigInteger = BigInteger.valueOf(i);
+        this.type = INT;
+        addDefault();
+    }
+    public DataUnit(BigInteger i){
+        this.aBigInteger = i;
         this.type = INT;
         addDefault();
     }
@@ -73,8 +79,8 @@ public class DataUnit {
         if(null == type){
             type = STRING;
         }
-        if(null == aInteger){
-            aInteger = 1;
+        if(null == aBigInteger){
+            aBigInteger = BigInteger.ZERO;
         }
         if(null == aString){
             aString = "";
@@ -90,8 +96,8 @@ public class DataUnit {
         }
     }
 
-    public Integer getInteger(){
-        return aInteger;
+    public BigInteger getBigInteger(){
+        return aBigInteger;
     }
 
     public String getString() {
@@ -109,7 +115,7 @@ public class DataUnit {
     public String getValue(){
         switch (type){
             case INT:{
-                return aInteger.toString();
+                return aBigInteger.toString();
             }
             case FLOAT:{
                 return aFloat.toString();

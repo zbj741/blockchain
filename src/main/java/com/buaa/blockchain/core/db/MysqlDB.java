@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -20,7 +21,6 @@ import java.util.List;
  *
  * */
 @Slf4j
-
 @MapperScan(basePackages ="com.buaa.blockchain.entity.mapper")
 @ComponentScan(basePackages = "com.buaa.blockchain.*")
 public class MysqlDB implements DB{
@@ -55,13 +55,10 @@ public class MysqlDB implements DB{
     }
 
     @Override
-    public void updateUserAccountBalance(String userName, int newBalance) {
-        userAccountMapper.updateBalance(newBalance, userName);
-    }
-
-    @Override
-    public void insertContractAccount(ContractAccount contractAccount) {
-        contractAccountMapper.insertUserAccount(contractAccount);
+    public void addBalance(String userName, BigInteger value) {
+        UserAccount userAccount = this.userAccountMapper.findUserAccountByName(userName);
+        userAccount.addBalance(value);
+        userAccountMapper.updateBalance(userAccount.getBalance(), userName);
     }
 
     @Override

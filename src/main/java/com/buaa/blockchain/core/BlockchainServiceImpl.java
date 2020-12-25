@@ -3,11 +3,14 @@ package com.buaa.blockchain.core;
 
 import com.buaa.blockchain.annotation.ReadData;
 import com.buaa.blockchain.annotation.WriteData;
+import com.buaa.blockchain.config.ChainConfig;
 import com.buaa.blockchain.consensus.BaseConsensus;
 import com.buaa.blockchain.consensus.PBFTConsensusImpl;
 import com.buaa.blockchain.consensus.SBFTConsensusImpl;
 import com.buaa.blockchain.contract.WorldState;
+import com.buaa.blockchain.crypto.CryptoSuite;
 import com.buaa.blockchain.crypto.HashUtil;
+import com.buaa.blockchain.crypto.keypair.CryptoKeyPair;
 import com.buaa.blockchain.entity.*;
 import com.buaa.blockchain.entity.mapper.BlockMapper;
 import com.buaa.blockchain.entity.mapper.ContractAccountMapper;
@@ -30,6 +33,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -160,6 +164,14 @@ public class BlockchainServiceImpl implements BlockchainService {
     private String nowStateRoot = "";
 
     @Autowired
+    private ChainConfig chainConfig;
+
+    @Override
+    public ChainConfig getChainConfig() {
+        return chainConfig;
+    }
+
+    @Autowired
     public BlockchainServiceImpl(RedisTxPool redisTxpool, BlockMapper blockMapper,UserAccountMapper userAccountMapper, ContractAccountMapper contractAccountMapper,
                                  TransactionMapper transactionMapper, VoteHandler voteHandler, TimeoutHelper timeoutHelper, ShutDownManager shutDownManager) {
         this.redisTxpool = redisTxpool;
@@ -170,6 +182,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         this.voteHandler = voteHandler;
         this.timeoutHelper = timeoutHelper;
         this.shutDownManager = shutDownManager;
+
     }
 
 
@@ -184,8 +197,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         this.daeThread = new Thread();
         this.daeThread.setDaemon(true);
         this.daeThread.start();
-        // 初始化StateDB
-        initState();
+        initWorldStateAndTxExecuter();
         // 初始化共识
         initConsensus();
         // 初始化消息服务
@@ -194,18 +206,25 @@ public class BlockchainServiceImpl implements BlockchainService {
         testMessageDigest(this.hashAlgorithm);
         // 判断是否为第一次启动
         if(blockMapper.findBlockNum(HashUtil.sha256("0")) == 0){
-            // 建立入口
-            ContractEntrance contractEntrance = ContractEntrance.getInstance();
-            String ceStr = null;
-            try {
-                ceStr = JsonUtil.objectMapper.writeValueAsString(contractEntrance);
-            } catch (JsonProcessingException e) {
-                // 写入失败，关闭程序
-                log.error("firstTimeSetup(): error in creating contractEntrance, shut down!");
-                e.printStackTrace();
-                shutDownManager.shutDown();
+            CryptoSuite cryptoSuite = new CryptoSuite(chainConfig.getCryptoType());
+            List<String> list = new ArrayList();
+            for (int i = 0; i < 5; i++) {
+                CryptoKeyPair keyPair = cryptoSuite.createKeyPair();
+                String address = keyPair.getAddress();
+                String prikey = keyPair.getHexPrivateKey();
+
+                final BigInteger val = BigInteger.valueOf(10000);
+                UserAccount userAccount = new UserAccount();
+                userAccount.addBalance(val);
+                worldState.createAccount(address, userAccount);
+                list.add(address+","+prikey+","+val);
             }
-            worldState.update(contractEntrance.getKey(),ceStr);
+            log.info("====================================");
+            for(String item : list){
+                String[] val = item.split(",");
+                log.info("addr: {}, pkey: {}, value: {}", val[0], val[1], val[2]);
+            }
+            log.info("====================================");
             worldState.sync();
             // 建立新区块
             Block block = generateFirstBlock();
@@ -219,22 +238,20 @@ public class BlockchainServiceImpl implements BlockchainService {
                 log.error("firstTimeSetup(): cannot sync data between block and state! Shut down!\nAdvise: clear the mysql and leveldb, restart node.");
                 shutDownManager.shutDown();
             }
-            // 寻找ContractEntrance
-            String ceStr = worldState.get(ContractEntrance.CONTRACT_ENTRANCE_KEY);
-            ContractEntrance contractEntrance = null;
-            try {
-                contractEntrance = JsonUtil.objectMapper.readValue(ceStr,ContractEntrance.class);
-            } catch (JsonProcessingException e) {
-                // 载入失败，关闭程序
-                log.error("firstTimeSetup(): error in finding contractEntrance, shut down!");
-                e.printStackTrace();
-                shutDownManager.shutDown();
-            }
-            ContractEntrance.getInstance(contractEntrance);
+//            // 寻找ContractEntrance
+//            String ceStr = worldState.get(ContractEntrance.CONTRACT_ENTRANCE_KEY);
+//            ContractEntrance contractEntrance = null;
+//            try {
+//                contractEntrance = JsonUtil.objectMapper.readValue(ceStr,ContractEntrance.class);
+//            } catch (JsonProcessingException e) {
+//                // 载入失败，关闭程序
+//                log.error("firstTimeSetup(): error in finding contractEntrance, shut down!");
+//                e.printStackTrace();
+//                shutDownManager.shutDown();
+//            }
+//            ContractEntrance.getInstance(contractEntrance);
             log.info("firstTimeSetup(): find ContractEntrance, contracts="+ContractEntrance.getInstance().getContracts().toString());
         }
-        // 初始化智能合约
-        initContract();
         // 初始化轮数
         this.round.set(0);
         // 单节点
@@ -568,6 +585,7 @@ public class BlockchainServiceImpl implements BlockchainService {
             if(isValidTransaction(transaction)){
                 // 交易合法
                 transaction.setTranSeq(tranSeq++);
+                transaction.setSequence(transaction.getTranSeq());
                 validTransList.add(transaction);
             }
         }
@@ -795,7 +813,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         log.info("transactionExec(): start exec transactions in block="+block.getHash()+", transactions size="+block.getTx_length());
         if(null == stateRoot){
             List<Transaction> transactions = block.getTrans();
-            txExecuter.baseExecute(transactions,worldState);
+            txExecuter.batchExecute(transactions);
             return worldState.getRootHash();
         }
         return null;
@@ -868,16 +886,6 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Override
     public void removeVote(String tag,long height, long round, String blockHash) {
         this.voteHandler.remove(tag,height,round,blockHash);
-    }
-
-    @Override
-    public void deployContract(Object o) {
-
-    }
-
-    @Override
-    public void syncContract(String contractId) {
-
     }
 
     /**
@@ -991,24 +999,12 @@ public class BlockchainServiceImpl implements BlockchainService {
         }
         log.info("initMessageService(): "+messageServiceType+" init complete.");
     }
-    /**
-     * 初始化State
-     * */
-    private void initState(){
-        // 初始化状态树
-        this.worldState = new WorldState(statedbDir,statedbName,this);
-    }
-    /**
-     * 初始化智能合约相关
-     * */
-    private void initContract(){
-        if(ContractEntrance.getInstance() == null){
-            log.error("initContract(): contractEntrance in null, shut down!");
-            shutDownManager.shutDown();
-        }
-        // 初始化智能合约管理
-        this.txExecuter = TxExecuter.getInstance(this,this.worldState);
-    }
+
+    private void initWorldStateAndTxExecuter(){
+         this.worldState = new WorldState(this.chainConfig.getStatedbDir(), this.chainConfig.getStatedbName());
+         this.txExecuter = new TxExecuter(this.chainConfig, this.worldState);
+     }
+
     /**
      * 初始化共识协议
      * */
@@ -1191,22 +1187,5 @@ public class BlockchainServiceImpl implements BlockchainService {
             transactionMapper.insertTransaction(t);
         }
         //transactionMapper.insertAllTrans(block.getTrans());
-    }
-
-    /********************************* Mapper功能暴露 ***********************************/
-
-    @Override
-    public void insertUserAccount(UserAccount userAccount) {
-        this.userAccountMapper.insertUserAccount(userAccount);
-    }
-
-    @Override
-    public void updateUserAccountBalance(String userName, int newBalance) {
-        this.userAccountMapper.updateBalance(newBalance, userName);
-    }
-
-    @Override
-    public void insertContractAccount(ContractAccount contractAccount) {
-        this.contractAccountMapper.insertUserAccount(contractAccount);
     }
 }

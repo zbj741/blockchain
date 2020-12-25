@@ -40,22 +40,12 @@ public class BlockchainApiImpl implements BlockchainApi{
     }
 
     @Override
-    public List<Block> listBlockByHeight(int min, int max) {
-        return null;
-    }
-
-    @Override
     public Transaction findTxByTxHash(String tx_hash) {
-        return null;
-    }
-
-    @Override
-    public List<Transaction> findTxByBlockHeight(long height) {
-        return null;
+        return transactionMapper.findTransByHash(tx_hash);
     }
 
     @Override
     public List<Transaction> findTxByBlockHash(String bhash) {
-        return null;
+        return transactionMapper.findTransByBlockHash(bhash);
     }
 }

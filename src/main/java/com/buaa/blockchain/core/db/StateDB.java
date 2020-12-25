@@ -11,6 +11,7 @@ import com.buaa.blockchain.utils.Utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.List;
 
@@ -50,12 +51,12 @@ public class StateDB implements DB {
         Block currentBlock;
         HashSet<String> blockKeySet;
         HashSet<String> userAccountKeySet;
-        HashSet<String> contractAccountKeySet;
+//        HashSet<String> contractAccountKeySet;
         public StateData(){
             this.currentBlock = new Block();
             this.blockKeySet = new HashSet<>();
             this.userAccountKeySet = new HashSet<>();
-            this.contractAccountKeySet = new HashSet<>();
+//            this.contractAccountKeySet = new HashSet<>();
         }
         public void writeStateDB(){
             try {
@@ -73,7 +74,7 @@ public class StateDB implements DB {
                 this.currentBlock = stateData.currentBlock;
                 this.blockKeySet = stateData.blockKeySet;
                 this.userAccountKeySet = stateData.userAccountKeySet;
-                this.contractAccountKeySet = stateData.contractAccountKeySet;
+//                this.contractAccountKeySet = stateData.contractAccountKeySet;
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -94,24 +95,24 @@ public class StateDB implements DB {
          * 加入用户
          * */
         public void addUserAccount(UserAccount userAccount){
-            this.userAccountKeySet.add(userAccount.getUserKey());
-            try {
-                update(STATE_DATA_KEY, JsonUtil.objectMapper.writeValueAsBytes(this));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+//            this.userAccountKeySet.add(userAccount.getUserKey());
+//            try {
+//                update(STATE_DATA_KEY, JsonUtil.objectMapper.writeValueAsBytes(this));
+//            } catch (JsonProcessingException e) {
+//                e.printStackTrace();
+//            }
         }
-        /**
-         * 加入智能合约用户
-         * */
-        public void addContractAccount(ContractAccount contractAccount){
-            this.contractAccountKeySet.add(contractAccount.getcKey());
-            try {
-                update(STATE_DATA_KEY, JsonUtil.objectMapper.writeValueAsBytes(this));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        }
+//        /**
+//         * 加入智能合约用户
+//         * */
+//        public void addContractAccount(ContractAccount contractAccount){
+//            this.contractAccountKeySet.add(contractAccount.getcKey());
+//            try {
+//                update(STATE_DATA_KEY, JsonUtil.objectMapper.writeValueAsBytes(this));
+//            } catch (JsonProcessingException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
 
@@ -253,14 +254,14 @@ public class StateDB implements DB {
     /************************* DB interface ******************************/
     @Override
     public void insertUserAccount(UserAccount userAccount) {
-        try {
-            // 插入账户
-            update(userAccount.getUserKey(), JsonUtil.objectMapper.writeValueAsBytes(userAccount));
-            this.stateData.addUserAccount(userAccount);
-        } catch (JsonProcessingException e) {
-            // TODO insertUserAccount failed
-            e.printStackTrace();
-        }
+//        try {
+//            // 插入账户
+//            update(userAccount.getUserKey(), JsonUtil.objectMapper.writeValueAsBytes(userAccount));
+//            this.stateData.addUserAccount(userAccount);
+//        } catch (JsonProcessingException e) {
+//            // TODO insertUserAccount failed
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -277,30 +278,30 @@ public class StateDB implements DB {
     }
 
     @Override
-    public void updateUserAccountBalance(String userName, int newBalance) {
+    public void addBalance(String userName, BigInteger val) {
         UserAccount userAccount = findUserAccountByUserName(userName);
-        userAccount.setBalance(newBalance);
-        // 写回
-        try {
-            update(userAccount.getUserKey(), JsonUtil.objectMapper.writeValueAsBytes(userAccount));
-            this.stateData.addUserAccount(userAccount);
-        } catch (JsonProcessingException e) {
-            // TODO updateUserAccountBalance failed
-            e.printStackTrace();
-        }
+        userAccount.addBalance(val);
+//        // 写回
+//        try {
+//            update(userAccount.getUserKey(), JsonUtil.objectMapper.writeValueAsBytes(userAccount));
+//            this.stateData.addUserAccount(userAccount);
+//        } catch (JsonProcessingException e) {
+//            // TODO updateUserAccountBalance failed
+//            e.printStackTrace();
+//        }
     }
 
-    @Override
-    public void insertContractAccount(ContractAccount contractAccount) {
-        try {
-            // 插入账户
-            update(contractAccount.getcKey(), JsonUtil.objectMapper.writeValueAsBytes(contractAccount));
-            this.stateData.addContractAccount(contractAccount);
-        } catch (JsonProcessingException e) {
-            // TODO insertContractAccount failed
-            e.printStackTrace();
-        }
-    }
+//    @Override
+//    public void insertContractAccount(ContractAccount contractAccount) {
+//        try {
+//            // 插入账户
+//            update(contractAccount.getcKey(), JsonUtil.objectMapper.writeValueAsBytes(contractAccount));
+//            this.stateData.addContractAccount(contractAccount);
+//        } catch (JsonProcessingException e) {
+//            // TODO insertContractAccount failed
+//            e.printStackTrace();
+//        }
+//    }
 
     @Override
     public void insertBlock(Block block) {

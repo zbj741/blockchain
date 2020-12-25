@@ -1,8 +1,7 @@
 package com.buaa.blockchain.crypto;
 
-import com.buaa.blockchain.config.ConfigOption;
-import com.buaa.blockchain.config.model.AccountConfig;
-import com.buaa.blockchain.config.model.CryptoType;
+import com.buaa.blockchain.config.AccountConfig;
+import com.buaa.blockchain.config.CryptoType;
 import com.buaa.blockchain.crypto.exceptions.LoadKeyStoreException;
 import com.buaa.blockchain.crypto.exceptions.UnsupportedCryptoTypeException;
 import com.buaa.blockchain.crypto.hash.Hash;
@@ -24,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import java.security.KeyPair;
 
 public class CryptoSuite {
-
     private static Logger logger = LoggerFactory.getLogger(CryptoSuite.class);
 
     public final int cryptoTypeConfig;
@@ -33,18 +31,18 @@ public class CryptoSuite {
     public final Hash hashImpl;
     private final CryptoKeyPair keyPairFactory;
     private CryptoKeyPair cryptoKeyPair;
-    private ConfigOption config;
+    private AccountConfig config;
 
-    public CryptoSuite(int cryptoTypeConfig, ConfigOption configOption) {
+    public CryptoSuite(int cryptoTypeConfig, AccountConfig config) {
         this(cryptoTypeConfig);
         logger.info("init CryptoSuite, cryptoType: {}", cryptoTypeConfig);
-        setConfig(configOption);
+        setConfig(config);
         // doesn't set the account name, generate the keyPair randomly
-        if (!configOption.getAccountConfig().isAccountConfigured()) {
+        if (!config.isAccountConfigured()) {
             createKeyPair();
             return;
         }
-        loadAccount(configOption);
+        loadAccount(config);
     }
     /**
      * init the common crypto implementation according to the crypto type
@@ -57,12 +55,10 @@ public class CryptoSuite {
             this.signatureImpl = new ECDSASignature();
             this.hashImpl = new Keccak256();
             this.keyPairFactory = new ECDSAKeyPair();
-
         } else if (this.cryptoTypeConfig == CryptoType.SM_TYPE) {
             this.signatureImpl = new SM2Signature();
             this.hashImpl = new SM3Hash();
             this.keyPairFactory = new SM2KeyPair();
-
         } else {
             throw new UnsupportedCryptoTypeException(
                     "only support "
@@ -71,8 +67,6 @@ public class CryptoSuite {
                             + CryptoType.SM_TYPE
                             + " crypto type");
         }
-        // create keyPair randomly
-        createKeyPair();
     }
 
     public void loadAccount(String accountFileFormat, String accountFilePath, String password) {
@@ -82,17 +76,13 @@ public class CryptoSuite {
         } else if (accountFileFormat.compareToIgnoreCase("pem") == 0) {
             keyTool = new PEMKeyStore(accountFilePath);
         } else {
-            throw new LoadKeyStoreException(
-                    "unsupported account file format : "
-                            + accountFileFormat
-                            + ", current supported are p12 and pem");
+            throw new LoadKeyStoreException("unsupported account file format : " + accountFileFormat + ", current supported are p12 and pem");
         }
         logger.debug("Load account from {}", accountFilePath);
         createKeyPair(keyTool.getKeyPair());
     }
 
-    private void loadAccount(ConfigOption configOption) {
-        AccountConfig accountConfig = configOption.getAccountConfig();
+    private void loadAccount(AccountConfig accountConfig) {
         String accountFilePath = accountConfig.getAccountFilePath();
         if (accountFilePath == null || accountFilePath.equals("")) {
             if (accountConfig.getAccountFileFormat().compareToIgnoreCase("p12") == 0) {
@@ -103,13 +93,10 @@ public class CryptoSuite {
                         keyPairFactory.getPemKeyStoreFilePath(accountConfig.getAccountAddress());
             }
         }
-        loadAccount(
-                accountConfig.getAccountFileFormat(),
-                accountFilePath,
-                accountConfig.getAccountPassword());
+        loadAccount(accountConfig.getAccountFileFormat(), accountFilePath, accountConfig.getAccountPassword());
     }
 
-    public void setConfig(ConfigOption config) {
+    public void setConfig(AccountConfig config) {
         this.config = config;
         this.keyPairFactory.setConfig(config);
     }
@@ -192,7 +179,7 @@ public class CryptoSuite {
         return this.cryptoKeyPair;
     }
 
-    public ConfigOption getConfig() {
+    public AccountConfig getConfig() {
         return this.config;
     }
 

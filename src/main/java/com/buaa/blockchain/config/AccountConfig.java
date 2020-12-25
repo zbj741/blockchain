@@ -1,25 +1,23 @@
-package com.buaa.blockchain.config.model;
+package com.buaa.blockchain.config;
 
 import com.buaa.blockchain.config.exceptions.ConfigException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.Objects;
-import java.util.Properties;
 
+@Configuration
 public class AccountConfig {
+    @Value("${keyStoreDir}")
     private String keyStoreDir;
+    @Value("${accountAddress}")
     private String accountAddress;
+    @Value("${accountFileFormat}")
     private String accountFileFormat;
+    @Value("${accountPassword}")
     private String accountPassword;
+    @Value("${accountFilePath}")
     private String accountFilePath;
-
-    public AccountConfig(Properties configProperty) throws ConfigException {
-        this.keyStoreDir = configProperty.getProperty("keyStoreDir", "account");
-        this.accountAddress = configProperty.getProperty("accountAddress", "");
-        this.accountFileFormat = configProperty.getProperty("accountFileFormat", "pem");
-        this.accountPassword = configProperty.getProperty("password", "");
-        this.accountFilePath = configProperty.getProperty("accountFilePath", "");
-        checkAccountConfig();
-    }
 
     private void checkAccountConfig() throws ConfigException {
         if (this.accountAddress.equals("")) {

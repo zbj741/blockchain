@@ -3,6 +3,8 @@ package com.buaa.blockchain.entity;
 
 import com.buaa.blockchain.contract.core.DataUnit;
 import com.buaa.blockchain.contract.core.OriginContract;
+import com.buaa.blockchain.crypto.HashUtil;
+import com.buaa.blockchain.crypto.utils.Hex;
 import com.buaa.blockchain.vm.DataWord;
 import com.buaa.blockchain.vm.utils.HexUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,6 +14,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -51,7 +54,13 @@ public class Transaction implements Serializable,Comparable<Transaction> {
     private boolean rejected = false;
     private boolean create = false;
 
-    public Transaction() {
+    public Transaction(){}
+
+    public Transaction(byte[] from, byte[] to, BigInteger value, byte[] data) {
+        this.from = from;
+        this.to = to;
+        this.value = value;
+        this.data = data;
     }
 
     public Transaction(String _block_hash, String _tran_hash, String _type, Timestamp _timestamp,
@@ -196,5 +205,37 @@ public class Transaction implements Serializable,Comparable<Transaction> {
                 "extra",
                 "data".getBytes()
         );
+    }
+
+    public String getTran_hash() {
+        return HashUtil.sha256(Hex.toHexString(this.toString().getBytes()));
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Transaction{");
+        sb.append("block_hash='").append(block_hash).append('\'');
+        sb.append(", create=").append(create);
+        sb.append(", data=").append(Arrays.toString(data));
+        sb.append(", depth=").append(depth);
+        sb.append(", extra='").append(extra).append('\'');
+        sb.append(", from=").append(Arrays.toString(from));
+        sb.append(", gas=").append(gas);
+        sb.append(", gasPrice=").append(gasPrice);
+        sb.append(", index=").append(index);
+        sb.append(", largeData=").append(Arrays.toString(largeData));
+        sb.append(", nonce=").append(nonce);
+        sb.append(", rejected=").append(rejected);
+        sb.append(", sequence=").append(sequence);
+        sb.append(", sign='").append(sign).append('\'');
+        sb.append(", timestamp=").append(timestamp);
+        sb.append(", to=").append(Arrays.toString(to));
+        sb.append(", tran_hash='").append(tran_hash).append('\'');
+        sb.append(", tranSeq=").append(tranSeq);
+        sb.append(", type='").append(type).append('\'');
+        sb.append(", value=").append(value);
+        sb.append(", version='").append(version).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }
