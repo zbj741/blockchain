@@ -31,6 +31,9 @@ data
 logs
 accounts
 
+# Mac
+.DS_Store
+**/.DS_Store
 
 HELP.md
 target/
