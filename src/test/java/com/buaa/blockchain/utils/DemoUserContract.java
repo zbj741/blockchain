@@ -1,3 +1,5 @@
+package com.buaa.blockchain.utils;
+
 import java.util.Map;
 
 /**
@@ -26,4 +28,5 @@ public class DemoUserContract {
     public void delUser(String id){
         this.map.remove(id);
     }
+
 }

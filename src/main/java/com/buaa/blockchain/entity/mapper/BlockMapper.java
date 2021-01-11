@@ -12,48 +12,43 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 
-/**
- * 和数据库交互的Block相关
- *
- * @author hitty
- *
- * */
-
 @Repository
 public interface BlockMapper {
 
     @Select("SELECT pre_hash,hash,merkle_root,state_root,pre_state_root,height,sign,timestamp,extra,version,tx_length from block where hash = #{hash}")
-    public Block findBlockByHash(String hash);
+    Block findBlockByHash(String hash);
 
     @Select("SELECT pre_hash,hash,merkle_root,state_root,pre_state_root,height,sign,timestamp,extra,version,tx_length from block where height = #{height}")
-    public Block findBlockByHeight(long height);
+    Block findBlockByHeight(long height);
 
     @Select("SELECT hash from block where pre_hash = #{pre_hash}")
-    public Block findBlockByPreHash(String pre_hash);
+    Block findBlockByPreHash(String pre_hash);
 
     @Select("SELECT count(1) as num from block where hash = #{hash}")
-    public Long findBlockNum(String hash);
+    Long findBlockNum(String hash);
+
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     @Insert("INSERT INTO block ( pre_hash, hash, merkle_root, state_root,pre_state_root, height, sign, timestamp,version,extra,tx_length)"
             + " VALUES"
             + " (#{pre_hash}, #{hash}, #{merkle_root}, #{state_root}, #{pre_state_root},#{height},#{sign},#{timestamp},#{version},#{extra},#{tx_length})")
-    public int insertBlock(Block Block);
+    int insertBlock(Block Block);
+
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     @Select("select hash from block where height = #{height}")
-    public String findHashByHeight(long height);
+    String findHashByHeight(long height);
+
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     @Select("select max(height) from block")
-    public Long findMaxHeight();
+    Long findMaxHeight();
 
     @Select("select state_root from block where height = #{height}")
-    public String findStatRoot(long height);
+    String findStatRoot(long height);
 
     @Select("select pre_hash,hash,merkle_root,state_root,pre_state_root,height,sign,timestamp,extra,version,tx_length from block where height > #{heightBegin} and height < #{heightEnd} order by height")
-    public ArrayList<Block> findBlocks(@Param("heightBegin") int heightBegin, @Param("heightEnd") int heightEnd);
+    ArrayList<Block> findBlocks(@Param("heightBegin") int heightBegin, @Param("heightEnd") int heightEnd);
 
     @Insert("INSERT INTO times (block_hash,tx_length,startCompute,broadcast,blockReceived,sendVote,voteReceived,storeBlock,removeTrans,storeTrans,endTime)"
             + " VALUES"
             + " (#{block_hash},#{tx_length},#{startCompute},#{broadcast},#{blockReceived},#{sendVote},#{voteReceived},#{storeBlock},#{removeTrans},#{storeTrans},#{endTime})")
-    public void insertTimes(Times times);
-
+    void insertTimes(Times times);
 }

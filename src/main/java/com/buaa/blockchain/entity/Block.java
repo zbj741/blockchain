@@ -27,6 +27,8 @@ public class Block implements Serializable, Comparable<Block> {
     private String pre_state_root;
     /* 区块所包含交易数据的merkle树根 */
     private String merkle_root;
+    /* 交易Receipt状态树根 */
+    private String receipt_root;
     /* 交易数量 */
     private int tx_length;
     /* 区块高度，作为区块持久化的主键，在数据库中是按照升序排列的 */
@@ -43,6 +45,9 @@ public class Block implements Serializable, Comparable<Block> {
     private long timestamp;
     /* 交易列表 */
     private List<Transaction> trans;
+    /* 交易Receipt */
+    private List<TransactionReceipt> transactionReceipts;
+
     /* 计算区块的耗时相关记录 */
     private Times times;
 
@@ -50,6 +55,7 @@ public class Block implements Serializable, Comparable<Block> {
     private byte[] parentHash;
     private byte[] coinbase;
     private long gasLimit;
+    private String receiptHash;
 
     public Block(){}
 

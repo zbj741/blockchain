@@ -63,4 +63,13 @@ public class ReflectUtilTest {
         Assert.assertEquals(0, param.size());
         Assert.assertEquals(null, param.get("1"));
     }
+
+    @Test
+    public void testInjectMultiParam() throws NoSuchMethodException {
+        final Map param = new HashMap();
+        Class classZ = DemoUserContract.class;
+        Object obj = ReflectUtil.getInstance().newInstance(classZ, Map.class,  param);
+//        ReflectUtil.getInstance().invoke(classZ, obj, "add", new String[]{"1.2", "111"});
+//        System.out.println(param);
+    }
 }

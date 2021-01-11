@@ -24,13 +24,11 @@ import java.util.Map;
 @Scope("prototype")
 @RequestMapping("/tx")
 public class TransactionController {
-
     private final BlockchainApi blockchainApi;
     private TxPool txPool;
 
     @Autowired
     private ChainConfig chainConfig;
-
     @Autowired
     private TransactionMapper transactionMapper;
 

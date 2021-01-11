@@ -2,6 +2,7 @@ package com.buaa.blockchain.api;
 
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.entity.Transaction;
+import com.buaa.blockchain.entity.TransactionReceipt;
 
 import java.util.List;
 
@@ -27,5 +28,14 @@ public interface BlockchainApi {
      * 获取交易数据
      * */
     Transaction findTxByTxHash(String tx_hash);
+
     List<Transaction> findTxByBlockHash(String blockHash);
+
+    /**
+     * 查询交易Receipts
+     *
+     * @param height
+     * @return
+     */
+    List<TransactionReceipt> findReceiptsByHeight(long height);
 }

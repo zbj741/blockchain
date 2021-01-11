@@ -5,6 +5,7 @@ import com.buaa.blockchain.contract.util.classloader.ByteClassLoader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 
 /**
  * xxxx
@@ -52,21 +53,35 @@ public class ReflectUtil {
         }
     }
 
-    public Object invoke(Class classObj, Object objInstance, String methodName, Object... param) throws NoSuchMethodException {
-        Method defineMethod = MethodUtil.getMethod(classObj, methodName);
-        return invoke(defineMethod, objInstance, param);
+    public Object invoke(Class classObj, Object objInstance, String methodName, Object... param) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method defineMethod = MethodUtil.getMethod(classObj, methodName, param.length);
+
+        Class<?>[] parameters = defineMethod.getParameterTypes();
+        Object[] invokeObjs = new Object[param.length];
+        for (int i = 0; i < param.length; i++) {
+            String paramVal = String.valueOf(param[i]);
+            if(Boolean.class.isAssignableFrom(parameters[i]) || boolean.class.isAssignableFrom(parameters[i])){
+                invokeObjs[i] = Boolean.valueOf(paramVal);
+            }else if(Integer.class.isAssignableFrom(parameters[i]) || int.class.isAssignableFrom(parameters[i])){
+                invokeObjs[i] = Integer.valueOf(paramVal);
+            }else if(Long.class.isAssignableFrom(parameters[i]) || long.class.isAssignableFrom(parameters[i])){
+                invokeObjs[i] = Long.valueOf(paramVal);
+            }else if(Double.class.isAssignableFrom(parameters[i]) || double.class.isAssignableFrom(parameters[i])){
+                invokeObjs[i] = Double.valueOf(paramVal);
+            }else if(BigDecimal.class.isAssignableFrom(parameters[i])){
+                invokeObjs[i] = new BigDecimal(paramVal);
+            }else{
+                invokeObjs[i] = paramVal;
+            }
+        }
+        return invoke(defineMethod, objInstance, invokeObjs);
     }
 
-    private Object invoke(Method method, Object bean, Object... args) {
-        try {
-            if (method.getParameters().length == 0) {
-                return method.invoke(bean);
-            } else {
-                return method.invoke(bean,args);
-            }
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+    private Object invoke(Method method, Object bean, Object... args) throws InvocationTargetException, IllegalAccessException {
+        if (method.getParameters().length == 0) {
+            return method.invoke(bean);
+        } else {
+            return method.invoke(bean,args);
         }
     }
 
