@@ -41,6 +41,11 @@ public class BlockchainApiImpl implements BlockchainApi{
     }
 
     @Override
+    public Block findLastBlock() {
+        return blockMapper.findLastBlock();
+    }
+
+    @Override
     public Transaction findTxByTxHash(String tx_hash) {
         return transactionMapper.findTransByHash(tx_hash);
     }

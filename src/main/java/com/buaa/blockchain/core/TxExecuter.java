@@ -13,6 +13,7 @@ import com.buaa.blockchain.entity.UserAccount;
 import com.buaa.blockchain.utils.ByteUtil;
 import com.buaa.blockchain.utils.ReflectUtil;
 import com.buaa.blockchain.vm.utils.ByteArrayUtil;
+import com.buaa.blockchain.vm.utils.HexUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -51,6 +52,9 @@ public class TxExecuter {
             result.setTx_hash(tx.getTran_hash());
             result.setTransaction(tx);
             result.setTx_sequence(i);
+            if(tx.getTo() != null){
+                result.setTo_address(new String(tx.getTo()));
+            }
 
             receipts.add(result);
         }
@@ -60,8 +64,7 @@ public class TxExecuter {
 
     public TransactionReceipt execute(Transaction transaction){
         TransactionReceipt receipt = new TransactionReceipt();
-        receipt.setReceipt_hash(String.valueOf(HashUtil.randomHash()));
-
+        receipt.setReceipt_hash(HexUtil.toHexString(HashUtil.randomHash()));
         if(transaction.getTo() == null) {
             log.info("deploy contract......");
             // 1. decode the data value (contractName and contractCode)
@@ -92,11 +95,11 @@ public class TxExecuter {
             try {
                 String data_state = new ObjectMapper().writeValueAsString(storage);
                 userAccount.setStorageHash(storageHash);
-                worldState.update(new String(storageHash), data_state);
+                worldState.update(HexUtil.toHexString(storageHash), data_state);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-            log.debug("storage hash: {}", new String(storageHash));
+            log.debug("storage hash: {}", HexUtil.toHexString(storageHash));
             //3.5 store the contract user to world state.
             worldState.createAccount(contractAddress, userAccount);
             log.info("contract address at: {} ", contractAddress);
@@ -114,6 +117,7 @@ public class TxExecuter {
                 }
 
                 List contractLogList = new ArrayList();
+                String err = "";
                 Map storage = this.worldState.getContractStorage(new String(transaction.getTo()));
                 try {
                     log.debug("load the contract storage data, {}", new ObjectMapper().writeValueAsString(storage));
@@ -139,9 +143,9 @@ public class TxExecuter {
                     receipt.setExec_result(new ObjectMapper().writeValueAsString(execResult));
                     isExecuteSucc = true;
                 }  catch (Exception e){
-                    receipt.setError(e.getMessage());
                     if(e.getCause().getClass().isAssignableFrom(ContractException.class)){
-                        throw new ContractException(e.getCause().getMessage());
+                       // throw new ContractException(e.getCause().getMessage());
+                        receipt.setError(e.getMessage());
                     }
                     e.printStackTrace();
                 }
@@ -150,7 +154,7 @@ public class TxExecuter {
                     final byte[] storageHash = HashUtil.randomHash();
                     try {
                         String data_state = new ObjectMapper().writeValueAsString(storage);
-                        worldState.update(new String(storageHash), data_state);
+                        worldState.update(HexUtil.toHexString(storageHash), data_state);
                         worldState.refreshStorage(new String(transaction.getTo()), storageHash);
                     } catch (Exception e) {
                         receipt.setError(e.getMessage());

@@ -36,8 +36,8 @@ public class TransactionReceiptController {
     }
 
     @GetMapping(value = "/list")
-    public List<TransactionReceipt> findTxByBlockHash(@RequestParam(value = "height") long height) {
-        return blockchainApi.findReceiptsByHeight(height);
+    public List<TransactionReceipt> findTxByBlockHash(@RequestParam(value = "from_block_num") long fromBlockNum, @RequestParam(value = "to_block_num") long toBlockNum) {
+        return transactionReceiptMapper.findList(fromBlockNum, toBlockNum);
     }
 
     @GetMapping(value = "/add")

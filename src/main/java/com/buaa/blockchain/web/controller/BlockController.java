@@ -30,4 +30,9 @@ public class BlockController {
     public Block findBlockByHeight(@RequestParam(value = "hash") String hash){
         return blockchainApi.findBlockByHash(hash);
     }
+
+    @GetMapping("/find_last_block")
+    public Block findLastBlock(){
+        return blockchainApi.findLastBlock();
+    }
 }

@@ -213,6 +213,36 @@ public class EisContractTest {
         Assert.assertEquals(BigDecimal.valueOf(1.0435), getParam(12, 4, BigDecimal.class));
     }
 
+    @Test
+    public void testCastVar() throws JsonProcessingException, NoSuchFieldException, IllegalAccessException {
+        Long expectUserId = 1l;
+        Long expectEntId = 2l;
+        String period = "202101";
+
+        invoke("deposit", new Object[]{
+                expectEntId, BigDecimal.valueOf(10000l)
+        });
+        invoke("deposit", new Object[]{
+                expectUserId, BigDecimal.valueOf(10000l)
+        });
+        invoke("createPayOrder", new Object[]{
+                expectUserId, expectEntId, BigDecimal.valueOf(3000l)
+        });
+        String str = new ObjectMapper().writeValueAsString(this.storage);
+        this.storage = new ObjectMapper().readValue(str, Map.class);
+
+        this.contract = ReflectUtil.getInstance().newInstance(this.classZ, Map.class,  storage);
+        Field f1 = classZ.getSuperclass().getDeclaredField("LOGS");
+        f1.setAccessible(true);
+        f1.set(this.contract, this.logList);
+
+
+        invoke("payOrderByUser", new Object[]{
+                expectUserId, period
+        });
+        System.out.println(this.storage);
+    }
+
     private void invoke(String  method, Object... params){
         try {
             ReflectUtil.getInstance().invoke(classZ, this.contract, method, params);

@@ -20,6 +20,7 @@ public class TransactionReceipt {
     private Integer tx_sequence;
     private String block_hash;
     private Long height;
+    private String to_address;
 
     private String logs;
     private String exec_result;

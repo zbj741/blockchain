@@ -1,5 +1,6 @@
 package com.buaa.blockchain.contract;
 
+import com.buaa.blockchain.BlockchainApplication;
 import com.buaa.blockchain.contract.util.classloader.ByteClassLoader;
 import com.buaa.blockchain.vm.utils.HexUtil;
 import com.google.common.io.ByteStreams;
@@ -23,7 +24,7 @@ public class DeployContract {
     public void testDeployContract() throws IOException, ClassNotFoundException {
         String contractName = "EisContract";
         // 1. read the contract bytes
-        InputStream in = ClassLoaderTest.class.getResourceAsStream("/"+contractName+".class");
+        InputStream in = BlockchainApplication.class.getResourceAsStream("/"+contractName+".class");
 
         byte[] byteData = ByteStreams.toByteArray(in);
         System.out.println(HexUtil.toHexString(byteData));

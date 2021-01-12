@@ -22,7 +22,19 @@ public interface BlockchainApi {
      * 获取区块数据
      * */
     Block findBlockByHash(String hash);
+
+    /**
+     *
+      * @param height
+     * @return
+     */
     Block findBlockByHeight(long height);
+
+    /**
+     *
+     * @return
+     */
+    Block findLastBlock();
 
     /**
      * 获取交易数据

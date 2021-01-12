@@ -8,6 +8,7 @@ import com.buaa.blockchain.contract.trie.datasource.LevelDbDataSource;
 import com.buaa.blockchain.entity.UserAccount;
 import com.buaa.blockchain.utils.JsonUtil;
 import com.buaa.blockchain.utils.Utils;
+import com.buaa.blockchain.vm.utils.HexUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -239,7 +240,7 @@ public class WorldState implements State {
         if (!userAccount.isContractAccount())
             return null;
 
-        String data = this.get(new String(userAccount.getStorageHash()));
+        String data = this.get(HexUtil.toHexString(userAccount.getStorageHash()));
         try {
             return new ObjectMapper().readValue(data, Map.class);
         } catch (JsonProcessingException e) {

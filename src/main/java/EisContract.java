@@ -1,5 +1,8 @@
 import com.buaa.blockchain.contract.component.ContractException;
 import com.buaa.blockchain.contract.component.IContract;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
 /**
  * xxxx
@@ -41,42 +45,56 @@ public class EisContract extends IContract {
     private Map<String, IssueOrder> issueHistoryRepo;  // 示例: 202101-1:<发放明细> e.g <发放期数-用户编码>:<发放明细>
     private Map<String, Long> keyGenerateMap;
 
+
     public EisContract(Map storage) {
-        balanceRepo = (Map<Long, Balance>) storage.get(BALANCE_TYPE);
         if (storage.get(BALANCE_TYPE) == null) {
             balanceRepo = new HashMap<>();
-            storage.put(BALANCE_TYPE, balanceRepo);
+        }else{
+            balanceRepo = castStorage(storage.get(BALANCE_TYPE), new TypeReference<Map<Long, Balance>>() {});
         }
-        payOrderRepo = (Map<Long, PayOrder>) storage.get(PAY_ORDER_TYPE);
+        storage.put(BALANCE_TYPE, balanceRepo);
+
         if (storage.get(PAY_ORDER_TYPE) == null) {
             payOrderRepo = new HashMap<>();
-            storage.put(PAY_ORDER_TYPE, payOrderRepo);
+        }else{
+            payOrderRepo = castStorage(storage.get(PAY_ORDER_TYPE), new TypeReference<Map<Long, PayOrder>>() {});
         }
-        payOrderUserRepo = (Map<String, Long>) storage.get(PAY_ORDER_MAP_USER_TYPE);
+        storage.put(PAY_ORDER_TYPE, payOrderRepo);
+
         if (storage.get(PAY_ORDER_MAP_USER_TYPE) == null) {
             payOrderUserRepo = new HashMap<>();
-            storage.put(PAY_ORDER_MAP_USER_TYPE, payOrderUserRepo);
+        }else{
+            payOrderUserRepo = castStorage(storage.get(PAY_ORDER_MAP_USER_TYPE), new TypeReference<Map<String, Long>>() {});
         }
-        payOrderEntRepo = (Map<String, Long>) storage.get(PAY_ORDER_MAP_ENT_TYPE);
+        storage.put(PAY_ORDER_MAP_USER_TYPE, payOrderUserRepo);
+
         if (storage.get(PAY_ORDER_MAP_ENT_TYPE) == null) {
             payOrderEntRepo = new HashMap<>();
-            storage.put(PAY_ORDER_MAP_ENT_TYPE, payOrderEntRepo);
+        }else{
+            payOrderEntRepo = castStorage(storage.get(PAY_ORDER_MAP_ENT_TYPE), new TypeReference<Map<String, Long>>() {});
         }
-        issuePlanRepo = (Map<Long, IssuePlan>) storage.get(ISSUE_PLAN_TYPE);
+        storage.put(PAY_ORDER_MAP_ENT_TYPE, payOrderEntRepo);
+
         if (storage.get(ISSUE_PLAN_TYPE) == null) {
-            issuePlanRepo = new HashMap<>();
-            storage.put(ISSUE_PLAN_TYPE, issuePlanRepo);
+            issuePlanRepo = new HashMap<Long, IssuePlan>();
+        }else{
+            issuePlanRepo = castStorage(storage.get(ISSUE_PLAN_TYPE), new TypeReference<Map<Long, IssuePlan>>() {});
         }
-        issueHistoryRepo = (Map<String, IssueOrder>) storage.get(ISSUE_ORDER_TYPE);
+        storage.put(ISSUE_PLAN_TYPE, issuePlanRepo);
+
         if (storage.get(ISSUE_ORDER_TYPE) == null) {
-            issueHistoryRepo = new HashMap<>();
-            storage.put(ISSUE_ORDER_TYPE, issueHistoryRepo);
+            issueHistoryRepo = new HashMap<String, IssueOrder>();
+        }else{
+            issueHistoryRepo = castStorage(storage.get(ISSUE_ORDER_TYPE), new TypeReference<Map<String, IssueOrder>>() {});
         }
-        keyGenerateMap = (Map<String, Long>) storage.get(NEXT_ID_TYPE);
+        storage.put(ISSUE_ORDER_TYPE, issueHistoryRepo);
+
         if (storage.get(NEXT_ID_TYPE) == null) {
-            keyGenerateMap = new HashMap<>();
-            storage.put(NEXT_ID_TYPE, keyGenerateMap);
+            keyGenerateMap = new HashMap<String, Long>();
+        }else{
+            keyGenerateMap = castStorage(storage.get(NEXT_ID_TYPE), new TypeReference<Map<String, Long>>() {});;
         }
+        storage.put(NEXT_ID_TYPE, keyGenerateMap);
     }
 
     /**
@@ -106,7 +124,7 @@ public class EisContract extends IContract {
             throw new ContractException("本期待缴明细已生成");
         }
 
-        final long payOrderId = nextPayOrderNextId();
+        final Long payOrderId = nextPayOrderNextId();
         PayOrder payOrder = new PayOrder();
         payOrder.setPeriod(period);
         payOrder.setSalaryBase(salaryBase);
@@ -141,7 +159,6 @@ public class EisContract extends IContract {
         if (payOrderId == null) {
             throw new ContractException("当期缴存暂未生成");
         }
-
         PayOrder payOrder = payOrderRepo.get(payOrderId);
         payOrder.setUserStatus(true);
 
@@ -163,7 +180,7 @@ public class EisContract extends IContract {
      * 养老金缴存(企业)
      */
     public void payOrderByEnt(Long entId, Long userId, String period) {
-        Long payOrderId = payOrderEntRepo.get(createPayOrderEntKey(period, entId));
+        Long payOrderId =  payOrderEntRepo.get(createPayOrderEntKey(period, entId));
         if (payOrderId == null) {
             throw new ContractException("当期缴存暂未生成");
         }
@@ -319,13 +336,13 @@ public class EisContract extends IContract {
     }
 
     private long nextKeyId(String keyType) {
-        Long nextId = keyGenerateMap.get(keyType) ;
-        if(nextId == null){
+        Long nextId;
+        if (keyGenerateMap.get(keyType) == null){
            nextId = 0l;
-           keyGenerateMap.put(keyType, nextId);
         }else{
-           keyGenerateMap.put(keyType, nextId++);
+           nextId = keyGenerateMap.get(keyType) + 1;
         }
+        keyGenerateMap.put(keyType, nextId);
         return nextId;
     }
 
@@ -333,7 +350,17 @@ public class EisContract extends IContract {
         return new Date().getTime();
     }
 
-    private class Balance {
+    private Map castStorage(Object data, TypeReference typeReference){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String json = objectMapper.writeValueAsString(data);
+            return (Map) objectMapper.readValue(json, typeReference);
+        } catch (JsonProcessingException e) {
+            throw new ContractException("加载合约数据出错");
+        }
+    }
+
+    private static class Balance {
         private BigDecimal amount;
         private BigDecimal freezeAmount;
 
@@ -359,7 +386,7 @@ public class EisContract extends IContract {
         }
     }
 
-    private class PayOrder {
+    private static class PayOrder {
         private String period;
 
         private Long timestamp;
@@ -377,6 +404,9 @@ public class EisContract extends IContract {
         private BigDecimal entAmount;
 
         private Boolean entStatus;
+
+        public PayOrder() {
+        }
 
         public String getPeriod() {
             return period;
@@ -450,12 +480,29 @@ public class EisContract extends IContract {
             this.entStatus = entStatus;
         }
 
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", PayOrder.class.getSimpleName() + "[", "]")
+                    .add("entAmount=" + entAmount)
+                    .add("entId=" + entId)
+                    .add("entStatus=" + entStatus)
+                    .add("period='" + period + "'")
+                    .add("salaryBase=" + salaryBase)
+                    .add("timestamp=" + timestamp)
+                    .add("userAmount=" + userAmount)
+                    .add("userId=" + userId)
+                    .add("userStatus=" + userStatus)
+                    .toString();
+        }
     }
 
-    private class IssuePlan {
+    private static class IssuePlan {
         private Integer workYears;
         private Integer issueMonthNum;
         private BigDecimal monthAmount;
+
+        public IssuePlan() {
+        }
 
         public IssuePlan(Integer workYears, Integer issueMonthNum, BigDecimal monthAmount) {
             this.workYears = workYears;
@@ -476,10 +523,13 @@ public class EisContract extends IContract {
         }
     }
 
-    private class IssueOrder {
+    private static class IssueOrder {
         private Long timestamp;
         private BigDecimal basicAmount;
         private BigDecimal userAmount;
+
+        public IssueOrder() {
+        }
 
         public IssueOrder(Long timestamp, BigDecimal basicAmount, BigDecimal userAmount) {
             this.timestamp = timestamp;
@@ -497,6 +547,16 @@ public class EisContract extends IContract {
 
         public BigDecimal getUserAmount() {
             return userAmount;
+        }
+
+
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", IssueOrder.class.getSimpleName() + "[", "]")
+                    .add("basicAmount=" + basicAmount)
+                    .add("timestamp=" + timestamp)
+                    .add("userAmount=" + userAmount)
+                    .toString();
         }
     }
 }

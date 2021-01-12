@@ -21,6 +21,9 @@ public interface BlockMapper {
     @Select("SELECT pre_hash,hash,merkle_root,state_root,pre_state_root,height,sign,timestamp,extra,version,tx_length from block where height = #{height}")
     Block findBlockByHeight(long height);
 
+    @Select("SELECT pre_hash,hash,merkle_root,state_root,pre_state_root,height,sign,timestamp,extra,version,tx_length from block order by height desc limit 1")
+    Block findLastBlock();
+
     @Select("SELECT hash from block where pre_hash = #{pre_hash}")
     Block findBlockByPreHash(String pre_hash);
 
