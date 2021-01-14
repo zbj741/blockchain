@@ -1,9 +1,16 @@
-package com.buaa.blockchain;
+package com.buaa.blockchain.utils;
 
-import com.buaa.blockchain.utils.ByteUtil;
+import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.vm.DataWord;
 import com.buaa.blockchain.vm.utils.ByteArrayUtil;
+import com.buaa.blockchain.vm.utils.HexUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * xxxx
@@ -40,5 +47,27 @@ public class HexTest {
 
         System.out.println(new String(ByteArrayUtil.stripLeadingZeroes(mbyte)));
         System.out.println(new String(cbyte));
+    }
+
+    @Test
+    public void hexHash(){
+        final byte[] x = HashUtil.randomHash();
+        System.out.println(x);
+        System.out.println(new String(x));
+        System.out.println(HexUtil.toHexString(x));
+    }
+
+    @Test
+    public void testCast() throws JsonProcessingException {
+        Map<String, Long> test = new HashMap();
+        test.put("abc", 1l);
+
+
+        Long a = test.get("abc");
+
+        String str = new ObjectMapper().writeValueAsString(test);
+        Map newB = new ObjectMapper().readValue(str, new TypeReference<Map<String, Long>>() {});
+        Long newC = (Long) newB.get("abc");
+        System.out.println(newC);
     }
 }

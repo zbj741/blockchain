@@ -121,7 +121,7 @@ public class TxExecuterTest {
 
 
         UserAccount userAccount = worldState.getUser(contractAddr);
-        String storage_data = worldState.get(new String(userAccount.getStorageHash()));
+        String storage_data = worldState.get(HexUtil.toHexString(userAccount.getStorageHash()));
         Map storage = new ObjectMapper().readValue(storage_data, Map.class);
         Assert.assertEquals(true, storage.containsKey("1"));
         Assert.assertEquals("22", storage.get("1"));

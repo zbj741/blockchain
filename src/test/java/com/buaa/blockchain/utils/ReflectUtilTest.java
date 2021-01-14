@@ -1,6 +1,5 @@
 package com.buaa.blockchain.utils;
 
-import com.buaa.blockchain.contract.ClassLoaderTest;
 import com.google.common.io.ByteStreams;
 import org.junit.After;
 import org.junit.Assert;
@@ -23,10 +22,10 @@ public class ReflectUtilTest {
 
     @Test
     public void testLoadClass() throws Exception {
-        InputStream in = ClassLoaderTest.class.getResourceAsStream("/DemoUserContract.class");
+        InputStream in = ReflectUtilTest.class.getResourceAsStream("/DemoContract.class");
         byte[] byteData = ByteStreams.toByteArray(in);
 
-        String contract_name = "com.buaa.blockchain.contract.DemoUserContract";
+        String contract_name = "DemoContract";
 
         Class classZ = ReflectUtil.getInstance().loadClass(contract_name, byteData);
         Assert.assertEquals(contract_name, classZ.getCanonicalName());
@@ -42,10 +41,10 @@ public class ReflectUtilTest {
      */
     @Test
     public void testInvoke() throws Exception {
-        InputStream in = ClassLoaderTest.class.getResourceAsStream("/DemoUserContract.class");
+        InputStream in = ReflectUtilTest.class.getResourceAsStream("/DemoContract.class");
         byte[] byteData = ByteStreams.toByteArray(in);
 
-        String contract_name = "com.buaa.blockchain.contract.DemoUserContract";
+        String contract_name = "DemoContract";
 
         final Map param = new HashMap();
         Class classZ = ReflectUtil.getInstance().loadClass(contract_name, byteData);

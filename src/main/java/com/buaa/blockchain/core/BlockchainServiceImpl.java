@@ -11,14 +11,8 @@ import com.buaa.blockchain.contract.WorldState;
 import com.buaa.blockchain.crypto.CryptoSuite;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.crypto.keypair.CryptoKeyPair;
-import com.buaa.blockchain.entity.Block;
-import com.buaa.blockchain.entity.Times;
-import com.buaa.blockchain.entity.Transaction;
-import com.buaa.blockchain.entity.UserAccount;
-import com.buaa.blockchain.entity.mapper.BlockMapper;
-import com.buaa.blockchain.entity.mapper.ContractAccountMapper;
-import com.buaa.blockchain.entity.mapper.TransactionMapper;
-import com.buaa.blockchain.entity.mapper.UserAccountMapper;
+import com.buaa.blockchain.entity.*;
+import com.buaa.blockchain.entity.mapper.*;
 import com.buaa.blockchain.exception.ShutDownManager;
 import com.buaa.blockchain.message.JGroupsMessageImpl;
 import com.buaa.blockchain.message.Message;
@@ -65,6 +59,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     final BlockMapper blockMapper;
     /* Transaction的持久化 */
     final TransactionMapper transactionMapper;
+    final TransactionReceiptMapper transactionReceiptMapper;
     /* UserAccount的持久化 */
     final UserAccountMapper userAccountMapper;
     /* ContractAccount的持久化 */
@@ -176,7 +171,7 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     @Autowired
     public BlockchainServiceImpl(RedisTxPool redisTxpool, BlockMapper blockMapper,UserAccountMapper userAccountMapper, ContractAccountMapper contractAccountMapper,
-                                 TransactionMapper transactionMapper, VoteHandler voteHandler, TimeoutHelper timeoutHelper, ShutDownManager shutDownManager) {
+                                 TransactionMapper transactionMapper, VoteHandler voteHandler, TimeoutHelper timeoutHelper, ShutDownManager shutDownManager, TransactionReceiptMapper transactionReceiptMapper) {
         this.redisTxpool = redisTxpool;
         this.blockMapper = blockMapper;
         this.userAccountMapper = userAccountMapper;
@@ -185,7 +180,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         this.voteHandler = voteHandler;
         this.timeoutHelper = timeoutHelper;
         this.shutDownManager = shutDownManager;
-
+        this.transactionReceiptMapper = transactionReceiptMapper;
     }
 
 
@@ -222,12 +217,14 @@ public class BlockchainServiceImpl implements BlockchainService {
                 worldState.createAccount(address, userAccount);
                 list.add(address+","+prikey+","+val);
             }
-            log.info("====================================");
-            for(String item : list){
-                String[] val = item.split(",");
-                log.info("addr: {}, pkey: {}, value: {}", val[0], val[1], val[2]);
+            if(log.isDebugEnabled()){
+                log.info("====================================");
+                for(String item : list){
+                    String[] val = item.split(",");
+                    log.info("addr: {}, pkey: {}, value: {}", val[0], val[1], val[2]);
+                }
+                log.info("====================================");
             }
-            log.info("====================================");
             worldState.sync();
             // 建立新区块
             Block block = generateFirstBlock();
@@ -427,6 +424,7 @@ public class BlockchainServiceImpl implements BlockchainService {
             // 持久化交易和区块
             worldState.sync();
             insertTransactionList(block);
+            insertTransactionReceipts(block);
             // blockMapper.insertTimes(block.getTimes());
             blockMapper.insertBlock(block);
             log.info("storeBlock(): Done! block="+block.toString());
@@ -804,8 +802,13 @@ public class BlockchainServiceImpl implements BlockchainService {
     public synchronized String transactionExec(String stateRoot, Block block) {
         log.info("transactionExec(): start exec transactions in block="+block.getHash()+", transactions size="+block.getTx_length());
         if(null == stateRoot){
-            List<Transaction> transactions = block.getTrans();
-            txExecuter.batchExecute(transactions);
+            try {
+                List<Transaction> transactions = block.getTrans();
+                List<TransactionReceipt> receipts = txExecuter.batchExecute(transactions);
+                block.setTransactionReceipts(receipts);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
             return worldState.getRootHash();
         }
         return null;
@@ -1178,6 +1181,20 @@ public class BlockchainServiceImpl implements BlockchainService {
         for(Transaction t : block.getTrans()){
             transactionMapper.insertTransaction(t);
         }
-        //transactionMapper.insertAllTrans(block.getTrans());
+    }
+
+    /**
+     * 存储交易Receipts
+     *
+     * @param block
+     */
+    public void insertTransactionReceipts(Block block){
+       for (TransactionReceipt receipt : block.getTransactionReceipts()){
+           receipt.setHeight(block.getHeight());
+           receipt.setBlock_hash(block.getHash());
+           receipt.setTx_hash(receipt.getTransaction().getTran_hash());
+           receipt.setTx_sequence(receipt.getTransaction().getSequence());
+           transactionReceiptMapper.insert(receipt);
+       }
     }
 }

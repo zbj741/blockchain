@@ -11,10 +11,10 @@ import java.lang.reflect.Method;
  */
 public class MethodUtil {
 
-    public static Method getMethod(Class<?> controller, String methodName) throws NoSuchMethodException {
+    public static Method getMethod(Class<?> controller, String methodName, int paramLen) throws NoSuchMethodException {
         Method[] methods = controller.getDeclaredMethods();
         for(Method method : methods){
-            if(method.getName().equals(methodName)){
+            if(method.getName().equals(methodName) && method.getParameters().length == paramLen){
                 return method;
             }
         }

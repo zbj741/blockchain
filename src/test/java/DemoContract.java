@@ -1,17 +1,10 @@
 import java.util.Map;
 
-/**
- * xxxx
- *
- * @author <a href="http://github.com/hackdapp">hackdapp</a>
- * @date 2020/12/22
- * @since JDK1.8
- */
-public class DemoUserContract {
+public class DemoContract {
 
-   Map map;
+    private Map map;
 
-    public DemoUserContract(Map map) {
+    public DemoContract(Map map) {
         this.map = map;
     }
 
