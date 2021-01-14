@@ -1,7 +1,6 @@
-package com.buaa.blockchain;
+package com.buaa.blockchain.utils;
 
 import com.buaa.blockchain.crypto.HashUtil;
-import com.buaa.blockchain.utils.ByteUtil;
 import com.buaa.blockchain.vm.DataWord;
 import com.buaa.blockchain.vm.utils.ByteArrayUtil;
 import com.buaa.blockchain.vm.utils.HexUtil;

@@ -802,9 +802,13 @@ public class BlockchainServiceImpl implements BlockchainService {
     public synchronized String transactionExec(String stateRoot, Block block) {
         log.info("transactionExec(): start exec transactions in block="+block.getHash()+", transactions size="+block.getTx_length());
         if(null == stateRoot){
-            List<Transaction> transactions = block.getTrans();
-            List<TransactionReceipt> receipts = txExecuter.batchExecute(transactions);
-            block.setTransactionReceipts(receipts);
+            try {
+                List<Transaction> transactions = block.getTrans();
+                List<TransactionReceipt> receipts = txExecuter.batchExecute(transactions);
+                block.setTransactionReceipts(receipts);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
             return worldState.getRootHash();
         }
         return null;

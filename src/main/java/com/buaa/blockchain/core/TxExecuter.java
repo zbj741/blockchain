@@ -7,10 +7,11 @@ import com.buaa.blockchain.contract.component.IContract;
 import com.buaa.blockchain.contract.model.CallMethod;
 import com.buaa.blockchain.crypto.CryptoSuite;
 import com.buaa.blockchain.crypto.HashUtil;
+import com.buaa.blockchain.crypto.utils.ByteUtils;
 import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.entity.TransactionReceipt;
 import com.buaa.blockchain.entity.UserAccount;
-import com.buaa.blockchain.utils.ByteUtil;
+import com.buaa.blockchain.utils.PackageUtil;
 import com.buaa.blockchain.utils.ReflectUtil;
 import com.buaa.blockchain.vm.utils.ByteArrayUtil;
 import com.buaa.blockchain.vm.utils.HexUtil;
@@ -67,15 +68,25 @@ public class TxExecuter {
         receipt.setReceipt_hash(HexUtil.toHexString(HashUtil.randomHash()));
         if(transaction.getTo() == null) {
             log.info("deploy contract......");
-            // 1. decode the data value (contractName and contractCode)
-            byte[] txData = transaction.getData();
-            String contractName = new String(ByteArrayUtil.stripLeadingZeroes(ByteUtil.parseBytes(txData, 0, 32)));
-            byte[] codeBytes = ByteUtil.parseBytes(txData, 32, txData.length-32);
+            Class mainClass = null;
+            String contractName = null;
+            // 1. unpack the data and reload the bytes of multi classes to classloader (contractName and contractCode)
+            final byte[] codeBytes = transaction.getData();
+            List<byte[]> byteList = PackageUtil.unPack(codeBytes);
+            for (byte[] byteClass : byteList){
+                String className = new String(ByteArrayUtil.stripLeadingZeroes(ByteUtils.parseBytes(byteClass, 0, 32)));
+                byte[] classBytes = ByteUtils.parseBytes(byteClass, 32, byteClass.length-32);
+                Class classZ = ReflectUtil.getInstance().loadClass(className, classBytes);
+
+                if(mainClass == null){
+                    mainClass = classZ;
+                    contractName = className;
+                }
+            }
 
             // 2. try to load the contract code and instance the contract
             Map storage = new HashMap();
-            Class classZ = ReflectUtil.getInstance().loadClass(contractName, codeBytes);
-            ReflectUtil.getInstance().newInstance(classZ, Map.class,  storage);
+            ReflectUtil.getInstance().newInstance(mainClass, Map.class, storage);
 
             // 3. create the contract account and linked data(code/storage)
             // 3.1 create address
@@ -86,10 +97,10 @@ public class TxExecuter {
             byte[] code_hash = HashUtil.sha256(codeBytes);
             worldState.update(new String(code_hash), codeBytes);
             userAccount.setCodeHash(code_hash);
-            log.debug("code_hash: {}", new String(code_hash));
+            log.debug("\n\tcode_hash: {}", new String(code_hash));
             //3.3 set the contract name
             userAccount.setContractName(contractName);
-            log.debug("contract name: {}", userAccount.getContractName());
+            log.debug("\n\tcontract name: {}", userAccount.getContractName());
             //3.4 store the contract storage
             final byte[] storageHash = HashUtil.randomHash();
             try {
@@ -99,11 +110,11 @@ public class TxExecuter {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-            log.debug("storage hash: {}", HexUtil.toHexString(storageHash));
+            log.debug("\n\tstorage hash: {}", HexUtil.toHexString(storageHash));
             //3.5 store the contract user to world state.
             worldState.createAccount(contractAddress, userAccount);
-            log.info("contract address at: {} ", contractAddress);
-            log.debug("the contract meta: {}", userAccount.toString());
+            log.info("\n\tcontract address at: {} ", contractAddress);
+            log.debug("\n\tthe contract meta: {}", userAccount.toString());
         } else {
             UserAccount userAccount = worldState.getUser(new String(transaction.getTo()));
             if(userAccount!=null && userAccount.isContractAccount()){
@@ -126,28 +137,40 @@ public class TxExecuter {
                 }
 
                 boolean isExecuteSucc = false;
-                byte[] code = this.worldState.getCode(new String(transaction.getTo()));
-                Class classZ = ReflectUtil.getInstance().loadClass(userAccount.getContractName(), code);
+                final byte[] codeBytes = this.worldState.getCode(new String(transaction.getTo()));
                 try {
-                    Object obj = ReflectUtil.getInstance().newInstance(classZ, Map.class,  storage);
+                    Class mainClass = null;
+                    String contractName = null;
+                    List<byte[]> byteList = PackageUtil.unPack(codeBytes);
+                    for (byte[] byteClass : byteList){
+                        String className = new String(ByteArrayUtil.stripLeadingZeroes(ByteUtils.parseBytes(byteClass, 0, 32)));
+                        byte[] classBytes = ByteUtils.parseBytes(byteClass, 32, byteClass.length-32);
+                        Class classZ = ReflectUtil.getInstance().loadClass(className, classBytes);
+
+                        if(mainClass == null){
+                            mainClass = classZ;
+                            contractName = className;
+                        }
+                    }
+
+                    Object obj = ReflectUtil.getInstance().newInstance(mainClass, Map.class, storage);
 
                     if(IContract.class.isAssignableFrom(obj.getClass())){
-                        Field f1 = classZ.getSuperclass().getDeclaredField("LOGS");
+                        Field f1 = mainClass.getSuperclass().getDeclaredField("LOGS");
                         f1.setAccessible(true);
                         f1.set(obj, contractLogList);
                     }
 
                     log.debug("invoke method: {}, {}", callMethod.getMethod(), callMethod.getParams());
-                    Object execResult = ReflectUtil.getInstance().invoke(classZ, obj, callMethod.getMethod(), callMethod.getParams());
+                    Object execResult = ReflectUtil.getInstance().invoke(mainClass, obj, callMethod.getMethod(), callMethod.getParams());
                     receipt.setLogs(new ObjectMapper().writeValueAsString(contractLogList));
                     receipt.setExec_result(new ObjectMapper().writeValueAsString(execResult));
                     isExecuteSucc = true;
                 }  catch (Exception e){
+                    e.printStackTrace();
                     if(e.getCause().getClass().isAssignableFrom(ContractException.class)){
-                       // throw new ContractException(e.getCause().getMessage());
                         receipt.setError(e.getMessage());
                     }
-                    e.printStackTrace();
                 }
 
                 if(isExecuteSucc){
