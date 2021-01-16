@@ -1,14 +1,16 @@
 package com.buaa.blockchain.web.controller;
 
 import com.buaa.blockchain.api.BlockchainApi;
+import com.buaa.blockchain.api.TransactionApi;
 import com.buaa.blockchain.config.ChainConfig;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.crypto.utils.Hex;
 import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.entity.mapper.TransactionMapper;
 import com.buaa.blockchain.txpool.TxPool;
+import com.buaa.blockchain.utils.ResultMsg;
 import com.google.common.collect.Maps;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,20 +25,77 @@ import java.util.Map;
 @RestController
 @Scope("prototype")
 @RequestMapping("/tx")
+@RequiredArgsConstructor
 public class TransactionController {
     private final BlockchainApi blockchainApi;
-    private TxPool txPool;
+    private final TxPool txPool;
+    private final ChainConfig chainConfig;
+    private final TransactionMapper transactionMapper;
+    private final TransactionApi transactionApi;
 
-    @Autowired
-    private ChainConfig chainConfig;
-    @Autowired
-    private TransactionMapper transactionMapper;
-
-    @Autowired
-    public TransactionController(BlockchainApi blockchainApi, TxPool txPool) {
-        this.blockchainApi = blockchainApi;
-        this.txPool = txPool;
+    @GetMapping(value = "/findTranByHash")
+    public ResultMsg findTranByHash(@RequestParam(value = "tranhash") String tranhash) {
+        ResultMsg result = new ResultMsg();
+        result.setCode(200);
+        result.setSuccess(true);
+        result.setData(transactionApi.findTranByHash(tranhash));
+        result.setMsg("交易信息");
+        return result;
     }
+
+    @GetMapping(value = "/findTransByBlockHash")
+    public ResultMsg findTransByBlockHash(@RequestParam(value = "hash") String hash) {
+        ResultMsg result = new ResultMsg();
+        result.setCode(200);
+        result.setSuccess(true);
+        result.setData(transactionApi.findTransByBlockHash(hash));
+        result.setMsg("交易信息");
+        return result;
+    }
+
+    @GetMapping(value = "/getTransInfo")
+    public ResultMsg getTransInfo(@RequestParam(value = "startdate") String startdate,
+                                  @RequestParam(value = "span") String span)  {
+        ResultMsg result = new ResultMsg();
+        result.setCode(200);
+        result.setSuccess(true);
+        if(span.equals("day")){
+            result.setMsg("日交易");
+            result.setData(transactionApi.getTransDayInfo(startdate));
+        }
+        else if(span.equals("month")){
+            result.setMsg("月交易");
+            result.setData(transactionApi.getTransMonInfo(startdate));
+        }
+        else if(span.equals("year")){
+            result.setMsg("年交易");
+            result.setData(transactionApi.getTransYearInfo(startdate));
+        }
+        return result;
+    }
+
+    @GetMapping(value = "/findTranBySeq")
+    public ResultMsg findTranBySeq(@RequestParam(value = "seq") int seq){
+        ResultMsg result = new ResultMsg();
+        result.setCode(200);
+        result.setSuccess(true);
+        result.setData(transactionApi.findTranBySeq(seq));
+        result.setMsg("交易信息");
+        return result;
+    }
+
+    @GetMapping(value = "/findPageTrans")
+    public ResultMsg findPageTrans(@RequestParam(value = "page_index") int page_index,
+                                   @RequestParam(value = "page_size") int page_size){
+        ResultMsg result = new ResultMsg();
+        result.setCode(200);
+        result.setSuccess(true);
+        result.setData(transactionApi.findPageTrans(page_index,page_size));
+        result.setMsg("交易信息");
+        return result;
+    }
+
+
 
     @PostMapping(value = "/send")
     public ResponseEntity sendTransaction(@RequestBody() Transaction tx, @RequestParam(value ="sig") String sig){

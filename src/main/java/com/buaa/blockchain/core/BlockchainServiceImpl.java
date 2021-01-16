@@ -52,13 +52,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @MapperScan(basePackages ="com.buaa.blockchain.entity.mapper")
 @ComponentScan(basePackages = "com.buaa.blockchain.*")
 public class BlockchainServiceImpl implements BlockchainService {
-
     /* 交易池 */
     final RedisTxPool redisTxpool;
     /* Block的持久化 */
     final BlockMapper blockMapper;
+    /* 智能合约持久化 */
+    final ContractMapper contractMapper;
     /* Transaction的持久化 */
     final TransactionMapper transactionMapper;
+    /* 交易结果持久化 */
     final TransactionReceiptMapper transactionReceiptMapper;
     /* UserAccount的持久化 */
     final UserAccountMapper userAccountMapper;
@@ -171,7 +173,7 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     @Autowired
     public BlockchainServiceImpl(RedisTxPool redisTxpool, BlockMapper blockMapper,UserAccountMapper userAccountMapper, ContractAccountMapper contractAccountMapper,
-                                 TransactionMapper transactionMapper, VoteHandler voteHandler, TimeoutHelper timeoutHelper, ShutDownManager shutDownManager, TransactionReceiptMapper transactionReceiptMapper) {
+                                 TransactionMapper transactionMapper, VoteHandler voteHandler, TimeoutHelper timeoutHelper, ShutDownManager shutDownManager, TransactionReceiptMapper transactionReceiptMapper, ContractMapper contractMapper) {
         this.redisTxpool = redisTxpool;
         this.blockMapper = blockMapper;
         this.userAccountMapper = userAccountMapper;
@@ -181,6 +183,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         this.timeoutHelper = timeoutHelper;
         this.shutDownManager = shutDownManager;
         this.transactionReceiptMapper = transactionReceiptMapper;
+        this.contractMapper = contractMapper;
     }
 
 
@@ -997,7 +1000,7 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     private void initWorldStateAndTxExecuter(){
          this.worldState = new WorldState(this.chainConfig.getStatedbDir(), this.chainConfig.getStatedbName());
-         this.txExecuter = new TxExecuter(this.chainConfig, this.worldState);
+         this.txExecuter = new TxExecuter(this.chainConfig, this.worldState, this.contractMapper);
      }
 
     /**

@@ -46,7 +46,7 @@ public class TxExecuterTest {
         if(roothash!=""){
             worldState.switchRoot(roothash);
         }
-        txExecuter = new TxExecuter(chainConfig, worldState);
+        txExecuter = new TxExecuter(chainConfig, worldState, null);
 
         CryptoSuite cryptoSuite = new CryptoSuite(CryptoType.ECDSA_TYPE);
         List<String> list = new ArrayList();
