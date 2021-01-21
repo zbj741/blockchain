@@ -11,6 +11,7 @@ import com.buaa.blockchain.crypto.utils.ByteUtils;
 import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.entity.TransactionReceipt;
 import com.buaa.blockchain.entity.UserAccount;
+import com.buaa.blockchain.entity.mapper.ContractMapper;
 import com.buaa.blockchain.utils.PackageUtil;
 import com.buaa.blockchain.utils.ReflectUtil;
 import com.buaa.blockchain.vm.utils.ByteArrayUtil;
@@ -21,10 +22,7 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 交易执行器
@@ -36,10 +34,12 @@ import java.util.Map;
 public class TxExecuter {
     private ChainConfig chainConfig;
     private WorldState worldState;
+    private ContractMapper contractMapper;
 
-    public TxExecuter(ChainConfig chainConfig, WorldState worldState){
+    public TxExecuter(ChainConfig chainConfig, WorldState worldState, ContractMapper contractMapper){
        this.chainConfig = chainConfig;
        this.worldState = worldState;
+       this.contractMapper = contractMapper;
     }
 
     public List<TransactionReceipt> batchExecute(List<Transaction> transactionList) {
@@ -115,6 +115,15 @@ public class TxExecuter {
             worldState.createAccount(contractAddress, userAccount);
             log.info("\n\tcontract address at: {} ", contractAddress);
             log.debug("\n\tthe contract meta: {}", userAccount.toString());
+
+            if(this.contractMapper != null){
+                try {
+                    this.contractMapper.insert(contractName, HexUtil.toHexString(code_hash), contractAddress, new Date());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    log.error("failed to save the contract, {}", contractName);
+                }
+            }
         } else {
             UserAccount userAccount = worldState.getUser(new String(transaction.getTo()));
             if(userAccount!=null && userAccount.isContractAccount()){

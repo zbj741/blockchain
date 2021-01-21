@@ -5,6 +5,7 @@ import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.entity.TransactionReceipt;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 该接口定义了一些从外部对区块链进行操作的方法
@@ -22,6 +23,24 @@ public interface BlockchainApi {
      * 获取区块数据
      * */
     Block findBlockByHash(String hash);
+
+    Block findBlockByPreHash(String prehash);
+
+    List<Block> findBlocks(int start,int end);
+
+    Long  findMaxHeight();
+
+    List<Block> getBlocklist();
+
+    String getNowHash();
+
+    int getBlockNumByTxRange(int low, int top);
+
+    int getBlockNumBySign(String sign);
+
+    List<Map<String, Object>> countBlockNumGroupBySign();
+
+    List<Block> findPageBlocks(int page_index, int page_size);
 
     /**
      *
