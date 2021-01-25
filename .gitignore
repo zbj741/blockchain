@@ -3,7 +3,6 @@
 *.iws
 *.iml
 *.ipr
-.mvn
 *.iml
 
 # NetBeans
@@ -40,3 +39,4 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
+src/test/.DS_Store
