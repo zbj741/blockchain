@@ -87,21 +87,28 @@ public interface BlockchainService {
 
     String CORE_MESSAGE_TOPIC_SYNC = "CORE_MESSAGE_TOPIC_SYNC";
     String CORE_MESSAGE_TOPIC_SYNCREPLY = "CORE_MESSAGE_TOPIC_SYNCREPLY";
+    String CORE_MESSAGE_TOPIC_SYNC_END = "CORE_MESSAGE_TOPIC_SYNC_END";
+
+    /**
+     * 同步区块阶段开启
+     * */
+    void startSyncBlocks(String IpPort);
     /**
      * 向其他节点广播请求同步区块
      * */
-    void requestSyncBlocks(long nowHeight);
-
+    void requestSyncBlocks(String IpPort);
     /**
      * 回复syncBlocks
      * */
     void replySyncBlocks(long requireHeight,String address);
-
     /**
      * 本地同步区块
      * */
     void syncBlocks(List<Block> blockList);
-
+    /**
+     * 节点同步结束后，广播给所有节点同时开启新的一轮
+     * */
+    void syncBlocksEnd();
     /**
      * 模拟交易执行并返回rootHash
      * @param stateRoot
