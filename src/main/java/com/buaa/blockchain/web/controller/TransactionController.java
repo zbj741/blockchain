@@ -3,10 +3,12 @@ package com.buaa.blockchain.web.controller;
 import com.buaa.blockchain.api.BlockchainApi;
 import com.buaa.blockchain.api.TransactionApi;
 import com.buaa.blockchain.config.ChainConfig;
-import com.buaa.blockchain.crypto.HashUtil;
-import com.buaa.blockchain.crypto.utils.Hex;
 import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.entity.mapper.TransactionMapper;
+import com.buaa.blockchain.sdk.ChainSDK;
+import com.buaa.blockchain.crypto.HashUtil;
+import com.buaa.blockchain.crypto.utils.Hex;
+import com.buaa.blockchain.sdk.model.SignTransaction;
 import com.buaa.blockchain.txpool.TxPool;
 import com.buaa.blockchain.utils.ResultMsg;
 import com.google.common.collect.Maps;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
@@ -98,15 +101,24 @@ public class TransactionController {
 
 
     @PostMapping(value = "/send")
-    public ResponseEntity sendTransaction(@RequestBody() Transaction tx, @RequestParam(value ="sig") String sig){
-        String packTx = packTxMessage(tx);
-//        CryptoSuite cs = new CryptoSuite(chainConfig.getCryptoType());
-//        if(!cs.verify(new String(tx.getFrom()), cs.hash(sb.toString()), sig)){
-//            Map rtnMap = Maps.newHashMap();
-//            rtnMap.put("status", 0);
-//            rtnMap.put("message", "Signature verify failed");
-//            return new ResponseEntity(rtnMap, HttpStatus.OK);
-//        }
+    public ResponseEntity sendSignRawTransaction(@RequestBody String hexData){
+        ChainSDK chainSDK = new ChainSDK(chainConfig.getCryptoType());
+        SignTransaction decodeTx = (SignTransaction) chainSDK.decodeTx(hexData);
+
+        Transaction tx = null;
+        try {
+            final String from = decodeTx.getFrom();
+            final byte[] to = decodeTx.getTo().length == 0 ? null : decodeTx.getTo();
+            final byte[] data1 = decodeTx.getData();
+            tx = new Transaction(from.getBytes(), to, BigInteger.ZERO, data1);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            Map rtnMap = Maps.newHashMap();
+            rtnMap.put("status", 0);
+            rtnMap.put("msg", "sig error");
+            return new ResponseEntity(rtnMap, HttpStatus.OK);
+        }
+
         tx.setTimestamp(new Timestamp(new Date().getTime()));
         tx.setTran_hash(HashUtil.sha256(Hex.toHexString(tx.toString().getBytes())));
         this.txPool.put(TxPool.TXPOOL_LABEL_TRANSACTION, tx.getTran_hash(), tx);

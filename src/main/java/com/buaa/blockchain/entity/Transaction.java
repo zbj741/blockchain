@@ -205,6 +205,19 @@ public class Transaction implements Serializable,Comparable<Transaction> {
         );
     }
 
+    public Transaction(byte[] to, BigInteger value, byte[] data) {
+        this.to = to;
+        this.value = value;
+        this.data = data;
+        this.sequence = 0;
+        this.version = "v1.0";
+        this.extra = "";
+//        if (data != null) {
+//            this.data = Numeric.cleanHexPrefix(data);
+//        }
+    }
+
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Transaction{");

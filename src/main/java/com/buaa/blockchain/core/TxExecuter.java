@@ -130,8 +130,8 @@ public class TxExecuter {
                 log.debug("invoke the contract >> {}", userAccount.getContractName());
                 CallMethod callMethod;
                 try {
-                    callMethod = new ObjectMapper().readValue(new String(transaction.getData()), CallMethod.class);
-                } catch (JsonProcessingException e) {
+                    callMethod = new ObjectMapper().readValue(transaction.getData(), CallMethod.class);
+                } catch (Exception e) {
                     log.error("instance CallMethod occur error. {}", transaction.getData() );
                     throw new IllegalArgumentException("Calling contract parameters incorrectly");
                 }
