@@ -200,11 +200,11 @@ public class TxExecuter {
             }
         }
 
-        try {
+        /*try {
             worldState.update(receipt.getReceipt_hash(), new ObjectMapper().writeValueAsString(receipt));
         } catch (JsonProcessingException e) {
            e.printStackTrace();
-        }
+        }*/
         worldState.sync();
         return receipt;
     }

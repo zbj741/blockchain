@@ -209,7 +209,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         testMessageDigest(this.hashAlgorithm);
         // 判断是否为第一次启动
         if(blockMapper.findBlockNum(HashUtil.sha256("0")) == 0){
-            CryptoSuite cryptoSuite = new CryptoSuite(chainConfig.getCryptoType());
+            /*CryptoSuite cryptoSuite = new CryptoSuite(chainConfig.getCryptoType());
             List<String> list = new ArrayList();
             for (int i = 0; i < 5; i++) {
                 CryptoKeyPair keyPair = cryptoSuite.createKeyPair();
@@ -229,7 +229,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                     log.info("addr: {}, pkey: {}, value: {}", val[0], val[1], val[2]);
                 }
                 log.info("====================================");
-            }
+            }*/
             worldState.sync();
             // 建立新区块
             Block block = generateFirstBlock();
@@ -543,7 +543,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         String merkle_root = "";
         // 状态树
         String pre_state_root = "";
-        String state_root = this.worldState.getRootHash();;
+        String state_root = this.worldState.getRootHash();
         // 填写区块
         block.setPre_hash(pre_hash);
         block.setHash(hash);
@@ -1012,7 +1012,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                 public void onClusterChanged(Set<String> pre, Set<String> now) {
                     log.warn("OnClusterChanged(): cluster changed pre="+pre+" now="+now);
                     // 判断是否需要进行区块同步，向列表中除本节点之外的第一个节点发送同步请求
-                    String IpPort = getMsgIp() + ":" + getMsgPort();
+                   /* String IpPort = getMsgIp() + ":" + getMsgPort();
                     if(pre.size() < now.size() && now.size() > 1){
                         //新加入的节点不能作为同步区块时的发送方，寻找当前集群中除本节点之外的第一个节点
                         Object[] now_list = now.toArray() ;
@@ -1026,7 +1026,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                             isFirstSync = false ;
                             startSyncBlocks((String)now_list[i]);
                         }
-                    }
+                    }*/
                     // 检测是否可以开始
                     if(!singleMode){
                         isSetup = (bs.getClusterNodeSize() < minConnect) ? false : true;
