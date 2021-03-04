@@ -2,6 +2,7 @@ package com.buaa.blockchain.api;
 
 import com.buaa.blockchain.entity.TransNumInfo;
 import com.buaa.blockchain.entity.Transaction;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
@@ -27,6 +28,6 @@ public interface TransactionApi {
 
     Transaction findTranBySeq(int seq);
 
-    List<Transaction> findPageTrans(int page_index, int page_size);
+    PageInfo findPageTrans(int page_index, int page_size);
 
 }

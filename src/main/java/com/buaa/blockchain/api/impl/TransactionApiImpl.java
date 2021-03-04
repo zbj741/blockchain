@@ -4,6 +4,8 @@ import com.buaa.blockchain.api.TransactionApi;
 import com.buaa.blockchain.entity.TransNumInfo;
 import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.entity.mapper.TransactionMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,10 +50,11 @@ public class TransactionApiImpl implements TransactionApi {
     }
 
     @Override
-    public List<Transaction> findPageTrans(int page_index, int page_size) {
-        int offset = (page_index-1)*page_size <0? 0 : (page_index-1)*page_size;
-        int count = page_size;
-        return transactionMapper.findPageTrans(offset,count);
+    public PageInfo findPageTrans(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<Transaction> trans = transactionMapper.findPageTrans();
+        PageInfo<Transaction> transactionPageInfo= new PageInfo<Transaction>(trans);
+        return transactionPageInfo;
     }
 
 }

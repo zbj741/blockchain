@@ -5,6 +5,7 @@ import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.entity.dao.TransactionSQLHelper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
@@ -56,8 +57,8 @@ public interface TransactionMapper {
     @Select("SELECT date_format(timestamp,'%Y') as date,COUNT(*) as num FROM transaction where date_format(timestamp,'%Y')>=#{startdate} GROUP BY date;")
     public List<TransNumInfo> getTransYearInfo(String startdate);
 
-    @Select("SELECT * from transaction order by timestamp desc limit #{offset},#{count}")
-    public List<Transaction> findPageTrans(int offset, int count);
+    @Select("SELECT * from transaction order by timestamp desc ")
+    public List<Transaction> findPageTrans();
 
 
 }
