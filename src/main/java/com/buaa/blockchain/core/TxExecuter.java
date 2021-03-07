@@ -5,8 +5,9 @@ import com.buaa.blockchain.contract.WorldState;
 import com.buaa.blockchain.contract.component.ContractException;
 import com.buaa.blockchain.contract.component.IContract;
 import com.buaa.blockchain.contract.model.CallMethod;
-import com.buaa.blockchain.crypto.CryptoSuite;
 import com.buaa.blockchain.crypto.HashUtil;
+import com.buaa.blockchain.crypto.hash.Hash;
+import com.buaa.blockchain.crypto.hash.Keccak256;
 import com.buaa.blockchain.crypto.utils.ByteUtils;
 import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.entity.TransactionReceipt;
@@ -65,8 +66,8 @@ public class TxExecuter {
 
     public TransactionReceipt execute(Transaction transaction){
         TransactionReceipt receipt = new TransactionReceipt();
-        receipt.setReceipt_hash(HexUtil.toHexString(HashUtil.randomHash()));
-        if(transaction.getTo() == null) {
+        receipt.setReceipt_hash(new String(createTxReceiptHash(transaction)));
+        if(transaction.isCreateContract()) {
             log.info("deploy contract......");
             Class mainClass = null;
             String contractName = null;
@@ -90,8 +91,8 @@ public class TxExecuter {
 
             // 3. create the contract account and linked data(code/storage)
             // 3.1 create address
-            CryptoSuite cryptoSuite = new CryptoSuite(chainConfig.getCryptoType());
-            String contractAddress = cryptoSuite.createKeyPair().getAddress();
+//            CryptoSuite cryptoSuite = new CryptoSuite(chainConfig.getCryptoType());
+            String contractAddress = new String(transaction.getTo());
             UserAccount userAccount = new UserAccount();
             // 3.2 store the contract code
             byte[] code_hash = HashUtil.sha256(codeBytes);
@@ -102,7 +103,7 @@ public class TxExecuter {
             userAccount.setContractName(contractName);
             log.debug("\n\tcontract name: {}", userAccount.getContractName());
             //3.4 store the contract storage
-            final byte[] storageHash = HashUtil.randomHash();
+            final byte[] storageHash = createStorageHash(transaction);
             try {
                 String data_state = new ObjectMapper().writeValueAsString(storage);
                 userAccount.setStorageHash(storageHash);
@@ -183,7 +184,7 @@ public class TxExecuter {
                 }
 
                 if(isExecuteSucc){
-                    final byte[] storageHash = HashUtil.randomHash();
+                    final byte[] storageHash = createStorageHash(transaction);
                     try {
                         String data_state = new ObjectMapper().writeValueAsString(storage);
                         worldState.update(HexUtil.toHexString(storageHash), data_state);
@@ -207,5 +208,20 @@ public class TxExecuter {
         }*/
         worldState.sync();
         return receipt;
+    }
+
+    private byte[] createTxHash(Transaction tx){
+        Hash hash = new Keccak256();
+        return hash.hash("Tx"+tx.toString()).substring(0, 32).getBytes();
+    }
+
+    private byte[] createStorageHash(Transaction tx){
+        Hash hash = new Keccak256();
+        return hash.hash("TxST"+tx.toString()).substring(0, 32).getBytes();
+    }
+
+    private byte[] createTxReceiptHash(Transaction tx){
+        Hash hash = new Keccak256();
+        return hash.hash("TxRE"+tx.toString()).substring(0, 32).getBytes();
     }
 }

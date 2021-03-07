@@ -51,6 +51,7 @@ public class Transaction implements Serializable,Comparable<Transaction> {
     private BigInteger gasPrice;    // Gas单价信息
     private boolean rejected = false;
     private boolean create = false;
+    private boolean createContract = false;
 
     public Transaction(){}
 

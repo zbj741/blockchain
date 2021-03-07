@@ -117,6 +117,7 @@ public class TransactionController {
             return new ResponseEntity(rtnMap, HttpStatus.OK);
         }
 
+        tx.setCreateContract(decodeTx.getCreateContract()>0);
         tx.setTimestamp(decodeTx.getTimestamp());
         tx.setTran_hash(HashUtil.sha256(Hex.toHexString(tx.toString().getBytes())));
         this.txPool.put(TxPool.TXPOOL_LABEL_TRANSACTION, tx.getTran_hash(), tx);

@@ -15,6 +15,8 @@ import com.buaa.blockchain.crypto.signature.ECDSASignature;
 import com.buaa.blockchain.crypto.signature.SM2Signature;
 import com.buaa.blockchain.crypto.signature.Signature;
 import com.buaa.blockchain.crypto.signature.SignatureResult;
+import com.webank.wedpr.crypto.CryptoResult;
+import com.webank.wedpr.crypto.NativeInterface;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.After;
 import org.junit.Assert;
@@ -269,6 +271,17 @@ public class CryptoSuiteTest {
         System.out.println(keyPair.getAddress());
         System.out.println(keyPair.getHexPublicKey());
         System.out.println(keyPair.getHexPrivateKey());
+    }
+
+    @Test
+    public void testSM(){
+        CryptoResult cs = NativeInterface.sm2keyPair();
+        System.out.println(cs.getPublicKey());
+        cs = NativeInterface.keccak256("123123");
+        System.out.println(cs.getPublicKey());
+
+
+
     }
 
 }
