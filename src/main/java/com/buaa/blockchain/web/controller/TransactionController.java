@@ -3,11 +3,11 @@ package com.buaa.blockchain.web.controller;
 import com.buaa.blockchain.api.BlockchainApi;
 import com.buaa.blockchain.api.TransactionApi;
 import com.buaa.blockchain.config.ChainConfig;
+import com.buaa.blockchain.crypto.HashUtil;
+import com.buaa.blockchain.crypto.utils.Hex;
 import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.entity.mapper.TransactionMapper;
 import com.buaa.blockchain.sdk.ChainSDK;
-import com.buaa.blockchain.crypto.HashUtil;
-import com.buaa.blockchain.crypto.utils.Hex;
 import com.buaa.blockchain.sdk.model.SignTransaction;
 import com.buaa.blockchain.txpool.TxPool;
 import com.buaa.blockchain.utils.ResultMsg;
@@ -19,9 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
-import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -119,7 +117,7 @@ public class TransactionController {
             return new ResponseEntity(rtnMap, HttpStatus.OK);
         }
 
-        tx.setTimestamp(new Timestamp(new Date().getTime()));
+        tx.setTimestamp(decodeTx.getTimestamp());
         tx.setTran_hash(HashUtil.sha256(Hex.toHexString(tx.toString().getBytes())));
         this.txPool.put(TxPool.TXPOOL_LABEL_TRANSACTION, tx.getTran_hash(), tx);
 
