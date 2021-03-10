@@ -9,10 +9,7 @@ import com.buaa.blockchain.consensus.PBFTConsensusImpl;
 import com.buaa.blockchain.consensus.SBFTConsensusImpl;
 import com.buaa.blockchain.contract.WorldState;
 import com.buaa.blockchain.crypto.HashUtil;
-import com.buaa.blockchain.entity.Block;
-import com.buaa.blockchain.entity.Times;
-import com.buaa.blockchain.entity.Transaction;
-import com.buaa.blockchain.entity.TransactionReceipt;
+import com.buaa.blockchain.entity.*;
 import com.buaa.blockchain.entity.mapper.*;
 import com.buaa.blockchain.exception.ShutDownManager;
 import com.buaa.blockchain.message.JGroupsMessageImpl;
@@ -29,7 +26,12 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -138,8 +140,13 @@ public class BlockchainServiceImpl implements BlockchainService {
     /* 运行模式 */
     @Value("${buaa.blockchain.debug}")
     private Boolean debug;
+    /* 集群节点的msg地址到server地址的映射 */
+    @Value("#{${buaa.blockchain.msgToserver.map}}")
+    private Map<String , String> msgToserver ;
     /* 是否是第一次区块同步拉取*/
     public static boolean isFirstSync = true;
+    /* 同步区块发送接口路径*/
+    public static final String SYNCBLOCKS_PATH = "/tx/syncblocks" ;
 
     /*********************** 运行时功能组件 ***********************/
     // 消息服务
@@ -771,25 +778,40 @@ public class BlockchainServiceImpl implements BlockchainService {
      * @param address 请求同步区块的节点的地址
      * */
     @Override
-    public void replySyncBlocks(long height,String address) {
+    public void replySyncBlocks(long height,String address) throws JsonProcessingException {
         log.info("replySyncBlocks(): " + getMsgIp() + ":" + getMsgPort() + " begin to send blocks being synchronized");
         long maxHeight = blockMapper.findMaxHeight();
         if(height >= maxHeight){
             // 不需要同步
             log.info("No blocks to sync");
-            Message message = new Message(CORE_MESSAGE_TOPIC_SYNCREPLY,address,height,null);
-            singleSend(message,address);
+            return ;
         } else{
             // 将需要的区块信息找到
             List<Block> blockList = new ArrayList<>();
             for(long i = height+1;i <= maxHeight;i++){
                 Block block = blockMapper.findBlockByHeight(i);
-                block.setTrans(transactionMapper.findTransByBlockHash(block.getHash()));
+                block.setTrans(transactionMapper.findTransByBlockHashSync(block.getHash()));
+                for(Transaction tx : block.getTrans()){
+                    tx.setTo(tx.getTo_address().getBytes());
+                    tx.setFrom(tx.getFrom_address().getBytes());
+                }
                 blockList.add(block);
             }
-            Message message = new Message(CORE_MESSAGE_TOPIC_SYNCREPLY,address,maxHeight,blockList);
+            BlockList list = new BlockList() ;
+            list.setBlocklist(blockList);
+
+            //通过http的形式发送区块列表给待同步节点
+            RestTemplate restTemplate = new RestTemplate() ;
+            String url = msgToserver.get(address) + SYNCBLOCKS_PATH;
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Map<String, String> body = new HashMap<>();
+            body.put("blocklist", JsonUtil.objectMapper.writeValueAsString(list));
+            HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
             log.info("reply blocks to " + address);
-            singleSend(message,address);
         }
     }
 
@@ -838,6 +860,10 @@ public class BlockchainServiceImpl implements BlockchainService {
         if(null == stateRoot){
             try {
                 List<Transaction> transactions = block.getTrans();
+                for(Transaction tx : transactions){// 获得交易将to_address,from_address赋值，用于存储到Mysql
+                    tx.setTo_address(new String(tx.getTo()));
+                    tx.setFrom_address(new String(tx.getFrom()));
+                }
                 List<TransactionReceipt> receipts = txExecuter.batchExecute(transactions);
                 block.setTransactionReceipts(receipts);
             } catch (Exception exception) {
@@ -1010,22 +1036,28 @@ public class BlockchainServiceImpl implements BlockchainService {
                 @Override
                 public void onClusterChanged(Set<String> pre, Set<String> now) {
                     log.warn("OnClusterChanged(): cluster changed pre="+pre+" now="+now);
-                    // 判断是否需要进行区块同步，向列表中除本节点之外的第一个节点发送同步请求
-                   /* String IpPort = getMsgIp() + ":" + getMsgPort();
-                    if(pre.size() < now.size() && now.size() > 1){
-                        //新加入的节点不能作为同步区块时的发送方，寻找当前集群中除本节点之外的第一个节点
-                        Object[] now_list = now.toArray() ;
-                        int i = 0 ;
-                        for(; i < now_list.length ; i++){
-                            if(!now_list[i].equals(IpPort)){
-                                break ;
+                    // 新建线程进行区块同步的开始操作
+                    new Thread(new Runnable(){
+                        @Override
+                        public void run() {
+                            // 判断是否需要进行区块同步，向列表中除本节点之外的第一个节点发送同步请求
+                            String IpPort = getMsgIp() + ":" + getMsgPort();
+                            if(pre.size() < now.size() && now.size() > 1){
+                                //新加入的节点不能作为同步区块时的发送方
+                                Object[] now_list = now.toArray() ;
+                                int i = 0 ;
+                                for(; i < now_list.length ; i++){
+                                    if(!now_list[i].equals(IpPort)){
+                                        break ;
+                                    }
+                                }
+                                if(blockMapper.findMaxHeight() == 0 && isFirstSync == true){
+                                    isFirstSync = false ;
+                                    startSyncBlocks((String)now_list[i]);
+                                }
                             }
                         }
-                        if(blockMapper.findMaxHeight() == 0 && isFirstSync == true){
-                            isFirstSync = false ;
-                            startSyncBlocks((String)now_list[i]);
-                        }
-                    }*/
+                    }).start();
                     // 检测是否可以开始
                     if(!singleMode){
                         isSetup = (bs.getClusterNodeSize() < minConnect) ? false : true;
@@ -1256,5 +1288,9 @@ public class BlockchainServiceImpl implements BlockchainService {
 
     public int getMsgPort() {
         return msgPort;
+    }
+
+    public void setSetup(Boolean setup) {
+        isSetup = setup;
     }
 }

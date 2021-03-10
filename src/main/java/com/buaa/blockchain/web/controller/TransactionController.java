@@ -3,16 +3,25 @@ package com.buaa.blockchain.web.controller;
 import com.buaa.blockchain.api.BlockchainApi;
 import com.buaa.blockchain.api.TransactionApi;
 import com.buaa.blockchain.config.ChainConfig;
+import com.buaa.blockchain.core.BlockchainServiceImpl;
 import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.crypto.utils.Hex;
+import com.buaa.blockchain.entity.Block;
+import com.buaa.blockchain.entity.BlockList;
 import com.buaa.blockchain.entity.Transaction;
+import com.buaa.blockchain.entity.mapper.BlockMapper;
 import com.buaa.blockchain.entity.mapper.TransactionMapper;
+import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.sdk.ChainSDK;
 import com.buaa.blockchain.sdk.model.SignTransaction;
 import com.buaa.blockchain.txpool.TxPool;
+import com.buaa.blockchain.utils.JsonUtil;
 import com.buaa.blockchain.utils.ResultMsg;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +32,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static com.buaa.blockchain.core.BlockchainService.CORE_MESSAGE_TOPIC_SYNC_END;
+
+@Slf4j
 @RestController
 @Scope("prototype")
 @RequestMapping("/tx")
@@ -33,6 +45,8 @@ public class TransactionController {
     private final ChainConfig chainConfig;
     private final TransactionMapper transactionMapper;
     private final TransactionApi transactionApi;
+    private final BlockchainServiceImpl blockchainServiceImpl ;
+    private final BlockMapper blockMapper;
 
     @GetMapping(value = "/findTranByHash")
     public ResultMsg findTranByHash(@RequestParam(value = "tranhash") String tranhash) {
@@ -148,4 +162,36 @@ public class TransactionController {
         return blockchainApi.findTxByTxHash(hash);
     }
 
+    // 接受同步区块
+    @PostMapping(value = "/syncblocks")
+    public String sendSyncBlocks(@RequestBody Map<String, String> data)
+            throws JsonMappingException, JsonProcessingException {
+        String syncBlockStr = data.get("blocklist") ;
+
+        BlockList blocklist = JsonUtil.objectMapper.readValue(syncBlockStr, BlockList.class);
+
+        log.info("syncBlocks(): " + blockchainServiceImpl.getMsgIp() + ":" + blockchainServiceImpl.getMsgPort() + " begin to sync blocks");
+
+        if(blocklist == null){
+            return("Get empty blocks list");
+        }
+        try{
+            log.info("The local node starts to store the synchronized block");
+
+            for(Block block : blocklist.getBlocklist()){
+                blockchainServiceImpl.transactionExec(null,block);
+                blockchainServiceImpl.storeBlock(block);
+            }
+
+            log.info("Sync blocks end. The cluster start a new round");
+            blockchainServiceImpl.setSetup(true) ;
+            Message message = new Message(CORE_MESSAGE_TOPIC_SYNC_END,blockchainServiceImpl.getMsgIp() + ":" + blockchainServiceImpl.getMsgPort(),blockMapper.findMaxHeight(),null);
+            // 广播
+            blockchainServiceImpl.broadcasting(message);
+        }catch (Exception e){
+            // TODO syncBlocks的异常处理
+        }
+
+        return "Syncblocks Success";
+    }
 }

@@ -44,7 +44,9 @@ public class Transaction implements Serializable,Comparable<Transaction> {
     private int depth;
     private int index;
     private byte[] from;            // 交易发起人
+    private String from_address;    // 交易发起人的字符串形式，用于向数据库中保存
     private byte[] to;              // 交易接收人
+    private String to_address;      // 交易接收人的字符串形式，用于向数据库中保存
     private BigInteger value;       // 转帐金额
     private long nonce;             // 帐户交易次数
     private long gas;               // 执行合约调用所消耗的Gas值

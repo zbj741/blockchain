@@ -5,6 +5,7 @@ import com.buaa.blockchain.config.ChainConfig;
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.message.Message;
 import com.buaa.blockchain.message.MessageCallBack;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
 
@@ -100,7 +101,7 @@ public interface BlockchainService {
     /**
      * 回复syncBlocks
      * */
-    void replySyncBlocks(long requireHeight,String address);
+    void replySyncBlocks(long requireHeight,String address) throws JsonProcessingException;
     /**
      * 本地同步区块
      * */

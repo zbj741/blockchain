@@ -28,16 +28,18 @@ public interface TransactionMapper {
     @InsertProvider(type = TransactionSQLHelper.class, method = "insertAllTrans")
     public void insertAllTrans(List<Transaction> translist);
 
-    @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
-    @Insert("INSERT INTO transaction ( block_hash,tran_hash, type, timestamp, sequence, sign,version,extra,data,largeData)"
+    @Insert("INSERT INTO transaction ( block_hash,tran_hash, type, timestamp, sequence, sign,version,extra,data,largeData,to_address,from_address,value)"
             + " VALUES"
-            + " (#{block_hash}, #{tran_hash}, #{type}, #{timestamp}, #{sequence},#{sign},#{version},#{extra},#{data, typeHandler=org.apache.ibatis.type.ByteArrayTypeHandler},#{largeData})")
+            + " (#{block_hash}, #{tran_hash}, #{type}, #{timestamp}, #{sequence},#{sign},#{version},#{extra},#{data, typeHandler=org.apache.ibatis.type.ByteArrayTypeHandler},#{largeData},#{to_address},#{from_address},#{value})")
     public int insertTransaction(Transaction transaction);
 
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     @Select("select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where block_hash = #{blockHash} order by tranSeq")
     public ArrayList<Transaction> findTransByBlockHash(String blockHash);
 
+    @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
+    @Select("select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq,to_address,from_address,value from transaction where block_hash = #{blockHash} order by tranSeq")
+    public ArrayList<Transaction> findTransByBlockHashSync(String blockHash);
 
     @Select("select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = #{tranHash}")
     public Transaction findTransByHash(String tranHash);
