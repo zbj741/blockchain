@@ -1241,13 +1241,17 @@ public class BlockchainServiceImpl implements BlockchainService {
      * @param block
      */
     public void insertTransactionReceipts(Block block){
-       for (TransactionReceipt receipt : block.getTransactionReceipts()){
+        if(block.getTransactionReceipts() == null || block.getTransactionReceipts().size()==0){
+           return;
+        }
+
+        for (TransactionReceipt receipt : block.getTransactionReceipts()){
            receipt.setHeight(block.getHeight());
            receipt.setBlock_hash(block.getHash());
            receipt.setTx_hash(receipt.getTransaction().getTran_hash());
            receipt.setTx_sequence(receipt.getTransaction().getSequence());
            transactionReceiptMapper.insert(receipt);
-       }
+        }
     }
 
     public String getMsgIp() {

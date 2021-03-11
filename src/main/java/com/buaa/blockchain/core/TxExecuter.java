@@ -50,6 +50,10 @@ public class TxExecuter {
             final Transaction tx = transactionList.get(i);
 
             TransactionReceipt result = execute(tx);
+            if(result == null){
+                continue;
+            }
+
             result.setBlock_hash(tx.getBlock_hash());
             result.setTx_hash(tx.getTran_hash());
             result.setTransaction(tx);
@@ -178,7 +182,7 @@ public class TxExecuter {
                     isExecuteSucc = true;
                 }  catch (Exception e){
                     e.printStackTrace();
-                    if(e.getCause().getClass().isAssignableFrom(ContractException.class)){
+                    if(e.getCause() !=null && e.getCause().getClass() != null && e.getCause().getClass().isAssignableFrom(ContractException.class)){
                         receipt.setError(e.getMessage());
                     }
                 }
