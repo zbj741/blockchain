@@ -81,6 +81,9 @@ public class BlockchainServiceImpl implements BlockchainService {
     TxExecuter txExecuter;
     /*********************** 属性字段 ***********************/
 
+    /* 服务端内容上下文根路径 */
+    @Value("${server.servlet.context-path}")
+    public String serverPath;
     /* 是否单节点运行 */
     @Value("${buaa.blockchain.single}")
     public Boolean singleMode;
@@ -414,6 +417,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                 log.info("storeBlock(): get Block blockhash="+block.getHash()+" with no transaction, storeBlock stop.");
                 return ;
             }
+            block.setTimes(new Times());
             block.getTimes().setStoreBlock(System.currentTimeMillis());
             // 存储当前状态树根的值到block中
             block.setState_root(worldState.getRootHash());
@@ -802,7 +806,7 @@ public class BlockchainServiceImpl implements BlockchainService {
 
             //通过http的形式发送区块列表给待同步节点
             RestTemplate restTemplate = new RestTemplate() ;
-            String url = msgToserver.get(address) + SYNCBLOCKS_PATH;
+            String url = msgToserver.get(address) + serverPath + SYNCBLOCKS_PATH;
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -860,10 +864,6 @@ public class BlockchainServiceImpl implements BlockchainService {
         if(null == stateRoot){
             try {
                 List<Transaction> transactions = block.getTrans();
-                for(Transaction tx : transactions){// 获得交易将to_address,from_address赋值，用于存储到Mysql
-                    tx.setTo_address(new String(tx.getTo()));
-                    tx.setFrom_address(new String(tx.getFrom()));
-                }
                 List<TransactionReceipt> receipts = txExecuter.batchExecute(transactions);
                 block.setTransactionReceipts(receipts);
             } catch (Exception exception) {
