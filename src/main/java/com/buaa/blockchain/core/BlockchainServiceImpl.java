@@ -838,7 +838,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         if(null == stateRoot){
             try {
                 List<Transaction> transactions = block.getTrans();
-                List<TransactionReceipt> receipts = txExecuter.batchExecute(transactions);
+                List<TransactionReceipt> receipts = txExecuter.batchExecute(block, transactions);
                 block.setTransactionReceipts(receipts);
             } catch (Exception exception) {
                 exception.printStackTrace();

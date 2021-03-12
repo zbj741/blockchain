@@ -100,7 +100,7 @@ public class TxExecuterTest {
         transaction.setFrom(from.getBytes());
         transaction.setTo(null);
         transaction.setData(data);
-        txExecuter.execute(transaction);
+        txExecuter.execute(null, transaction);
 
         System.out.println(worldState.getRootHash());
     }
@@ -117,7 +117,7 @@ public class TxExecuterTest {
         transaction.setFrom(from.getBytes());
         transaction.setTo(contractAddr.getBytes());
         transaction.setData(data.getBytes());
-        txExecuter.execute(transaction);
+        txExecuter.execute(null, transaction);
 
 
         UserAccount userAccount = worldState.getUser(contractAddr);
@@ -139,7 +139,7 @@ public class TxExecuterTest {
         transaction.setFrom(from.getBytes());
         transaction.setTo(to.getBytes());
         transaction.setValue(BigInteger.valueOf(100));
-        txExecuter.execute(transaction);
+        txExecuter.execute(null, transaction);
 
         Assert.assertEquals(100l, worldState.getBalance(to).longValue());
         Assert.assertEquals(9900l, worldState.getBalance(from).longValue());
