@@ -96,7 +96,7 @@
         <dependency>
             <groupId>com.buaa.blockchain</groupId>
             <artifactId>java-sdk</artifactId>
-            <version>1.1</version>
+            <version>1.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -277,9 +277,9 @@
                 <configuration>
                     <groupId>com.buaa.blockchain</groupId>
                     <artifactId>java-sdk</artifactId>
-                    <version>1.1</version>
+                    <version>1.2</version>
                     <packaging>jar</packaging>
-                    <file>${basedir}/libs/java-sdk-1.1.jar</file>
+                    <file>${basedir}/libs/java-sdk-1.2.jar</file>
                     <generatePom>true</generatePom>
                 </configuration>
                 <executions>

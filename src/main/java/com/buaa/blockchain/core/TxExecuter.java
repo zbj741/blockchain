@@ -9,6 +9,7 @@ import com.buaa.blockchain.crypto.HashUtil;
 import com.buaa.blockchain.crypto.hash.Hash;
 import com.buaa.blockchain.crypto.hash.Keccak256;
 import com.buaa.blockchain.crypto.utils.ByteUtils;
+import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.entity.Transaction;
 import com.buaa.blockchain.entity.TransactionReceipt;
 import com.buaa.blockchain.entity.UserAccount;
@@ -43,13 +44,13 @@ public class TxExecuter {
        this.contractMapper = contractMapper;
     }
 
-    public List<TransactionReceipt> batchExecute(List<Transaction> transactionList) {
+    public List<TransactionReceipt> batchExecute(Block block, List<Transaction> transactionList) {
         log.info("beforeBatchExecute(): start to execute transaction list, size=" + transactionList.size());
         List<TransactionReceipt> receipts = Lists.newArrayList();
         for (int i = 0; i < transactionList.size(); i++) {
             final Transaction tx = transactionList.get(i);
 
-            TransactionReceipt result = execute(tx);
+            TransactionReceipt result = execute(block, tx);
             if(result == null){
                 continue;
             }
@@ -68,7 +69,7 @@ public class TxExecuter {
         return receipts;
     }
 
-    public TransactionReceipt execute(Transaction transaction){
+    public TransactionReceipt execute(Block block, Transaction transaction){
         TransactionReceipt receipt = new TransactionReceipt();
         receipt.setReceipt_hash(new String(createTxReceiptHash(transaction)));
         if(transaction.isCreateContract()) {
@@ -170,9 +171,13 @@ public class TxExecuter {
                     Object obj = ReflectUtil.getInstance().newInstance(mainClass, Map.class, storage);
 
                     if(IContract.class.isAssignableFrom(obj.getClass())){
-                        Field f1 = mainClass.getSuperclass().getDeclaredField("LOGS");
-                        f1.setAccessible(true);
-                        f1.set(obj, contractLogList);
+                        Field log = mainClass.getSuperclass().getDeclaredField("LOGS");
+                        log.setAccessible(true);
+                        log.set(obj, contractLogList);
+
+                        Field injectDate = mainClass.getSuperclass().getDeclaredField("timestamp");
+                        injectDate.setAccessible(true);
+                        injectDate.set(obj, block.getTimestamp());
                     }
 
                     log.debug("invoke method: {}, {}", callMethod.getMethod(), callMethod.getParams());
