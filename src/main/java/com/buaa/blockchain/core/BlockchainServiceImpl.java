@@ -864,6 +864,10 @@ public class BlockchainServiceImpl implements BlockchainService {
         if(null == stateRoot){
             try {
                 List<Transaction> transactions = block.getTrans();
+                for(Transaction tx : transactions){// 获得交易将to_address,from_address赋值，用于存储到Mysql
+                    tx.setTo_address(new String(tx.getTo()));
+                    tx.setFrom_address(new String(tx.getFrom()));
+                }
                 List<TransactionReceipt> receipts = txExecuter.batchExecute(transactions);
                 block.setTransactionReceipts(receipts);
             } catch (Exception exception) {
