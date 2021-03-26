@@ -1,9 +1,11 @@
 package com.buaa.blockchain.entity.mapper;
 
-import com.buaa.blockchain.entity.dao.TransactionSQLHelper;
+import com.buaa.blockchain.entity.TransNumInfo;
 import com.buaa.blockchain.entity.Transaction;
+import com.buaa.blockchain.entity.dao.TransactionSQLHelper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
@@ -29,7 +31,7 @@ public interface TransactionMapper {
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     @Insert("INSERT INTO transaction ( block_hash,tran_hash, type, timestamp, sequence, sign,version,extra,data,largeData)"
             + " VALUES"
-            + " (#{block_hash}, #{tran_hash}, #{type}, #{timestamp}, #{sequence},#{sign},#{version},#{extra},#{data},#{largeData})")
+            + " (#{block_hash}, #{tran_hash}, #{type}, #{timestamp}, #{sequence},#{sign},#{version},#{extra},#{data, typeHandler=org.apache.ibatis.type.ByteArrayTypeHandler},#{largeData})")
     public int insertTransaction(Transaction transaction);
 
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
@@ -40,6 +42,23 @@ public interface TransactionMapper {
     @Select("select tran_hash,block_hash,type,timestamp,sequence,sign,version,extra,data,tranSeq from transaction where tran_hash = #{tranHash}")
     public Transaction findTransByHash(String tranHash);
 
+    @Select("select * from transaction where sequence = #{seq}")
+    public Transaction findTranBySeq(int seq);
+
+    @Select("select max(seq) from transaction for update")
+    public int findMaxSeq();
+
+    @Select("SELECT date_format(timestamp,'%Y-%m-%d') as date,COUNT(*) as num FROM transaction where date_format(timestamp,'%Y-%m-%d')>=#{startdate} GROUP BY date;")
+    public List<TransNumInfo> getTransDayInfo(String startdate);
+
+    @Select("SELECT date_format(timestamp,'%Y-%m') as date,COUNT(*) as num FROM transaction where date_format(timestamp,'%Y-%m')>=#{startdate} GROUP BY date;")
+    public List<TransNumInfo> getTransMonInfo(String startdate);
+
+    @Select("SELECT date_format(timestamp,'%Y') as date,COUNT(*) as num FROM transaction where date_format(timestamp,'%Y')>=#{startdate} GROUP BY date;")
+    public List<TransNumInfo> getTransYearInfo(String startdate);
+
+    @Select("SELECT * from transaction order by timestamp desc ")
+    public List<Transaction> findPageTrans();
 
 
 }

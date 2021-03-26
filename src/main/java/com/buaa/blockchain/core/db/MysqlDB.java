@@ -7,10 +7,9 @@ import com.buaa.blockchain.entity.mapper.TransactionMapper;
 import com.buaa.blockchain.entity.mapper.UserAccountMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -22,7 +21,6 @@ import java.util.List;
  *
  * */
 @Slf4j
-
 @MapperScan(basePackages ="com.buaa.blockchain.entity.mapper")
 @ComponentScan(basePackages = "com.buaa.blockchain.*")
 public class MysqlDB implements DB{
@@ -57,13 +55,10 @@ public class MysqlDB implements DB{
     }
 
     @Override
-    public void updateUserAccountBalance(String userName, int newBalance) {
-        userAccountMapper.updateBalance(newBalance, userName);
-    }
-
-    @Override
-    public void insertContractAccount(ContractAccount contractAccount) {
-        contractAccountMapper.insertUserAccount(contractAccount);
+    public void addBalance(String userName, BigInteger value) {
+        UserAccount userAccount = this.userAccountMapper.findUserAccountByName(userName);
+        userAccount.addBalance(value);
+        userAccountMapper.updateBalance(userAccount.getBalance(), userName);
     }
 
     @Override
@@ -77,22 +72,22 @@ public class MysqlDB implements DB{
     }
 
     @Override
-    public Block findBlockByHeight(int height) {
+    public Block findBlockByHeight(long height) {
         return blockMapper.findBlockByHeight(height);
     }
 
     @Override
-    public int findBlockNum(String hash) {
+    public long findBlockNum(String hash) {
         return blockMapper.findBlockNum(hash);
     }
 
     @Override
-    public String findHashByHeight(int height) {
+    public String findHashByHeight(long height) {
         return blockMapper.findHashByHeight(height);
     }
 
     @Override
-    public int findMaxHeight() {
+    public long findMaxHeight() {
         return blockMapper.findMaxHeight();
     }
 

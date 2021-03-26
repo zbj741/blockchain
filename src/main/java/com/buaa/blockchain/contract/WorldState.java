@@ -1,16 +1,20 @@
 package com.buaa.blockchain.contract;
 
-import com.buaa.blockchain.contract.trie.datasource.KeyValueDataSource;
 import com.buaa.blockchain.contract.trie.Trie;
 import com.buaa.blockchain.contract.trie.TrieImpl;
 import com.buaa.blockchain.contract.trie.Values;
+import com.buaa.blockchain.contract.trie.datasource.KeyValueDataSource;
 import com.buaa.blockchain.contract.trie.datasource.LevelDbDataSource;
-import com.buaa.blockchain.core.BlockchainService;
 import com.buaa.blockchain.entity.UserAccount;
 import com.buaa.blockchain.utils.JsonUtil;
 import com.buaa.blockchain.utils.Utils;
+import com.buaa.blockchain.vm.utils.HexUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+
+import java.math.BigInteger;
+import java.util.Map;
 
 /**
  * 区块链中的全局状态树，用于记录交易的执行情况。
@@ -27,24 +31,21 @@ import lombok.extern.slf4j.Slf4j;
  * */
 @Slf4j
 public class WorldState implements State {
-    BlockchainService bs = null;
     /* 字符树 */
     private Trie trie;
     /* levelDb存储接口 */
-    private KeyValueDataSource levelDb = null;
+    private KeyValueDataSource levelDb;
     /* 初始插入字段 */
     private static String init = "This is the description for worldState in buaa-blockchain, " +
             "and the aim for this action is to initial specific value in leveldb." +
             "This data needs to longer than 32 bytes in order to write into disk.";
 
 
-
     /**
      * 需要执行一个本地目录，leveldb的文件名
      * 可以支持对blockchainService的引用，用于同步mysql，不用的话填null
      * */
-    public WorldState(String dir, String name, BlockchainService bs) {
-        this.bs = bs;
+    public WorldState(String dir, String name) {
         levelDb = new LevelDbDataSource(dir,name);
         levelDb.init();
         trie = new TrieImpl(levelDb);
@@ -82,7 +83,7 @@ public class WorldState implements State {
      * 更新状态
      * @param trie  trie对象
      * @param key   键值
-     * @param value 
+     * @param value
      * */
     public void update(Trie trie, String key, String value) {
         log.debug("update32(): key="+key+", value="+value);
@@ -172,46 +173,100 @@ public class WorldState implements State {
 
 
     /**************** 支持账户相关 *****************/
-
     @Override
-    public int getUserAccountBalance(String userKey) {
-        return getUser(userKey).getBalance();
-    }
-
-    @Override
-    public void updateUserAccountBalance(String userKey, int updateVal) {
-        UserAccount u = getUser(userKey);
-        u.setBalance(updateVal);
-        // 写回state
+    public void createAccount(String address, UserAccount userAccount){
+        if(isExistAccount(address)){
+            return;
+        }
         try {
-            this.update(userKey, JsonUtil.objectMapper.writeValueAsBytes(u));
+            this.update(address, JsonUtil.objectMapper.writeValueAsBytes(userAccount));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        // 写回mysql
-        if(null != bs){
-            bs.updateUserAccountBalance(userKey,u.getBalance());
+    }
+
+    @Override
+    public boolean isExistAccount(String address){
+        return getUser(address) != null;
+    }
+
+    @Override
+    public boolean isContractAccount(String address){
+        if(!isExistAccount(address)){
+            return false;
+        }
+
+        UserAccount account = getUser(address);
+        return account.getCodeHash() != null;
+    }
+
+    @Override
+    public BigInteger getBalance(String address) {
+        if(isExistAccount(address)){
+            return getUser(address).getBalance();
+        }else{
+            return BigInteger.ZERO;
         }
     }
 
     @Override
-    public String getUserJsonString(String userKey) {
-        String res = this.get(userKey);
-        return res;
-    }
+    public void addBalance(String address, BigInteger val) {
+        UserAccount userAccount = getUser(address);
+        if(userAccount == null){
+            userAccount = new UserAccount();
+            this.createAccount(address, userAccount);
+        }
+        userAccount.addBalance(val);
 
-    @Override
-    public UserAccount getUser(String userKey) {
-        String str = getUserJsonString(userKey);
-        UserAccount res = null;
         try {
-            res = JsonUtil.objectMapper.readValue(str,UserAccount.class);
-
+            this.update(address, JsonUtil.objectMapper.writeValueAsBytes(userAccount));
         } catch (JsonProcessingException e) {
-            // TODO 无法读取
             e.printStackTrace();
         }
+    }
 
-        return res;
+    @Override
+    public UserAccount getUser(String address) {
+        try {
+            return JsonUtil.objectMapper.readValue(this.get(address),UserAccount.class);
+        } catch (JsonProcessingException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Map getContractStorage(String address) {
+        UserAccount userAccount = getUser(address);
+        if (!userAccount.isContractAccount())
+            return null;
+
+        String data = this.get(HexUtil.toHexString(userAccount.getStorageHash()));
+        try {
+            return new ObjectMapper().readValue(data, Map.class);
+        } catch (JsonProcessingException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean refreshStorage(String address, byte[] storageHash) {
+        UserAccount userAccount = getUser(address);
+        try {
+            userAccount.setStorageHash(storageHash);
+            this.update(address, JsonUtil.objectMapper.writeValueAsBytes(userAccount));
+            return true;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public byte[] getCode(String address) {
+        UserAccount userAccount = getUser(address);
+        if (!userAccount.isContractAccount())
+            return null;
+
+        return this.getAsBytes(new String(userAccount.getCodeHash()));
     }
 }

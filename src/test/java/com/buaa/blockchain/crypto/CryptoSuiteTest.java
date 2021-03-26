@@ -1,9 +1,7 @@
 package com.buaa.blockchain.crypto;
 
-import com.buaa.blockchain.config.Config;
-import com.buaa.blockchain.config.ConfigOption;
-import com.buaa.blockchain.config.exceptions.ConfigException;
-import com.buaa.blockchain.config.model.CryptoType;
+import com.buaa.blockchain.config.AccountConfig;
+import com.buaa.blockchain.config.CryptoType;
 import com.buaa.blockchain.crypto.hash.Hash;
 import com.buaa.blockchain.crypto.hash.Keccak256;
 import com.buaa.blockchain.crypto.hash.SM3Hash;
@@ -17,6 +15,8 @@ import com.buaa.blockchain.crypto.signature.ECDSASignature;
 import com.buaa.blockchain.crypto.signature.SM2Signature;
 import com.buaa.blockchain.crypto.signature.Signature;
 import com.buaa.blockchain.crypto.signature.SignatureResult;
+import com.webank.wedpr.crypto.CryptoResult;
+import com.webank.wedpr.crypto.NativeInterface;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.After;
 import org.junit.Assert;
@@ -214,8 +214,8 @@ public class CryptoSuiteTest {
     }
 
     public String getKeyStoreFilePath(
-            CryptoSuite cryptoSuite, ConfigOption configOption, String postFix) {
-        return configOption.getAccountConfig().getKeyStoreDir()
+            CryptoSuite cryptoSuite, AccountConfig configOption, String postFix) {
+        return configOption.getKeyStoreDir()
                 + File.separator
                 + cryptoSuite.getCryptoKeyPair().getKeyStoreSubDir()
                 + File.separator
@@ -224,86 +224,6 @@ public class CryptoSuiteTest {
     }
 
 
-    @Test
-    public void testSMLoadAndStoreKeyPairWithPEM() throws ConfigException {
-        testLoadAndStoreKeyPairWithPEM(CryptoType.SM_TYPE);
-    }
-
-    @Test
-    public void testECDSALoadAndStoreKeyPairWithPEM() throws ConfigException {
-        testLoadAndStoreKeyPairWithPEM(CryptoType.ECDSA_TYPE);
-    }
-
-    @Test
-    public void testSMLoadAndStoreKeyPairWithP12() throws ConfigException {
-        testLoadAndStoreKeyPairWithP12(CryptoType.SM_TYPE);
-    }
-
-    @Test
-    public void testECDSALoadAndStoreKeyPairWithP12() throws ConfigException {
-        testLoadAndStoreKeyPairWithP12(CryptoType.ECDSA_TYPE);
-    }
-
-    public void testLoadAndStoreKeyPairWithPEM(int cryptoType) throws ConfigException {
-        ConfigOption configOption = Config.load("application.properties", CryptoType.ECDSA_TYPE);
-        CryptoSuite cryptoSuite = new CryptoSuite(cryptoType);
-        cryptoSuite.getCryptoKeyPair().setConfig(configOption);
-        cryptoSuite.getCryptoKeyPair().storeKeyPairWithPemFormat();
-        CryptoKeyPair orgKeyPair = cryptoSuite.getCryptoKeyPair();
-
-        // get pem file path
-        String pemFilePath =
-                getKeyStoreFilePath(cryptoSuite, configOption, CryptoKeyPair.PEM_FILE_POSTFIX);
-        // load pem file
-        KeyTool pemManager = new PEMKeyStore(pemFilePath);
-        CryptoKeyPair decodedCryptoKeyPair = cryptoSuite.createKeyPair(pemManager.getKeyPair());
-
-        System.out.println("PEM   orgKeyPair   pub: " + orgKeyPair.getHexPublicKey());
-        System.out.println("PEM decodedKeyPair pub: " + decodedCryptoKeyPair.getHexPublicKey());
-
-        System.out.println("PEM   orgKeyPair   pri: " + orgKeyPair.getHexPrivateKey());
-        System.out.println("PEM decodedKeyPair pr: " + decodedCryptoKeyPair.getHexPrivateKey());
-
-        // test sign and verify message with
-        String publicPemPath = pemFilePath + ".pub";
-        KeyTool verifyKeyTool = new PEMKeyStore(publicPemPath);
-
-        checkSignAndVerifyWithKeyManager(
-                pemManager, decodedCryptoKeyPair, verifyKeyTool, cryptoSuite);
-    }
-
-    public void testLoadAndStoreKeyPairWithP12(int cryptoType) throws ConfigException {
-        ConfigOption configOption = Config.load("application.properties", CryptoType.ECDSA_TYPE);
-        CryptoSuite cryptoSuite = new CryptoSuite(cryptoType);
-        cryptoSuite.getCryptoKeyPair().setConfig(configOption);
-        String password = "123";
-        cryptoSuite.getCryptoKeyPair().storeKeyPairWithP12Format(password);
-        CryptoKeyPair orgKeyPair = cryptoSuite.getCryptoKeyPair();
-
-        // get p12 file path
-        String p12FilePath =
-                getKeyStoreFilePath(cryptoSuite, configOption, CryptoKeyPair.P12_FILE_POSTFIX);
-        // load p12 file
-        KeyTool p12Manager = new P12KeyStore(p12FilePath, password);
-        CryptoKeyPair decodedCryptoKeyPair = cryptoSuite.createKeyPair(p12Manager.getKeyPair());
-        // check the keyPair
-        System.out.println("P12   orgKeyPair   pub: " + orgKeyPair.getHexPublicKey());
-        System.out.println("P12 decodedKeyPair pub: " + decodedCryptoKeyPair.getHexPublicKey());
-
-        System.out.println("P12   orgKeyPair   pri: " + orgKeyPair.getHexPrivateKey());
-        System.out.println("P12 decodedKeyPair pr: " + decodedCryptoKeyPair.getHexPrivateKey());
-
-        Assert.assertTrue(
-                orgKeyPair.getHexPrivateKey().equals(decodedCryptoKeyPair.getHexPrivateKey()));
-        Assert.assertTrue(
-                orgKeyPair.getHexPublicKey().equals(decodedCryptoKeyPair.getHexPublicKey()));
-
-        // test sign and verify message with
-        String publicP12Path = p12FilePath + ".pub";
-        KeyTool verifyKeyTool = new PEMKeyStore(publicP12Path);
-        checkSignAndVerifyWithKeyManager(
-                p12Manager, decodedCryptoKeyPair, verifyKeyTool, cryptoSuite);
-    }
 
     private void checkSignAndVerifyWithKeyManager(
             KeyTool pemManager,
@@ -342,4 +262,26 @@ public class CryptoSuiteTest {
             Assert.assertTrue(!cryptoSuite.verify(verifyKeyTool, invalidMessage, signature));
         }
     }
+
+    @Test
+    public void testCreateKeyPair(){
+        CryptoSuite cryptoSuite = new CryptoSuite(CryptoType.ECDSA_TYPE);
+        // generate keyPair
+        CryptoKeyPair keyPair = cryptoSuite.createKeyPair();
+        System.out.println(keyPair.getAddress());
+        System.out.println(keyPair.getHexPublicKey());
+        System.out.println(keyPair.getHexPrivateKey());
+    }
+
+    @Test
+    public void testSM(){
+        CryptoResult cs = NativeInterface.sm2keyPair();
+        System.out.println(cs.getPublicKey());
+        cs = NativeInterface.keccak256("123123");
+        System.out.println(cs.getPublicKey());
+
+
+
+    }
+
 }

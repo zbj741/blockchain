@@ -1,71 +1,80 @@
 package com.buaa.blockchain.entity;
 
 
+import java.math.BigInteger;
+
 public class UserAccount {
+    private BigInteger balance;
+    private BigInteger nonce;
+    private byte[] codeHash;
+    private String contractName;
+    private byte[] storageHash;
+    private byte[] stateRoot;
 
-    String userKey;
-    String userName;
-    String password;
-    String intro;
-    int balance;
-    String data;
-    public UserAccount(){}
-    public UserAccount( String key, String name, String password, String intro, int balance, String data){
-
-        this.userKey = key;
-        this.userName = name;
-        this.password = password;
-        this.intro = intro;
-        this.balance = balance;
-        this.data = data;
+    public UserAccount() {
+        this.balance = BigInteger.ZERO;
+        this.nonce = BigInteger.ZERO;
     }
 
-
-    public String getUserKey() {
-        return userKey;
-    }
-
-    public void setUserKey(String userKey) {
-        this.userKey = userKey;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getIntro() {
-        return intro;
-    }
-
-    public void setIntro(String intro) {
-        this.intro = intro;
-    }
-
-    public int getBalance() {
+    public BigInteger getBalance() {
         return balance;
     }
 
-    public void setBalance(int balance) {
-        this.balance = balance;
+    public void addBalance(BigInteger val) {
+        this.balance = this.balance.add(val);
     }
 
-    public String getData() {
-        return data;
+    public BigInteger getNonce() {
+        return nonce;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public byte[] getCodeHash() {
+        return codeHash;
+    }
+
+    public byte[] getStateRoot() {
+        return stateRoot;
+    }
+
+    public void setCodeHash(byte[] codeHash) {
+        this.codeHash = codeHash;
+    }
+
+    public void setStateRoot(byte[] stateRoot) {
+        this.stateRoot = stateRoot;
+    }
+
+    public void setStorageHash(byte[] storageHash) {
+        this.storageHash = storageHash;
+    }
+
+    public byte[] getStorageHash() {
+        return storageHash;
+    }
+
+    public boolean isContractAccount(){
+        return codeHash != null && codeHash.length>0;
+    }
+
+    public String getContractName() {
+        return contractName;
+    }
+
+    public void setContractName(String contractName) {
+        this.contractName = contractName;
+    }
+
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("UserAccount{");
+        sb.append(", balance=").append(balance);
+        sb.append(", codeHash=").append(codeHash);
+        sb.append(", contractName='").append(contractName).append('\'');
+        sb.append(", nonce=").append(nonce);
+        sb.append(", stateRoot=").append(stateRoot);
+        sb.append(", storageHash=").append(stateRoot);
+        sb.append('}');
+        return sb.toString();
     }
 }

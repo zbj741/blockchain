@@ -3,6 +3,7 @@ package com.buaa.blockchain.entity;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +27,12 @@ public class Block implements Serializable, Comparable<Block> {
     private String pre_state_root;
     /* 区块所包含交易数据的merkle树根 */
     private String merkle_root;
+    /* 交易Receipt状态树根 */
+    private String receipt_root;
     /* 交易数量 */
     private int tx_length;
     /* 区块高度，作为区块持久化的主键，在数据库中是按照升序排列的 */
-    private int height;
+    private long height;
     /* 区块签名 */
     private String sign;
     /* 版本号 */
@@ -39,13 +42,42 @@ public class Block implements Serializable, Comparable<Block> {
     /* 区块hash，作为区块持久化的主键，由区块头部数据哈希得到 */
     private String hash;
     /* 时间戳 */
-    private String timestamp;
+    private long timestamp;
     /* 交易列表 */
-    private ArrayList<Transaction> trans;
+    private List<Transaction> trans;
+    /* 交易Receipt */
+    private List<TransactionReceipt> transactionReceipts;
+
     /* 计算区块的耗时相关记录 */
     private Times times;
 
+    private long number;
+    private byte[] parentHash;
+    private byte[] coinbase;
+    private long gasLimit;
+    private String receiptHash;
+
     public Block(){}
+
+    public long getGasLimit() {
+        return gasLimit;
+    }
+
+    public byte[] getParentHash() {
+        return parentHash;
+    }
+
+    public byte[] getCoinbase() {
+        return coinbase;
+    }
+
+    public long getNumber() {
+        return number;
+    }
+
+    public BigInteger getDifficulty() {
+        return BigInteger.ONE;
+    }
 
 	@Override
 	public String toString() {
@@ -81,7 +113,7 @@ public class Block implements Serializable, Comparable<Block> {
         return 0;
     }
 
-    public void setArgs(String preHash, String hash, String merkleRoot, String PreStateRoot, int height, String sign, String timestamp, String version, ArrayList<Transaction> transList, int txLength){
+    public void setArgs(String preHash, String hash, String merkleRoot, String PreStateRoot, long height, String sign, long timestamp, String version, List<Transaction> transList, int txLength){
         this.setPre_hash(preHash);
         this.setHash(hash);
         this.setMerkle_root(merkleRoot);

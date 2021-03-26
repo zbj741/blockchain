@@ -2,8 +2,10 @@ package com.buaa.blockchain.api;
 
 import com.buaa.blockchain.entity.Block;
 import com.buaa.blockchain.entity.Transaction;
+import com.buaa.blockchain.entity.TransactionReceipt;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 该接口定义了一些从外部对区块链进行操作的方法
@@ -21,17 +23,50 @@ public interface BlockchainApi {
      * 获取区块数据
      * */
     Block findBlockByHash(String hash);
-    Block findBlockByHeight(int height);
-    List<Block> listBlock();
-    List<Block> listBlockByHeight(int min,int max);
+
+    Block findBlockByPreHash(String prehash);
+
+    List<Block> findBlocks(int start,int end);
+
+    Long  findMaxHeight();
+
+    List<Block> getBlocklist();
+
+    String getNowHash();
+
+    int getBlockNumByTxRange(int low, int top);
+
+    int getBlockNumBySign(String sign);
+
+    List<Map<String, Object>> countBlockNumGroupBySign();
+
+    List<Block> findPageBlocks(int page_index, int page_size);
+
+    /**
+     *
+      * @param height
+     * @return
+     */
+    Block findBlockByHeight(long height);
+
+    /**
+     *
+     * @return
+     */
+    Block findLastBlock();
 
     /**
      * 获取交易数据
      * */
-    Transaction findTxByHash(String hash);
-    Transaction findTxByBlockHeight(int height);
-    Transaction findTxByBlockHash(String bhash);
-    List<Transaction> listTx();
-    List<Transaction> listTxByStartTime();
-    /***/
+    Transaction findTxByTxHash(String tx_hash);
+
+    List<Transaction> findTxByBlockHash(String blockHash);
+
+    /**
+     * 查询交易Receipts
+     *
+     * @param height
+     * @return
+     */
+    List<TransactionReceipt> findReceiptsByHeight(long height);
 }

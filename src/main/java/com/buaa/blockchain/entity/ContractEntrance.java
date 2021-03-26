@@ -58,7 +58,6 @@ public class ContractEntrance{
 
         }
         return instance;
-
     }
 
     public static synchronized ContractEntrance getInstance(ContractEntrance c){

@@ -1,17 +1,18 @@
 package com.buaa.blockchain.message;
 
 
+import org.jgroups.Message;
 import org.jgroups.*;
 import org.jgroups.conf.ConfiguratorFactory;
 import org.jgroups.conf.ProtocolStackConfigurator;
 import org.jgroups.stack.IpAddress;
-import org.jgroups.Message;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 /**
@@ -41,7 +42,7 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
      * */
     public JGroupsMessageImpl(){
         try {
-            InputStream is = new BufferedInputStream(new FileInputStream("."+File.separator+"config"+File.separator+"jgroups-tcp.xml"));
+            InputStream is = new BufferedInputStream(new FileInputStream("msp-tcp.xml"));
             // 从msg-tcp.xml中获取配置参数
             ProtocolStackConfigurator config = ConfiguratorFactory.getStackConfigurator(is);
             // 配置channel
@@ -50,8 +51,7 @@ public class JGroupsMessageImpl extends ReceiverAdapter implements MessageServic
             this.channel.connect("BlockCluster");
             this.channel.getState(null, 10000);
             // 获取本节点地址
-            this.address = channel.down(new Event(
-                    Event.GET_PHYSICAL_ADDRESS, channel.getAddress())).toString();
+            this.address = channel.down(new Event(Event.GET_PHYSICAL_ADDRESS, channel.getAddress())).toString();
 
         } catch (Exception e) {
             //log.error("JGroupsMessageImpl(): Cannot init. Shut down!");

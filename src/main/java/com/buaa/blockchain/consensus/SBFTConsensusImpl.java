@@ -107,8 +107,8 @@ public class SBFTConsensusImpl implements SBFTConsensus<Message>{
     @Override
     public synchronized void sbftVoteBroadcastReceived(Message stage2_received) {
         // 赋值
-        int height = stage2_received.getHeight();
-        int round = stage2_received.getRound();
+        long height = stage2_received.getHeight();
+        long round = stage2_received.getRound();
         String msgNodeName = stage2_received.getNodeName();
         Block block = stage2_received.getBlock();
         String blockHash = block.getHash();
